@@ -1,9 +1,10 @@
-import React from "react";
 
 const Home = () => {
   return (
     <div className="py-28">
-      <div className="container">Home</div>
+      <div className="container">
+        <a href="/listening/listening-id/1/1">Listening</a>
+      </div>
     </div>
   );
 };
