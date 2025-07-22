@@ -11,6 +11,7 @@ import MainLayout from "./layouts/MainLayout";
 
 // Pages
 import Home from "./pages/Home";
+import Editor from "./pages/Editor";
 import Listening from "./pages/Listening";
 
 const App = () => {
@@ -18,6 +19,7 @@ const App = () => {
     createRoutesFromElements(
       <Route path="/" element={<MainLayout />}>
         <Route index element={<Home />} />
+        <Route path="editor" element={<Editor />} />
         <Route
           element={<Listening />}
           path="listening/:listeningId/:partNumber/:questionNumber"
