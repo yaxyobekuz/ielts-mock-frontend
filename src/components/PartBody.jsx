@@ -1,5 +1,5 @@
-import { useEffect, useMemo, useCallback } from "react";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useMemo } from "react";
+import { useLocation, useParams } from "react-router-dom";
 
 // Components
 import Text from "./questions/Text";
@@ -16,12 +16,10 @@ const questionsMap = {
 
 const PartBody = ({ parts }) => {
   const location = useLocation();
-  const navigate = useNavigate();
-  const { partNumber, questionNumber } = useParams();
+  const { partNumber } = useParams();
 
   // Memoize expensive calculations
-  const { paths, currentPart, totalQuestions } = useMemo(() => {
-    const pathsArray = location.pathname.split("/").filter(Boolean);
+  const { currentPart, totalQuestions } = useMemo(() => {
     const partNum = parseInt(partNumber);
     const part = parts.find((p) => p.number === partNum);
     const total = parts
@@ -29,77 +27,12 @@ const PartBody = ({ parts }) => {
       .reduce((acc, part) => acc + part.questions, 0);
 
     return {
-      paths: pathsArray,
       currentPart: part,
       totalQuestions: total,
     };
   }, [location.pathname, parts, partNumber]);
 
   const { description, sections } = currentPart || {};
-
-  // Memoize navigation handler
-  const handleNavigate = useCallback(
-    (questionNum) => {
-      navigate(`/${paths[0]}/${paths[1]}/${partNumber}/${questionNum}`);
-    },
-    [navigate, paths, partNumber]
-  );
-
-  // Memoize input resize handler
-  const handleResizeInput = useCallback((e) => {
-    const input = e.target;
-    const hiddenText = input.parentElement?.querySelector(".hidden-text");
-
-    if (hiddenText) {
-      hiddenText.textContent = input.value;
-      const newWidth = Math.max(108, hiddenText.offsetWidth) + 20;
-      input.style.width = `${newWidth}px`;
-    }
-  }, []);
-
-  // Handle question input focus and active state
-  useEffect(() => {
-    const questionInputs = document.querySelectorAll(".question-input");
-
-    questionInputs.forEach((input) => {
-      const isActiveInput =
-        input.getAttribute("data-number") === questionNumber;
-      input.classList.toggle("active", isActiveInput);
-
-      if (isActiveInput) input.focus();
-    });
-  }, [questionNumber]); // Only depend on questionNumber, not full pathname
-
-  // Handle event listeners for navigation and resizing
-  useEffect(() => {
-    const questionInputs = document.querySelectorAll(".question-input");
-
-    const handleClick = (e) => {
-      const questionNum = e.target.getAttribute("data-number");
-      if (questionNum) handleNavigate(questionNum);
-    };
-
-    const handleFocus = (e) => {
-      const questionNum = e.target.getAttribute("data-number");
-      if (questionNum) handleNavigate(questionNum);
-    };
-
-    // Add event listeners
-    questionInputs.forEach((input) => {
-      input.addEventListener("click", handleClick);
-      input.addEventListener("focus", handleFocus);
-      input.addEventListener("input", handleResizeInput);
-    });
-
-    // Cleanup function
-    return () => {
-      questionInputs.forEach((input) => {
-        input.removeEventListener("click", handleClick);
-        input.removeEventListener("focus", handleFocus);
-        input.removeEventListener("input", handleResizeInput);
-      });
-    };
-  }, [handleNavigate, handleResizeInput]); // Dependencies are memoized
 
   // Early return if no current part
   if (!currentPart) {
