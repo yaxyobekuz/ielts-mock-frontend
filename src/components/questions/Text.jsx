@@ -1,4 +1,4 @@
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { memo, useEffect, useRef, useCallback, useMemo } from "react";
 
 // Helpers
@@ -11,12 +11,18 @@ const Text = memo(({ text, initialNumber }) => {
   const textRef = useRef(null);
   const navigate = useNavigate();
   const location = useLocation();
+  const { questionNumber } = useParams();
   const { getData, updateProperty } = useLocalStorage("answers");
 
-  // Cache path segments to avoid repeated splitting
+  // Cache path segments and saved data
   const pathSegments = useMemo(
     () => location.pathname.split("/").filter(Boolean),
     [location.pathname]
+  );
+
+  const savedData = useMemo(
+    () => getData() || {},
+    [getData, location.pathname]
   );
 
   // Navigate to specific input number
@@ -47,6 +53,26 @@ const Text = memo(({ text, initialNumber }) => {
       updateInputWidth(input, inputValue);
     },
     [updateProperty, updateInputWidth]
+  );
+
+  // Handle active input styling and focus
+  const handleActiveInput = useCallback(
+    (inputs) => {
+      inputs.forEach((input) => {
+        const inputNumber = input.getAttribute("data-number");
+        if (!inputNumber) return;
+
+        // Remove active class from all inputs first
+        input.classList.remove("active");
+
+        // Add active class and focus to current question
+        if (questionNumber === inputNumber) {
+          input.classList.add("active");
+          input.focus();
+        }
+      });
+    },
+    [questionNumber]
   );
 
   // Setup event listeners for inputs
@@ -81,14 +107,17 @@ const Text = memo(({ text, initialNumber }) => {
     return () => cleanupFunctions.forEach((cleanup) => cleanup());
   }, [text, handleNavigate, handleInputChange]);
 
-  // Restore saved values on route change
+  // Restore saved values and handle active state
   useEffect(() => {
     const element = textRef.current;
     if (!element) return;
 
     const inputs = element.querySelectorAll("input");
-    const savedData = getData() || {};
 
+    // Handle active input state
+    handleActiveInput(inputs);
+
+    // Restore saved values
     inputs.forEach((input) => {
       const inputNumber = input.getAttribute("data-number");
       if (!inputNumber) return;
@@ -97,7 +126,7 @@ const Text = memo(({ text, initialNumber }) => {
       input.value = savedValue;
       updateInputWidth(input, savedValue);
     });
-  }, [location.pathname, getData, updateInputWidth]);
+  }, [savedData, updateInputWidth, handleActiveInput]);
 
   if (!text) return null;
 
