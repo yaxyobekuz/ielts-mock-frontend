@@ -3,8 +3,16 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 
 // Components
 import Text from "./questions/Text";
+import Flowchart from "./questions/Flowchart";
+import RadioGroup from "./questions/RadioGroup";
+import TextDraggable from "./questions/TextDraggable";
 
-const questionsMap = { text: Text };
+const questionsMap = {
+  text: Text,
+  flowchart: Flowchart,
+  "radio-group": RadioGroup,
+  "text-draggable": TextDraggable,
+};
 
 const PartBody = ({ parts }) => {
   const location = useLocation();
