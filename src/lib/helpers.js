@@ -14,6 +14,11 @@ export const convertToHtml = (text, initialNumber = 1) => {
         const currentNumber = inputCounter++;
         return `<span class="question-input-wrapper"><span class="hidden-text"></span><input type="text" style="width:128px;" class="question-input" placeholder="${currentNumber}" data-number="${currentNumber}"></span>`;
       })
+      // Convert special draggable input with counter
+      .replace(/\~(?!\w)/g, () => {
+        const currentNumber = inputCounter++;
+        return `<span class="answer-dropzone" data-number="${currentNumber}">${currentNumber}</span>`;
+      })
       // Convert list items
       .replace(/^- (.*$)/gim, "<li>$1</li>")
       // Wrap consecutive list items in <ul>
