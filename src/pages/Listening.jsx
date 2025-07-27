@@ -49,133 +49,142 @@ Tim Smith ~
 
 Jenny James ~`;
 
-const Listening = () => {
-  return (
-    <div className="w-full h-screen">
-      <PartHeader />
-      <PartBody
-        parts={[
-          {
-            number: 1,
-            questions: 10,
-            description: "Listen and answer questions 1-10.",
-            sections: [
-              {
-                type: "text",
-                data: { text },
-                title: "Questions 1-10",
-                description: `Complete the notes. Write ONE WORD AND/OR A NUMBER for each answer.`,
-              },
+const listeningTestParts = [
+  {
+    number: 1,
+    totalQuestions: 10,
+    description: "Listen and answer questions 1-10.",
+    sections: [
+      {
+        content: { text },
+        questionsCount: 10,
+        questionType: "text",
+        title: "Questions 1-10",
+        description:
+          "Complete the notes. Write ONE WORD AND/OR A NUMBER for each answer.",
+      },
+    ],
+  },
+  {
+    number: 2,
+    totalQuestions: 10,
+    description: "Listen and answer questions 11-20.",
+    sections: [
+      {
+        content: { text },
+        questionsCount: 10,
+        questionType: "text",
+        title: "Questions 11-20",
+        description:
+          "Complete the notes. Write ONE WORD AND/OR A NUMBER for each answer.",
+      },
+    ],
+  },
+  {
+    number: 3,
+    totalQuestions: 10,
+    description: "Listen and answer questions 21-30.",
+    sections: [
+      {
+        questionType: "text-draggable",
+        title: "Questions 21-30",
+        content: {
+          text: textDraggable,
+          answerChoices: {
+            title: "Staff Responsibilities",
+            options: [
+              { option: "Finance" },
+              { option: "Food" },
+              { option: "Health" },
+              { option: "Kids' counseling" },
+              { option: "Organisation" },
+              { option: "Rooms" },
+              { option: "Sport" },
+              { option: "Trips" },
             ],
           },
-          {
-            number: 2,
-            questions: 10,
-            description: "Listen and answer questions 10-20.",
-            sections: [
-              {
-                type: "text",
-                data: { text },
-                title: "Questions 10-20",
-                description: `Complete the notes. Write ONE WORD AND/OR A NUMBER for each answer.`,
-              },
+        },
+        description:
+          "Who is responsible for each area? Choose the correct answer for each person and move it into the gap.",
+      },
+      {
+        questionType: "flowchart",
+        title: "Questions 21-30",
+        content: {
+          flowchartItems: {
+            title: "Flowchart",
+            items: [
+              { flowchartText },
+              { flowchartText },
+              { flowchartText },
+              { flowchartText },
             ],
           },
-          {
-            number: 3,
-            questions: 10,
-            description: "Listen and answer questions 20-25.",
-            sections: [
-              {
-                type: "text-draggable",
-                title: "Questions 20-30",
-                data: {
-                  text: textDraggable,
-                  answers: {
-                    title: "Staff Responsibilities",
-                    data: [
-                      { answer: "Finance" },
-                      { answer: "Food" },
-                      { answer: "Health" },
-                      { answer: "Kids' counceling" },
-                      { answer: "Organisation" },
-                      { answer: "Rooms" },
-                      { answer: "Sport" },
-                      { answer: "Trips" },
-                    ],
-                  },
-                },
-                description: `Who is responsible for each area? Choose the correct answer for each person and move it into the gap.`,
-              },
-              {
-                type: "flowchart",
-                title: "Questions 20-30",
-                data: {
-                  texts: {
-                    title: "Flowchart",
-                    data: [
-                      { text: flowchartText },
-                      { text: flowchartText },
-                      { text: flowchartText },
-                      { text: flowchartText },
-                    ],
-                  },
-                  answers: {
-                    title: "Staff Responsibilities",
-                    data: [
-                      { answer: "Finance" },
-                      { answer: "Food" },
-                      { answer: "Health" },
-                      { answer: "Kids' counceling" },
-                      { answer: "Organisation" },
-                      { answer: "Rooms" },
-                      { answer: "Sport" },
-                      { answer: "Trips" },
-                    ],
-                  },
-                },
-                description: `Complete the flow-chart. Choose the correct answer and move it into the gap.`,
-              },
+          answerChoices: {
+            title: "Staff Responsibilities",
+            options: [
+              { option: "Finance" },
+              { option: "Food" },
+              { option: "Health" },
+              { option: "Kids' counseling" },
+              { option: "Organisation" },
+              { option: "Rooms" },
+              { option: "Sport" },
+              { option: "Trips" },
             ],
           },
-          {
-            number: 4,
-            questions: 10,
-            description: "Listen and answer questions 30-40.",
-            sections: [
-              {
-                type: "radio-group",
-                title: "Questions 20-30",
-                data: {
-                  groups: [
-                    {
-                      question: "What is the main topic of the conversation?",
-                      options: [
-                        { text: "Furniture sale" },
-                        { text: "Second-hand shop" },
-                        { text: "Online marketplace" },
-                        { text: "Charity event" },
-                      ],
-                    },
-                    {
-                      question: "What is the price of the dining table?",
-                      options: [
-                        { text: "£15.00" },
-                        { text: "£20.00" },
-                        { text: "£25.00" },
-                        { text: "£30.00" },
-                      ],
-                    },
-                  ],
-                },
-                description: `Complete the radio group. Choose the correct answer and move it into the gap.`,
-              },
-            ],
-          },
-        ]}
-      />
+        },
+        description:
+          "Complete the flow-chart. Choose the correct answer and move it into the gap.",
+      },
+    ],
+  },
+  {
+    number: 4,
+    totalQuestions: 10,
+    description: "Listen and answer questions 31-40.",
+    sections: [
+      {
+        questionType: "radio-group",
+        title: "Questions 31-40",
+        content: {
+          questionGroups: [
+            {
+              questionText: "What is the main topic of the conversation?",
+              choiceOptions: [
+                { text: "Furniture sale" },
+                { text: "Second-hand shop" },
+                { text: "Online marketplace" },
+                { text: "Charity event" },
+              ],
+            },
+            {
+              questionText: "What is the price of the dining table?",
+              choiceOptions: [
+                { text: "£15.00" },
+                { text: "£20.00" },
+                { text: "£25.00" },
+                { text: "£30.00" },
+              ],
+            },
+          ],
+        },
+        description: "Choose the correct letter, A, B, C or D.",
+      },
+    ],
+  },
+];
 
-      <PartNavigation parts={[10, 10, 10, 10]} />
+const Listening = () => {
+  const partQuestionCounts = listeningTestParts.map(
+    (part) => part.totalQuestions
+  );
+
+  return (
+    <div className="w-full h-screen flex flex-col">
+      <PartHeader />
+      <PartBody parts={listeningTestParts} />
+      <PartNavigation questionCounts={partQuestionCounts} />
     </div>
   );
 };
