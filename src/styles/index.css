@@ -14,6 +14,10 @@
 /* --- Components --- */
 
 @layer components {
+  .answer-dropzone {
+    @apply text-center font-bold;
+  }
+
   .question-input-wrapper {
     @apply inline-block relative;
   }
@@ -23,7 +27,8 @@
     visibility: hidden;
   }
 
-  .question-input {
+  .question-input,
+  .answer-dropzone {
     @apply inline-block min-w-32 max-w-xl h-6 px-2 border border-gray-500 text-dark rounded outline-none placeholder:text-center placeholder:text-dark placeholder:font-bold focus:border-2 focus:border-blue-500;
   }
 
