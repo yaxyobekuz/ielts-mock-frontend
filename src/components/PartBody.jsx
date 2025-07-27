@@ -58,13 +58,21 @@ const PartBody = ({ parts }) => {
 
         {/* Sections content */}
         <main className="w-full">
-          {sections?.map((section, index) => (
-            <Section
-              key={`${section.questionType}-${index}`}
-              section={section}
-              initialQuestionNumber={cumulativeQuestions + 1}
-            />
-          ))}
+          {sections?.map((section, index) => {
+            const prevSectionsTotalQuestionsCount = sections
+              .slice(0, index)
+              .reduce((acc, sec) => acc + sec.questionsCount, 0);
+
+            return (
+              <Section
+                section={section}
+                key={`${section.questionType}-${index}`}
+                initialQuestionNumber={
+                  prevSectionsTotalQuestionsCount + cumulativeQuestions + 1
+                }
+              />
+            );
+          })}
         </main>
       </div>
     </div>

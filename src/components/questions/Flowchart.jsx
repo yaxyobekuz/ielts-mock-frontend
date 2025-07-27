@@ -24,7 +24,7 @@ const Flowchart = ({ flowchartItems, initialNumber, answerChoices }) => {
               <div
                 className="max-w-md w-full px-2 py-1 border-2 border-gray-500"
                 dangerouslySetInnerHTML={{
-                  __html: convertToHtml(flowchartText, initialNumber),
+                  __html: convertToHtml(flowchartText, initialNumber + index),
                 }}
               />
 

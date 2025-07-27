@@ -86,6 +86,7 @@ const listeningTestParts = [
     description: "Listen and answer questions 21-30.",
     sections: [
       {
+        questionsCount: 5,
         questionType: "text-draggable",
         title: "Questions 21-30",
         content: {
@@ -110,10 +111,12 @@ const listeningTestParts = [
       {
         questionType: "flowchart",
         title: "Questions 21-30",
+        questionsCount: 5,
         content: {
           flowchartItems: {
             title: "Flowchart",
             items: [
+              { flowchartText },
               { flowchartText },
               { flowchartText },
               { flowchartText },
@@ -147,6 +150,7 @@ const listeningTestParts = [
       {
         questionType: "radio-group",
         title: "Questions 31-40",
+        questionsCount: 2,
         content: {
           questionGroups: [
             {
