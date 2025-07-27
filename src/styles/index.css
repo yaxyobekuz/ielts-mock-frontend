@@ -5,7 +5,8 @@
 /* --- Base --- */
 
 @layer base {
-  body {
+  body,
+  pre {
     font-family: "Arial", sans-serif;
     @apply text-base text-gray-800 font-normal;
   }
