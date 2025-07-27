@@ -1,10 +1,10 @@
 import { useParams } from "react-router-dom";
 
-const RadioGroup = ({ initialNumber, groups }) => {
+const RadioGroup = ({ initialNumber, questionGroups }) => {
   const { questionNumber } = useParams();
   return (
     <ul className="space-y-6">
-      {groups.map(({ question, options }, index) => {
+      {questionGroups.map(({ questionText, choiceOptions }, index) => {
         let groupNumber = initialNumber + index;
         const isCurrentQuestion = groupNumber === parseInt(questionNumber);
 
@@ -18,11 +18,11 @@ const RadioGroup = ({ initialNumber, groups }) => {
               >
                 {groupNumber}
               </b>
-              <span>{question}</span>
+              <span>{questionText}</span>
             </p>
 
             {/* Options */}
-            <Options groupNumber={groupNumber} options={options} />
+            <Options groupNumber={groupNumber} choiceOptions={choiceOptions} />
           </li>
         );
       })}
@@ -30,16 +30,13 @@ const RadioGroup = ({ initialNumber, groups }) => {
   );
 };
 
-const Options = ({ options, groupNumber }) => {
+const Options = ({ choiceOptions, groupNumber }) => {
   return (
     <ul>
-      {options.map(({ text }, index) => {
+      {choiceOptions.map(({ text }, index) => {
         return (
-          <li>
-            <label
-              key={index}
-              className="flex items-center gap-3.5 h-11 px-3.5 rounded-md cursor-pointer hover:bg-gray-100"
-            >
+          <li key={index}>
+            <label className="flex items-center gap-3.5 h-11 px-3.5 rounded-md cursor-pointer hover:bg-gray-100">
               <input type="radio" value={text} name={`option-${groupNumber}`} />
               <span>{text}</span>
             </label>

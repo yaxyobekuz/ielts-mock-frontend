@@ -7,26 +7,29 @@ import { convertToHtml } from "../../lib/helpers";
 // Icons
 import arrowDownIcon from "../../assets/icons/arrow-down.svg";
 
-const Flowchart = ({ texts, initialNumber, answers }) => {
+const Flowchart = ({ flowchartItems, initialNumber, answerChoices }) => {
   return (
     <div className="flex gap-5 w-full">
       <div className="space-y-2">
         {/* Title */}
-        <b className="block text-center">{texts.title}</b>
+        <b className="block text-center">{flowchartItems.title}</b>
 
         {/* Blocks */}
-        {texts.data.map(({ text }, index) => {
+        {flowchartItems.items.map(({ flowchartText }, index) => {
           return (
-            <div className="flex flex-col items-center gap-2 relative">
+            <div
+              key={index}
+              className="flex flex-col items-center gap-2 relative"
+            >
               <div
                 className="max-w-md w-full px-2 py-1 border-2 border-gray-500"
                 dangerouslySetInnerHTML={{
-                  __html: convertToHtml(text, initialNumber),
+                  __html: convertToHtml(flowchartText, initialNumber),
                 }}
               />
 
               {/* Arrow icon */}
-              {texts.data.length !== index + 1 ? (
+              {flowchartItems.items.length !== index + 1 ? (
                 <Icon src={arrowDownIcon} alt="Arrow down" />
               ) : null}
             </div>
@@ -34,20 +37,20 @@ const Flowchart = ({ texts, initialNumber, answers }) => {
         })}
       </div>
 
-      {/* Answers wrapper */}
+      {/* Answer choices wrapper */}
       <div>
         {/* Title */}
-        <b>{answers.title}</b>
+        <b>{answerChoices.title}</b>
 
-        {/* Answers */}
+        {/* Answer options */}
         <ul className="max-w-max rounded-md space-y-2 p-2 bg-gray-50">
-          {answers.data.map((item, index) => (
+          {answerChoices.options.map((item, index) => (
             <li
               draggable
               key={index}
               className="max-w-max bg-white px-2 rounded border border-gray-400 cursor-move"
             >
-              {item.answer}
+              {item.option}
             </li>
           ))}
         </ul>
