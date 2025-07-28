@@ -220,6 +220,7 @@ const TextDraggable = ({ text, initialNumber, answerChoices }) => {
 
       if (zoneNumber === questionNumber) {
         zone.classList.add("focus");
+        zone.scrollIntoView({ behavior: "smooth", block: "center" });
       } else {
         zone.classList.remove("focus");
       }
