@@ -52,6 +52,10 @@
   .active {
     @apply border-blue-500;
   }
+
+  .drag-over-answer-zone {
+    @apply bg-gray-100;
+  }
 }
 
 /* --- Utilities --- */
