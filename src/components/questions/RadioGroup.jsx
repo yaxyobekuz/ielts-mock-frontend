@@ -1,11 +1,22 @@
-import { useCallback, useMemo } from "react";
+import { useCallback, useEffect, useMemo, useRef } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 
 // Hooks
 import useLocalStorage from "../../hooks/useLocalStorage";
 
 const RadioGroup = ({ initialNumber, questionGroups }) => {
+  const questionNumberRef = useRef();
   const { questionNumber } = useParams();
+
+  useEffect(() => {
+    const elQuestionNumber = questionNumberRef.current;
+
+    // Scroll to the current question number
+    if (elQuestionNumber) {
+      elQuestionNumber.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+  }, [questionNumber]);
+
   return (
     <ul className="space-y-6">
       {questionGroups.map(({ questionText, choiceOptions }, index) => {
@@ -16,6 +27,7 @@ const RadioGroup = ({ initialNumber, questionGroups }) => {
           <li key={index}>
             <p className="mb-1">
               <b
+                ref={questionNumberRef}
                 className={`${
                   isCurrentQuestion ? "border-blue-500" : "border-transparent"
                 } inline-block py-0.5 px-1.5 rounded mr-2 border-2 transition-colors duration-300`}
