@@ -111,6 +111,7 @@ const TextDraggable = ({ text, initialNumber, answerChoices }) => {
       <div>
         <b>{answerChoices.title}</b>
 
+        {/* Answer options */}
         <ul className="max-w-max rounded-md space-y-2 p-2 bg-gray-50">
           {answerChoices.options.map((item, index) => {
             const isUsed = Object.keys(usedAnswers).find((key) => {
@@ -122,7 +123,7 @@ const TextDraggable = ({ text, initialNumber, answerChoices }) => {
                 key={index}
                 draggable={!isUsed}
                 onDragStart={(e) => handleDragStart(e, item.option)}
-                className={`bg-white cursor-move px-2 py-1 rounded border ${
+                className={`bg-white cursor-move px-2 rounded border border-gray-400 ${
                   isUsed ? "not-visible" : "visible"
                 }`}
               >
