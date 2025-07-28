@@ -1,5 +1,5 @@
-import { useParams } from "react-router-dom";
-import { useEffect, useState, useCallback, useRef } from "react";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useEffect, useState, useCallback, useRef, useMemo } from "react";
 
 // UUID
 import { v4 as uuidv4 } from "uuid";
@@ -11,12 +11,20 @@ import { convertToHtml } from "../../lib/helpers";
 import useLocalStorage from "../../hooks/useLocalStorage";
 
 const TextDraggable = ({ text, initialNumber, answerChoices }) => {
-  const { partNumber } = useParams();
+  const location = useLocation();
+  const navigate = useNavigate();
   const dropzonesWrapperRef = useRef();
   const [uniqueId] = useState(uuidv4());
+  const { partNumber, questionNumber } = useParams();
   const [usedAnswers, setUsedAnswers] = useState({});
   const { getData, updateProperty } = useLocalStorage("answers");
 
+  const pathSegments = useMemo(
+    () => location.pathname.split("/").filter(Boolean),
+    [location.pathname]
+  );
+
+  // Handle drop event for answer dropzones
   const handleDrop = useCallback(
     (e, zone) => {
       e.preventDefault();
@@ -64,6 +72,9 @@ const TextDraggable = ({ text, initialNumber, answerChoices }) => {
       zone.classList.add("filled");
       updateProperty(targetKey, content);
 
+      const [first, second, third] = pathSegments;
+      navigate(`/${first}/${second}/${third}/${targetKey}`);
+
       // Update usedAnswers state
       setUsedAnswers((prev) => {
         const newUsedAnswers = { ...prev };
@@ -98,6 +109,48 @@ const TextDraggable = ({ text, initialNumber, answerChoices }) => {
     const content = zone.textContent;
     const sourceZone = zone.getAttribute("data-number");
     handleDragStart(e, content, sourceZone);
+  };
+
+  // Handle dropping back to answer zone
+  const handleAnswerZoneDrop = useCallback(
+    (e) => {
+      e.preventDefault();
+      e.currentTarget.classList.remove("drag-over-answer-zone");
+      const jsonData = e.dataTransfer.getData("application/json");
+      const { id, content, sourceZone } = JSON.parse(jsonData) || {};
+
+      if (uniqueId !== id || !sourceZone) return;
+
+      // Clear the source dropzone
+      const sourceZoneElement = dropzonesWrapperRef.current.querySelector(
+        `[data-number="${sourceZone}"]`
+      );
+
+      if (sourceZoneElement) {
+        sourceZoneElement.textContent = sourceZone;
+        sourceZoneElement.classList.remove("filled");
+        sourceZoneElement.draggable = false;
+        updateProperty(sourceZone, "");
+      }
+
+      // Update usedAnswers state
+      setUsedAnswers((prev) => {
+        const newUsedAnswers = { ...prev };
+        delete newUsedAnswers[sourceZone];
+        return newUsedAnswers;
+      });
+    },
+    [uniqueId, updateProperty]
+  );
+
+  const handleAnswerZoneDragOver = (e) => {
+    e.preventDefault();
+    e.currentTarget.classList.add("drag-over-answer-zone");
+  };
+
+  const handleAnswerZoneDragLeave = (e) => {
+    e.preventDefault();
+    e.currentTarget.classList.remove("drag-over-answer-zone");
   };
 
   useEffect(() => {
@@ -158,48 +211,22 @@ const TextDraggable = ({ text, initialNumber, answerChoices }) => {
     setUsedAnswers(usedAnswersFromLocal);
   }, [partNumber]);
 
-  // Handle dropping back to answer zone
-  const handleAnswerZoneDrop = useCallback(
-    (e) => {
-      e.preventDefault();
-      e.currentTarget.classList.remove("drag-over-answer-zone");
-      const jsonData = e.dataTransfer.getData("application/json");
-      const { id, content, sourceZone } = JSON.parse(jsonData) || {};
+  useEffect(() => {
+    const dropzones =
+      dropzonesWrapperRef.current.querySelectorAll(".answer-dropzone");
 
-      if (uniqueId !== id || !sourceZone) return;
+    dropzones.forEach((zone) => {
+      const zoneNumber = zone.getAttribute("data-number");
 
-      // Clear the source dropzone
-      const sourceZoneElement = dropzonesWrapperRef.current.querySelector(
-        `[data-number="${sourceZone}"]`
-      );
-
-      if (sourceZoneElement) {
-        sourceZoneElement.textContent = sourceZone;
-        sourceZoneElement.classList.remove("filled");
-        sourceZoneElement.draggable = false;
-        updateProperty(sourceZone, "");
+      if (zoneNumber === questionNumber) {
+        zone.classList.add("focus");
+      } else {
+        zone.classList.remove("focus");
       }
+    });
+  }, [location.pathname]);
 
-      // Update usedAnswers state
-      setUsedAnswers((prev) => {
-        const newUsedAnswers = { ...prev };
-        delete newUsedAnswers[sourceZone];
-        return newUsedAnswers;
-      });
-    },
-    [uniqueId, updateProperty]
-  );
-
-  const handleAnswerZoneDragOver = (e) => {
-    e.preventDefault();
-    e.currentTarget.classList.add("drag-over-answer-zone");
-  };
-
-  const handleAnswerZoneDragLeave = (e) => {
-    e.preventDefault();
-    e.currentTarget.classList.remove("drag-over-answer-zone");
-  };
-
+  // Content
   return (
     <div className="flex gap-5 w-full">
       <pre

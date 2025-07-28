@@ -53,6 +53,10 @@
     @apply border-blue-500;
   }
 
+  .focus {
+    @apply border-2 border-blue-500;
+  }
+
   .drag-over-answer-zone {
     @apply bg-gray-100;
   }
