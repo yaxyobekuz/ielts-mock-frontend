@@ -1,8 +1,14 @@
+import { useEffect, useState } from "react";
 import { Link, useLocation, useParams } from "react-router-dom";
+
+// Hooks
+import useLocalStorage from "../hooks/useLocalStorage";
 
 const PartNavigation = ({ questionCounts = [] }) => {
   const location = useLocation();
+  const { getData } = useLocalStorage("answers");
   const { partNumber, questionNumber } = useParams();
+  const [answersData, setAnswersData] = useState(getData());
   const pathSegments = location.pathname.split("/").filter(Boolean);
 
   // Calculate cumulative question counts for URL generation
@@ -11,6 +17,14 @@ const PartNavigation = ({ questionCounts = [] }) => {
       .slice(0, partIndex)
       .reduce((total, count) => total + count, 0);
   };
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setAnswersData(getData());
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <footer className="flex h-14 border-t">
@@ -27,8 +41,8 @@ const PartNavigation = ({ questionCounts = [] }) => {
 
         return (
           <NavigationTag
-            to={isActivePart ? undefined : partUrl}
             key={partIndex}
+            to={isActivePart ? undefined : partUrl}
             className={`
               ${isActivePart ? "min-w-max px-5" : "grow hover:bg-gray-100"}
               flex items-center justify-center gap-4 border-r 
@@ -57,8 +71,7 @@ const PartNavigation = ({ questionCounts = [] }) => {
                     <Link
                       key={questionIndex}
                       to={`/${pathSegments[0]}/${pathSegments[1]}/${partNumber}/${questionNum}`}
-                      className={`
-                        inline-block px-1 border-2 rounded 
+                      className={`inline-block relative px-1 border-2 rounded 
                         transition-colors duration-300 hover:border-blue-500 hover:font-bold
                         ${
                           isCurrentQuestion
@@ -67,7 +80,15 @@ const PartNavigation = ({ questionCounts = [] }) => {
                         }
                       `}
                     >
-                      {questionNum}
+                      {/* Active line */}
+                      <div
+                        className={`${
+                          answersData[questionNum] ? "bg-blue-500" : ""
+                        } absolute w-[calc(100%+2px)] inset-x-0 -top-[16.5px] h-0.5`}
+                      />
+
+                      {/* Question */}
+                      <span>{questionNum}</span>
                     </Link>
                   );
                 })}
