@@ -1,4 +1,8 @@
-import { useParams } from "react-router-dom";
+import { useCallback, useMemo } from "react";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
+
+// Hooks
+import useLocalStorage from "../../hooks/useLocalStorage";
 
 const RadioGroup = ({ initialNumber, questionGroups }) => {
   const { questionNumber } = useParams();
@@ -31,18 +35,57 @@ const RadioGroup = ({ initialNumber, questionGroups }) => {
 };
 
 const Options = ({ choiceOptions, groupNumber }) => {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  // Cache path segments
+  const pathSegments = useMemo(
+    () => location.pathname.split("/").filter(Boolean),
+    [location.pathname]
+  );
+
+  const { getData, updateProperty } = useLocalStorage("answers");
+
+  // Get current data once
+  const currentData = useMemo(() => getData(), [getData]);
+
+  // Navigate to specific group
+  const handleNavigate = useCallback(
+    (targetGroup) => {
+      const [first, second, third] = pathSegments;
+      navigate(`/${first}/${second}/${third}/${targetGroup}`);
+    },
+    [pathSegments, navigate]
+  );
+
+  // Handle input change and navigation
+  const handleInputChange = useCallback(
+    (group, value) => {
+      updateProperty(group, value);
+      handleNavigate(group);
+    },
+    [updateProperty, handleNavigate]
+  );
+
   return (
     <ul>
-      {choiceOptions.map(({ text }, index) => {
-        return (
-          <li key={index}>
-            <label className="flex items-center gap-3.5 h-11 px-3.5 rounded-md cursor-pointer hover:bg-gray-100">
-              <input type="radio" value={text} name={`option-${groupNumber}`} />
-              <span>{text}</span>
-            </label>
-          </li>
-        );
-      })}
+      {choiceOptions.map(({ text }, index) => (
+        <li key={`${groupNumber}-${index}`}>
+          <label
+            onClick={() => handleNavigate(groupNumber)}
+            className="flex items-center gap-3.5 h-11 px-3.5 rounded-md cursor-pointer hover:bg-gray-100"
+          >
+            <input
+              type="radio"
+              value={text}
+              name={`option-${groupNumber}`}
+              defaultChecked={currentData[groupNumber] === text}
+              onChange={() => handleInputChange(groupNumber, text)}
+            />
+            <span>{text}</span>
+          </label>
+        </li>
+      ))}
     </ul>
   );
 };
