@@ -15,8 +15,12 @@
 /* --- Components --- */
 
 @layer components {
+  .not-visible {
+    visibility: hidden;
+  }
+
   .answer-dropzone {
-    @apply text-center font-bold;
+    @apply text-center font-bold border-dashed;
   }
 
   .question-input-wrapper {
@@ -35,6 +39,18 @@
 
   .question-input.active {
     @apply border-2 border-blue-500;
+  }
+
+  .drag-over {
+    @apply !border-dashed !border-blue-500 bg-gray-100;
+  }
+
+  .filled {
+    @apply font-normal cursor-move bg-white border-solid border-blue-500;
+  }
+
+  .active {
+    @apply border-blue-500;
   }
 }
 
