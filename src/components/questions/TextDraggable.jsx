@@ -1,6 +1,9 @@
 import { useParams } from "react-router-dom";
 import { useEffect, useState, useCallback, useRef } from "react";
 
+// UUID
+import { v4 as uuidv4 } from "uuid";
+
 // Helpers
 import { convertToHtml } from "../../lib/helpers";
 
@@ -10,7 +13,7 @@ import useLocalStorage from "../../hooks/useLocalStorage";
 const TextDraggable = ({ text, initialNumber, answerChoices }) => {
   const { partNumber } = useParams();
   const dropzonesWrapperRef = useRef();
-  const [uniqueId] = useState(String(new Date()));
+  const [uniqueId] = useState(uuidv4());
   const [usedAnswers, setUsedAnswers] = useState({});
   const { getData, updateProperty } = useLocalStorage("answers");
 
