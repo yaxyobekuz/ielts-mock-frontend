@@ -46,7 +46,7 @@
   }
 
   .filled {
-    @apply min-w-max font-normal cursor-move bg-white border-solid border-blue-500;
+    @apply min-w-max font-normal cursor-move bg-white border-solid;
   }
 
   .active {
