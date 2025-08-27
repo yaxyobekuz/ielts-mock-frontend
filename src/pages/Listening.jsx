@@ -1,195 +1,119 @@
-// Components
-import PartBody from "../components/PartBody";
-import PartHeader from "../components/PartHeader";
-import PartNavigation from "../components/PartNavigation";
+import { useMemo } from "react";
+import { useParams } from "react-router-dom";
 
-const text = `*Phone call about second-hand furniture*
+// Hooks
+import useModule from "../hooks/useModule";
 
-*Items:*
-Dining table:          - ^ shape
+// Data
+import questionsType from "../data/questionsType";
+import usePathSegments from "../hooks/usePathSegments";
 
-                             - medium size
-
-                             - ^ old
-
-                             - price: £25.00
-
-Dining chairs:       - set of ^ chairs
-
-                             - seats covered in ^ material
-
-                             - in ^ condition
-
-                             - price: £20.00
-
-
-Desk:                    - length: 1 metre 20
-
-                             - 3 drawers. Top drawer has a ^.
-                              
-                             - price: £ ^
-                             
-^
-
-^
-
-^
-`;
-
-const flowchartText = `The rover is directed to a ~ which has organic material.`;
-
-const textDraggable = `*People*
-Mary Brown ~
-
-John Stevens ~
-
-Alison Jones ~
-
-Tim Smith ~
-
-Jenny James ~`;
-
-const listeningTestParts = [
-  {
-    number: 1,
-    totalQuestions: 10,
-    description: "Listen and answer questions 1-10.",
-    sections: [
-      {
-        content: { text },
-        questionsCount: 10,
-        questionType: "text",
-        title: "Questions 1-10",
-        description:
-          "Complete the notes. Write ONE WORD AND/OR A NUMBER for each answer.",
-      },
-    ],
-  },
-  {
-    number: 2,
-    totalQuestions: 10,
-    description: "Listen and answer questions 11-20.",
-    sections: [
-      {
-        content: { text },
-        questionsCount: 10,
-        questionType: "text",
-        title: "Questions 11-20",
-        description:
-          "Complete the notes. Write ONE WORD AND/OR A NUMBER for each answer.",
-      },
-    ],
-  },
-  {
-    number: 3,
-    totalQuestions: 10,
-    description: "Listen and answer questions 21-30.",
-    sections: [
-      {
-        questionsCount: 5,
-        questionType: "text-draggable",
-        title: "Questions 21-30",
-        content: {
-          text: textDraggable,
-          answerChoices: {
-            title: "Staff Responsibilities",
-            options: [
-              { option: "Finance" },
-              { option: "Food" },
-              { option: "Health" },
-              { option: "Kids' counseling" },
-              { option: "Organisation" },
-              { option: "Rooms" },
-              { option: "Sport" },
-              { option: "Trips" },
-            ],
-          },
-        },
-        description:
-          "Who is responsible for each area? Choose the correct answer for each person and move it into the gap.",
-      },
-      {
-        questionType: "flowchart",
-        title: "Questions 21-30",
-        questionsCount: 5,
-        content: {
-          flowchartItems: {
-            title: "Flowchart",
-            items: [
-              { flowchartText },
-              { flowchartText },
-              { flowchartText },
-              { flowchartText },
-              { flowchartText },
-            ],
-          },
-          answerChoices: {
-            title: "Staff Responsibilities",
-            options: [
-              { option: "Finance" },
-              { option: "Food" },
-              { option: "Health" },
-              { option: "Kids' counseling" },
-              { option: "Organisation" },
-              { option: "Rooms" },
-              { option: "Sport" },
-              { option: "Trips" },
-            ],
-          },
-        },
-        description:
-          "Complete the flow-chart. Choose the correct answer and move it into the gap.",
-      },
-    ],
-  },
-  {
-    number: 4,
-    totalQuestions: 10,
-    description: "Listen and answer questions 31-40.",
-    sections: [
-      {
-        questionType: "radio-group",
-        title: "Questions 31-40",
-        questionsCount: 2,
-        content: {
-          questionGroups: [
-            {
-              questionText: "What is the main topic of the conversation?",
-              choiceOptions: [
-                { text: "Furniture sale" },
-                { text: "Second-hand shop" },
-                { text: "Online marketplace" },
-                { text: "Charity event" },
-              ],
-            },
-            {
-              questionText: "What is the price of the dining table?",
-              choiceOptions: [
-                { text: "£15.00" },
-                { text: "£20.00" },
-                { text: "£25.00" },
-                { text: "£30.00" },
-              ],
-            },
-          ],
-        },
-        description: "Choose the correct letter, A, B, C or D.",
-      },
-    ],
-  },
-];
+const questionsMap = {};
+questionsType.forEach((q) => (questionsMap[q.value] = q.component));
 
 const Listening = () => {
-  const partQuestionCounts = listeningTestParts.map(
-    (part) => part.totalQuestions
-  );
+  const { partNumber, testId } = useParams();
+  const { pathSegments, location } = usePathSegments();
+  const module = pathSegments[4];
+
+  const { getModuleData } = useModule(module, testId);
+  const parts = getModuleData();
+
+  // Calculate current part and cumulative question count
+  const { currentPart, cumulativeQuestions } = useMemo(() => {
+    const partNum = parseInt(partNumber);
+    const part = parts.find((p) => p.number === partNum);
+    const cumulative = parts
+      .slice(0, partNum - 1)
+      .reduce((acc, part) => acc + part.totalQuestions, 0);
+
+    return {
+      currentPart: part,
+      cumulativeQuestions: cumulative,
+    };
+  }, [location.pathname, parts, partNumber]);
+
+  const { sections } = currentPart || {};
+
+  // Return error if part not found
+  if (!currentPart) {
+    return (
+      <div className="container">
+        <div className="py-8">
+          <div className="w-full bg-red-50 py-3 px-4 mb-5 rounded-xl border border-red-300">
+            <p className="text-red-700">Part not found</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  const questionRange = `${cumulativeQuestions + 1}–${
+    currentPart?.totalQuestions + cumulativeQuestions
+  }`;
 
   return (
-    <div className="w-full h-screen flex flex-col">
-      <PartHeader />
-      <PartBody parts={listeningTestParts} />
-      <PartNavigation questionCounts={partQuestionCounts} />
+    <div className="container">
+      <div className="pt-8 pb-16">
+        {/* Part header */}
+        <div className="w-full bg-[#f1f2ec] py-2.5 px-4 mb-5 rounded-md border border-gray-300">
+          <h1 className="mb-1 font-bold">Part {partNumber}</h1>
+          <p>Listen and answer questions {questionRange}.</p>
+        </div>
+
+        {/* Sections content */}
+        <div className="w-full">
+          {sections?.map((section, index) => {
+            const prevSectionsTotalQuestions = sections
+              .slice(0, index)
+              .reduce((acc, sec) => acc + sec.questionsCount, 0);
+
+            return (
+              <Section
+                index={index}
+                module={module}
+                testId={testId}
+                section={section}
+                partNumber={partNumber}
+                questionRange={questionRange}
+                key={`${section.questionType}-${index}`}
+                initialQuestionNumber={
+                  prevSectionsTotalQuestions + cumulativeQuestions + 1
+                }
+              />
+            );
+          })}
+        </div>
+      </div>
     </div>
+  );
+};
+
+// Individual section component
+const Section = ({ index, section, initialQuestionNumber, questionRange }) => {
+  const { description, type } = section;
+  const QuestionComponent = questionsMap[type];
+
+  return (
+    <section id={`s-${index}`} className="mb-6 ">
+      {/* Top */}
+      <div className="flex items-start justify-between gap-5">
+        {/* Section details */}
+        <div className="mb-4 space-y-2">
+          <h2 className="font-bold">Questions {questionRange}</h2>
+          <p>{description}</p>
+        </div>
+      </div>
+
+      {/* Main */}
+      {QuestionComponent ? (
+        <QuestionComponent {...section} initialNumber={initialQuestionNumber} />
+      ) : (
+        <div className="bg-gray-50 border rounded p-4 text-yellow-800">
+          Unknown question type: {type}
+        </div>
+      )}
+    </section>
   );
 };
 
