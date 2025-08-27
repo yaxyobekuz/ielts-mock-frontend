@@ -96,7 +96,7 @@
 
   .answer-input,
   .answer-dropzone {
-    @apply inline-block min-w-36 max-w-xl h-6 px-2 border border-gray-500 text-dark rounded outline-none placeholder:text-center placeholder:text-dark placeholder:font-bold focus:border-2 focus:border-blue-500;
+    @apply inline-block min-w-36 max-w-full h-6 px-2 border border-gray-500 text-dark rounded outline-none placeholder:text-center placeholder:text-dark placeholder:font-bold focus:border-2 focus:border-blue-500;
   }
 
   /* Editor */
@@ -129,6 +129,14 @@
 
   .node-answer-input {
     @apply inline-block h-auto;
+  }
+
+  .hidden-text {
+    visibility: hidden;
+    white-space: pre-wrap;
+    position: absolute;
+    top: -999%;
+    left: -999%;
   }
 }
 
