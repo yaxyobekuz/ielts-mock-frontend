@@ -1,3 +1,5 @@
+import { useParams } from "react-router-dom";
+
 // Tip tap
 import Image from "@tiptap/extension-image";
 import StarterKit from "@tiptap/starter-kit";
@@ -8,6 +10,7 @@ import DropzoneNode from "../format/nodes/DropzoneNode";
 import AnswerInputNode from "../format/nodes/AnswerInputNode";
 
 const RichTextPreviewer = ({
+  id,
   text,
   initialNumber,
   className = "",
@@ -16,6 +19,7 @@ const RichTextPreviewer = ({
   allowDropzone = false,
 }) => {
   if (!text) return null;
+  const { testId } = useParams();
 
   const editor = useEditor(
     {
@@ -24,8 +28,8 @@ const RichTextPreviewer = ({
       extensions: [
         ...(allowImage ? [Image] : []),
         StarterKit.configure({ heading: false }),
-        ...(allowInput ? [AnswerInputNode(initialNumber, false)] : []),
-        ...(allowDropzone ? [DropzoneNode(initialNumber, false)] : []),
+        ...(allowInput ? [AnswerInputNode({ initialNumber, testId, id })] : []),
+        ...(allowDropzone ? [DropzoneNode({ initialNumber, testId, id })] : []),
       ],
     },
     [text, initialNumber]
