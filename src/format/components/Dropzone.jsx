@@ -1,43 +1,34 @@
+import { useCallback, useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+
 // Lodash
 import { debounce } from "lodash";
 
-// Icons
-import { Trash } from "lucide-react";
+// Hooks
+import useStore from "@/hooks/useStore";
 
 // Tip Tap
 import { NodeViewWrapper } from "@tiptap/react";
 
-// React
-import { useCallback, useEffect, useState } from "react";
-
-const Dropzone = ({
-  editor,
-  getPos,
-  deleteNode,
-  initialNumber = 1,
-  allowActions = true,
-}) => {
+const Dropzone = ({ id, testId, editor, getPos, initialNumber = 1 }) => {
+  const { questionNumber } = useParams();
   const [dropzoneIndex, setDropzoneIndex] = useState(initialNumber);
+  const { updateProperty, getData, getProperty } = useStore("answers");
+
+  const text = getProperty(dropzoneIndex)?.text || "";
+  const isActive = Number(questionNumber) === dropzoneIndex;
 
   const calculateIndex = useCallback(() => {
-    try {
-      let index = initialNumber;
-      const currentPos = getPos();
+    let index = initialNumber;
+    const currentPos = getPos();
 
-      editor.state.doc.descendants((node, pos) => {
-        if (node.type.name === "dropzone" && pos < currentPos) {
-          index++;
-        }
-      });
+    editor.state.doc?.descendants((node, pos) => {
+      if (node.type.name === "dropzone" && pos < currentPos) {
+        index++;
+      }
+    });
 
-      setDropzoneIndex(index);
-
-      if (!allowActions) return;
-
-      window.dispatchEvent(new CustomEvent("addDropzone", { detail: index }));
-    } catch (error) {
-      console.warn("Error calculating input index:", error);
-    }
+    setDropzoneIndex(index);
   }, [editor, getPos]);
 
   useEffect(() => {
@@ -51,43 +42,122 @@ const Dropzone = ({
     };
   }, [calculateIndex, editor]);
 
-  const handleDeleteNode = () => {
-    if (!allowActions) return;
-
-    deleteNode();
-    window.dispatchEvent(
-      new CustomEvent("deleteDropzone", { detail: dropzoneIndex })
-    );
-  };
-
-  if (!allowActions) {
-    return (
-      <NodeViewWrapper className="inline-block px-1 py-px">
-        <div
-          children={dropzoneIndex}
-          className="w-40 bg-white font-bold border border-gray-500 border-dashed text-center rounded"
-        />
-      </NodeViewWrapper>
-    );
-  }
-
   return (
     <NodeViewWrapper className="inline-block px-1 py-px">
-      <div className="flex items-center gap-1.5 relative">
-        <div
-          children={dropzoneIndex}
-          className="w-40 font-bold border border-gray-500 border-dashed text-center rounded"
+      {text ? (
+        <DragAndDropComponent
+          id={id}
+          text={text}
+          getData={getData}
+          dropzoneIndex={dropzoneIndex}
+          updateProperty={updateProperty}
         />
-        <button
-          title="Delete input"
-          aria-label="Delete input"
-          onClick={handleDeleteNode}
-          className="flex items-center justify-center size-6 absolute right-0"
-        >
-          <Trash color="red" size={16} />
-        </button>
-      </div>
+      ) : (
+        <DropzoneComponent
+          id={id}
+          isActive={isActive}
+          dropzoneIndex={dropzoneIndex}
+          updateProperty={updateProperty}
+        />
+      )}
     </NodeViewWrapper>
+  );
+};
+
+const DropzoneComponent = ({ id, isActive, dropzoneIndex, updateProperty }) => {
+  const handleDrop = (e) => {
+    e.preventDefault();
+    const jsonData = e.dataTransfer.getData("application/json");
+    if (!jsonData) return;
+    const {
+      value,
+      index,
+      id: valueId,
+      fromDropzone,
+    } = JSON?.parse(jsonData) || {};
+
+    if (valueId !== id) return;
+
+    updateProperty(dropzoneIndex, { text: value, fromDropzone, index });
+  };
+
+  return (
+    <div
+      onDrop={handleDrop}
+      children={dropzoneIndex}
+      onDragOver={(e) => e.preventDefault()}
+      className={`${
+        isActive
+          ? "border-transparent outline-2 outline-blue-500 outline-dashed -outline-offset-1"
+          : "border-gray-500"
+      } w-40 bg-white font-bold border border-dashed text-center rounded`}
+    />
+  );
+};
+
+const DragAndDropComponent = ({
+  id,
+  text,
+  getData,
+  dropzoneIndex,
+  updateProperty,
+}) => {
+  const answersData = getData();
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    const jsonData = e.dataTransfer.getData("application/json");
+    if (!jsonData) return;
+    const {
+      value,
+      index,
+      fromDropzone,
+      id: valueId,
+    } = JSON?.parse(jsonData) || {};
+
+    if (valueId !== id || index === dropzoneIndex) return;
+
+    updateProperty(dropzoneIndex, { text: value, fromDropzone, index });
+  };
+
+  const handleDragStart = (e) => {
+    e.currentTarget.classList.add("opacity-15");
+    const data = JSON.stringify({
+      id,
+      value: text,
+      fromDropzone: true,
+      index: dropzoneIndex,
+    });
+    e.dataTransfer.setData("application/json", data);
+  };
+
+  const handleDragEnd = (e) => {
+    e.currentTarget.classList.remove("opacity-15");
+    const answersNumbers = Object.keys(answersData);
+    const droppedElNumber = answersNumbers.find((answerNumber) => {
+      const { fromDropzone } = answersData[answerNumber];
+      return fromDropzone;
+    });
+
+    if (!droppedElNumber) return;
+
+    const droppedElData = answersData[droppedElNumber];
+    if (droppedElData?.index !== dropzoneIndex) return;
+
+    updateProperty(dropzoneIndex, { text: "" });
+    updateProperty(droppedElNumber, { text: droppedElData.text });
+  };
+
+  return (
+    <div
+      children={text}
+      draggable="true"
+      onDrop={handleDrop}
+      onDragEnd={handleDragEnd}
+      onDragStart={handleDragStart}
+      onDragOver={(e) => e.preventDefault()}
+      className="min-w-40 max-w-max bg-white px-1.5 text-sm leading-6 border border-blue-500 text-center rounded cursor-move"
+    />
   );
 };
 
