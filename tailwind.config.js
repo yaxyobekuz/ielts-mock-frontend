@@ -57,6 +57,15 @@ export default {
         base: "1920px",
       },
     },
+
+    screens: {
+      "3xl": "1920px",
+      xl: "1280px",
+      lg: "1024px",
+      md: "768px",
+      sm: "640px",
+      xs: "480px",
+    },
   },
   plugins: [require("tailwindcss-animate")],
 };
