@@ -1,22 +1,31 @@
 import { useCallback, useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 // Lodash
 import { debounce } from "lodash";
 
-// Hooks
-import useStore from "@/hooks/useStore";
-
 // Tip Tap
 import { NodeViewWrapper } from "@tiptap/react";
 
+// Hooks
+import useStore from "@/hooks/useStore";
+import usePathSegments from "@/hooks/usePathSegments";
+
 const Dropzone = ({ id, testId, editor, getPos, initialNumber = 1 }) => {
+  const navigate = useNavigate();
   const { questionNumber } = useParams();
+  const { pathSegments } = usePathSegments();
   const [dropzoneIndex, setDropzoneIndex] = useState(initialNumber);
   const { updateProperty, getData, getProperty } = useStore("answers");
 
   const text = getProperty(dropzoneIndex)?.text || "";
   const isActive = Number(questionNumber) === dropzoneIndex;
+
+  const setActiveDropzone = () => {
+    navigate(
+      `/tests/test/${pathSegments[2]}/module/${pathSegments[4]}/${pathSegments[5]}/${dropzoneIndex}`
+    );
+  };
 
   const calculateIndex = useCallback(() => {
     let index = initialNumber;
@@ -51,6 +60,7 @@ const Dropzone = ({ id, testId, editor, getPos, initialNumber = 1 }) => {
           getData={getData}
           dropzoneIndex={dropzoneIndex}
           updateProperty={updateProperty}
+          setActiveDropzone={setActiveDropzone}
         />
       ) : (
         <DropzoneComponent
@@ -58,15 +68,23 @@ const Dropzone = ({ id, testId, editor, getPos, initialNumber = 1 }) => {
           isActive={isActive}
           dropzoneIndex={dropzoneIndex}
           updateProperty={updateProperty}
+          setActiveDropzone={setActiveDropzone}
         />
       )}
     </NodeViewWrapper>
   );
 };
 
-const DropzoneComponent = ({ id, isActive, dropzoneIndex, updateProperty }) => {
+const DropzoneComponent = ({
+  id,
+  isActive,
+  dropzoneIndex,
+  updateProperty,
+  setActiveDropzone,
+}) => {
   const handleDrop = (e) => {
     e.preventDefault();
+    setActiveDropzone();
     const jsonData = e.dataTransfer.getData("application/json");
     if (!jsonData) return;
     const {
@@ -85,6 +103,7 @@ const DropzoneComponent = ({ id, isActive, dropzoneIndex, updateProperty }) => {
     <div
       onDrop={handleDrop}
       children={dropzoneIndex}
+      onClick={setActiveDropzone}
       onDragOver={(e) => e.preventDefault()}
       className={`${
         isActive
@@ -101,11 +120,14 @@ const DragAndDropComponent = ({
   getData,
   dropzoneIndex,
   updateProperty,
+  setActiveDropzone,
 }) => {
   const answersData = getData();
 
   const handleDrop = (e) => {
     e.preventDefault();
+    setActiveDropzone();
+
     const jsonData = e.dataTransfer.getData("application/json");
     if (!jsonData) return;
     const {
@@ -154,6 +176,7 @@ const DragAndDropComponent = ({
       draggable="true"
       onDrop={handleDrop}
       onDragEnd={handleDragEnd}
+      onClick={setActiveDropzone}
       onDragStart={handleDragStart}
       onDragOver={(e) => e.preventDefault()}
       className="min-w-40 max-w-max bg-white px-1.5 text-sm leading-6 border border-blue-500 text-center rounded cursor-move"
