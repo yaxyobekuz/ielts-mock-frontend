@@ -7,7 +7,7 @@ import { NodeViewWrapper } from "@tiptap/react";
 // React
 import { useCallback, useEffect, useRef, useState } from "react";
 
-const AnswerInput = ({ editor, getPos, initialNumber = 1 }) => {
+const AnswerInput = ({ editor, getPos, initialNumber = 1, id, testId }) => {
   const hiddenTextRef = useRef(null);
   const [text, setText] = useState("");
   const [inputWidth, setInputWidth] = useState("max");

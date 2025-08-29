@@ -1,3 +1,8 @@
+import { useState } from "react";
+
+// Random id generator
+import { v4 as uuidv4 } from "uuid";
+
 // Components
 import Icon from "../Icon";
 import RichTextPreviewer from "../RichTextPreviewer";
@@ -11,6 +16,8 @@ import arrowDownIcon from "../../assets/icons/arrow-down.svg";
 const target = '<span data-name="dropzone"></span>';
 
 const Flowchart = ({ items, initialNumber, options }) => {
+  const [id] = useState(uuidv4());
+
   return (
     <div className="flex gap-5 w-full">
       <div className="space-y-2">
@@ -34,6 +41,7 @@ const Flowchart = ({ items, initialNumber, options }) => {
                 className="flex flex-col items-center gap-2 relative z-0"
               >
                 <RichTextPreviewer
+                  id={id}
                   text={text}
                   allowDropzone
                   initialNumber={itemInitialNumber}
