@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-const text = `<b>Text Editor</b><p>Welcome to text editor! Here are some features:</p><ul><li><strong>Bold text</strong></li><li><em>Italic text</em></li><li><u>Underlined text</u></li><li>Lists and more!</li></ul>`;
+const text = `<p><strong>Text Editor</strong></p><p>Welcome to text editor! Here are some features: <input type=\"text\" data-name=\"answer-input\"></p><ul><li><p><strong>Bold text</strong></p></li><li><p><em>Italic text</em></p></li><li><p><u>Underlined text</u></p></li><li><p>Lists and more!</p></li><li><p><input type=\"text\" data-name=\"answer-input\"></p></li></ul><p> Lorem ipsum dolor sit amet!</p><p><p><span data-name=\"dropzone\"></span><span data-name=\"dropzone\"></span><span data-name=\"dropzone\"></span></p></p>`;
 
 const listeningParts = [
   // Text
@@ -27,7 +27,22 @@ const listeningParts = [
     sections: [
       {
         text,
-        questionsCount: 10,
+        questionsCount: 3,
+        type: "text-draggable",
+        title: "Questions",
+        options: {
+          title: "Staff Responsibilities",
+          data: [
+            { option: "Finance" },
+            { option: "Food" },
+            { option: "Health" },
+          ],
+        },
+        description: `Who is responsible for each area? Choose the correct answer for each person and move it into the gap.`,
+      },
+      {
+        text,
+        questionsCount: 3,
         type: "text-draggable",
         title: "Questions",
         options: {
