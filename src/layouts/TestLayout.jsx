@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 import { Link, Outlet, useParams } from "react-router-dom";
 
 // Hooks
+import useStore from "@/hooks/useStore";
 import useModule from "../hooks/useModule";
-import useLocalStorage from "@/hooks/useLocalStorage";
 import usePathSegments from "@/hooks/usePathSegments";
 
 // Data
@@ -91,10 +91,10 @@ const Header = () => {
 };
 
 const Footer = ({ parts = [] }) => {
+  const { getData } = useStore("answers");
   const { pathSegments } = usePathSegments();
-  const { getData } = useLocalStorage("answers");
-  const [answersData, setAnswersData] = useState(getData());
   const { partNumber, questionNumber, testId } = useParams();
+  const answersData = getData();
 
   // Calculate cumulative question counts for URL generation
   const calculateQuestionOffset = (partIndex) => {
@@ -102,14 +102,6 @@ const Footer = ({ parts = [] }) => {
       .slice(0, partIndex)
       .reduce((sum, part) => sum + part.totalQuestions, 0);
   };
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setAnswersData(getData());
-    }, 1000);
-
-    return () => clearInterval(interval);
-  }, []);
 
   return (
     <footer className="flex h-14 border-t">
@@ -153,6 +145,7 @@ const Footer = ({ parts = [] }) => {
                 {Array.from({ length: totalQuestions }, (_, questionIndex) => {
                   const questionNum = prevQuestionsCount + questionIndex + 1;
                   const isCurrentQ = Number(questionNumber) === questionNum;
+                  const isFilled = answersData[questionNum]?.text;
 
                   return (
                     <Link
@@ -170,9 +163,7 @@ const Footer = ({ parts = [] }) => {
                       {/* Active line */}
                       <div
                         className={`${
-                          answersData[questionNum]
-                            ? "bg-blue-500"
-                            : "bg-gray-300"
+                          isFilled ? "bg-green-700" : "bg-gray-300"
                         } absolute w-[calc(100%+2px)] inset-x-0 -top-4 h-[3px]`}
                       />
 
