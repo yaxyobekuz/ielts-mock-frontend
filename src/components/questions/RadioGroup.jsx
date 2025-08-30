@@ -1,8 +1,15 @@
+// Hooks
+import useStore from "@/hooks/useStore";
+
 const RadioGroup = ({ initialNumber, groups }) => {
+  const { getProperty, updateProperty } = useStore("answers");
+
   return (
     <ul className="space-y-6">
       {groups.map(({ question, answers }, index) => {
         const groupNumber = initialNumber + index;
+        const initialValue = getProperty(groupNumber);
+
         return (
           <li key={index}>
             <p className="mb-1">
@@ -13,7 +20,12 @@ const RadioGroup = ({ initialNumber, groups }) => {
             </p>
 
             {/* Answers */}
-            <Answers groupNumber={groupNumber} answers={answers} />
+            <Answers
+              answers={answers}
+              groupNumber={groupNumber}
+              initialValue={initialValue?.text}
+              onSelect={(value) => updateProperty(groupNumber, { text: value })}
+            />
           </li>
         );
       })}
@@ -21,22 +33,26 @@ const RadioGroup = ({ initialNumber, groups }) => {
   );
 };
 
-const Answers = ({ answers, groupNumber }) => (
-  <ul>
-    {answers.map(({ text }, index) => (
-      <li key={index}>
-        <label className="flex items-center gap-3.5 h-11 px-3.5 rounded-md cursor-pointer hover:bg-gray-100">
-          <input
-            type="radio"
-            value={text}
-            className="size-3.5"
-            name={`answer-${groupNumber}`}
-          />
-          <span>{text}</span>
-        </label>
-      </li>
-    ))}
-  </ul>
-);
+const Answers = ({ answers, groupNumber, onSelect, initialValue }) => {
+  return (
+    <ul>
+      {answers.map(({ text }, index) => (
+        <li key={index}>
+          <label className="flex items-center gap-3.5 h-11 px-3.5 rounded-md cursor-pointer hover:bg-gray-100">
+            <input
+              type="radio"
+              value={text}
+              className="size-3.5"
+              name={`answer-${groupNumber}`}
+              defaultChecked={initialValue === text}
+              onChange={(e) => onSelect(e.target.value)}
+            />
+            <span>{text}</span>
+          </label>
+        </li>
+      ))}
+    </ul>
+  );
+};
 
 export default RadioGroup;
