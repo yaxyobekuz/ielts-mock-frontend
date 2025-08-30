@@ -10,7 +10,7 @@ import usePathSegments from "@/hooks/usePathSegments";
 import ieltsLogo from "../assets/icons/ielts-logo.svg";
 
 // Icons
-import { Bell, Menu, Volume2, Wifi, WifiOff } from "lucide-react";
+import { Bell, Check, Menu, Volume2, Wifi, WifiOff } from "lucide-react";
 
 const TestLayout = () => {
   const { testId } = useParams();
@@ -96,79 +96,110 @@ const Footer = ({ parts = [] }) => {
   const { partNumber, questionNumber, testId } = useParams();
   const answersData = getData();
 
-  // Calculate cumulative question counts for URL generation
-  const calculateQuestionOffset = (partIndex) => {
-    return parts
-      .slice(0, partIndex)
-      .reduce((sum, part) => sum + part.totalQuestions, 0);
-  };
+  // Pre-calculate offsets for all parts to avoid repeated slicing
+  const questionOffsets = parts.reduce((acc, part, idx) => {
+    acc[part.number] = parts
+      .slice(0, idx)
+      .reduce((sum, p) => sum + p.totalQuestions, 0);
+    return acc;
+  }, {});
 
   return (
-    <footer className="flex h-14 border-t">
+    <footer className="flex h-14">
       {parts.map(({ number, totalQuestions }) => {
         const isActivePart = number === Number(partNumber);
         const Navigation = isActivePart ? "div" : Link;
-        const prevQuestionsCount = calculateQuestionOffset(number - 1);
+        const prevQuestionsCount = questionOffsets[number];
         const partUrl = `/tests/test/${testId}/module/${
           pathSegments[4]
         }/${number}/${prevQuestionsCount + 1}`;
+
+        const partAnswers = Array.from(
+          { length: totalQuestions },
+          (_, index) => {
+            const qNum = prevQuestionsCount + index + 1;
+            return answersData[qNum]?.text;
+          }
+        );
+
+        // Check if all questions in the part are answered
+        const isActivePartNumLine = partAnswers.every(Boolean);
+        const answeredCount = partAnswers.filter(Boolean).length;
 
         return (
           <Navigation
             key={number}
             to={isActivePart ? undefined : partUrl}
-            className={`${
-              isActivePart ? "min-w-max px-5" : "grow hover:bg-gray-100"
-            } flex items-center justify-center gap-4 border-r transition-colors duration-300 last:border-r-0`}
+            className={`
+            ${isActivePart ? "min-w-max px-1.5" : "grow hover:bg-gray-100"} 
+
+            ${
+              isActivePartNumLine && !isActivePart
+                ? "border-t-green-700"
+                : "border-t-transparent"
+            } 
+
+            flex items-center justify-center gap-4 border-t-[3px] transition-colors duration-300`}
           >
             {/* Part number display */}
-            <div className="relative">
-              <span className={`${isActivePart ? "font-bold" : ""} text-dark`}>
+            <div className="flex items-center relative">
+              {isActivePartNumLine && (
+                <Check
+                  size={16}
+                  color="#15803d"
+                  strokeWidth={4.5}
+                  strokeLinecap="square"
+                />
+              )}
+
+              <span
+                className={`${
+                  isActivePart ? "font-bold pr-5" : "font-normal"
+                } pl-3.5 text-dark`}
+              >
                 Part {number}
               </span>
 
               {isActivePart && (
                 <div
-                  className={`absolute -top-4 w-[calc(100%+16px)] h-[3px] bg-gray-300`}
+                  className={`${
+                    isActivePartNumLine ? "bg-green-700" : "bg-gray-300"
+                  } absolute -top-[17px] w-[calc(100%+16px)] h-[2.5px]`}
                 />
               )}
             </div>
 
             {/* Progress indicator for inactive parts */}
-            {!isActivePart && (
-              <span className="text-gray-500">0 of {totalQuestions}</span>
+            {!isActivePart && !isActivePartNumLine && (
+              <span className="text-gray-500">
+                {answeredCount} of {totalQuestions}
+              </span>
             )}
 
             {/* Question navigation for active part */}
             {isActivePart && (
               <div className="flex">
-                {Array.from({ length: totalQuestions }, (_, questionIndex) => {
-                  const questionNum = prevQuestionsCount + questionIndex + 1;
-                  const isCurrentQ = Number(questionNumber) === questionNum;
-                  const isFilled = answersData[questionNum]?.text;
+                {Array.from({ length: totalQuestions }, (_, idx) => {
+                  const qNum = prevQuestionsCount + idx + 1;
+                  const isCurrentQ = Number(questionNumber) === qNum;
+                  const isAnswered = Boolean(answersData[qNum]?.text);
 
                   return (
                     <Link
-                      key={questionIndex}
-                      to={`/tests/test/${testId}/module/${pathSegments[4]}/${number}/${questionNum}`}
-                      className={`inline-block relative px-1 border-2 rounded 
-                        transition-colors duration-300 hover:border-blue-500 hover:font-bold
-                        ${
-                          isCurrentQ
-                            ? "font-bold border-blue-500"
-                            : "border-transparent"
-                        }
-                      `}
+                      key={qNum}
+                      to={`/tests/test/${testId}/module/${pathSegments[4]}/${number}/${qNum}`}
+                      className={`inline-block relative px-1 border-2 rounded transition-colors duration-300 hover:border-blue-500 hover:font-bold ${
+                        isCurrentQ
+                          ? "font-bold border-blue-500"
+                          : "border-transparent"
+                      }`}
                     >
-                      {/* Active line */}
                       <div
                         className={`${
-                          isFilled ? "bg-green-700" : "bg-gray-300"
-                        } absolute w-[calc(100%+2px)] inset-x-0 -top-4 h-[3px]`}
+                          isAnswered ? "bg-green-700" : "bg-gray-300"
+                        } absolute w-[calc(100%+2px)] inset-x-0 -top-[17px] h-[2.5px]`}
                       />
-
-                      {/* Question */}
-                      <span>{questionNum}</span>
+                      <span>{qNum}</span>
                     </Link>
                   );
                 })}

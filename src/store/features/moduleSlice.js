@@ -22,7 +22,7 @@ const listeningParts = [
   // Text draggable
   {
     number: 2,
-    totalQuestions: 10,
+    totalQuestions: 6,
     description: "Listen and answer questions.",
     sections: [
       {
