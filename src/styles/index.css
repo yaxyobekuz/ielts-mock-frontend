@@ -96,7 +96,11 @@
 
   .answer-input,
   .answer-dropzone {
-    @apply inline-block min-w-36 max-w-full h-6 px-2 border border-gray-500 text-dark rounded outline-none placeholder:text-center placeholder:text-dark placeholder:font-bold focus:border-2 focus:border-blue-500;
+    @apply inline-block min-w-36 max-w-full h-6 px-2 border border-gray-500 text-dark rounded outline-none placeholder:text-center placeholder:text-dark placeholder:font-bold;
+  }
+
+  .answer-input.active {
+    @apply border-2 border-blue-500;
   }
 
   /* Editor */
