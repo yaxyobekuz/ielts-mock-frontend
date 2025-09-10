@@ -11,10 +11,12 @@ import MainLayout from "./layouts/MainLayout";
 
 // Pages
 import Home from "./pages/Home";
+import Link from "./pages/Link";
 import Reading from "./pages/Reading";
 import Writing from "./pages/Writing";
 import Listening from "./pages/Listening";
 import TestLayout from "./layouts/TestLayout";
+import { Toaster } from "react-hot-toast";
 
 const App = () => {
   const router = createBrowserRouter(
@@ -38,11 +40,22 @@ const App = () => {
             path="listening/:partNumber/:questionNumber"
           />
         </Route>
+
+        {/* Link */}
+        <Route element={<Link />} path="link/:linkId" />
       </Route>
-    )
+    ),
+    { future: { v7_relativeSplatPath: true } }
   );
 
-  return <RouterProvider router={router} />;
+  return (
+    <>
+      <RouterProvider future={{ v7_startTransition: true }} router={router} />
+
+      {/* Toaster */}
+      <Toaster />
+    </>
+  );
 };
 
 export default App;
