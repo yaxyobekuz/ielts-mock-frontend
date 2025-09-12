@@ -6,18 +6,21 @@ import {
   createRoutesFromElements,
 } from "react-router-dom";
 
-// Layouts
-import MainLayout from "./layouts/MainLayout";
+// Toaster
+import { Toaster } from "react-hot-toast";
 
 // Pages
 import Home from "./pages/Home";
 import Link from "./pages/Link";
+import Taken from "./pages/Taken";
 import Reading from "./pages/Reading";
 import Writing from "./pages/Writing";
 import Listening from "./pages/Listening";
-import TestLayout from "./layouts/TestLayout";
-import { Toaster } from "react-hot-toast";
 import Delivering from "./pages/Delivering";
+
+// Layouts
+import MainLayout from "./layouts/MainLayout";
+import TestLayout from "./layouts/TestLayout";
 
 const App = () => {
   const router = createBrowserRouter(
@@ -43,8 +46,11 @@ const App = () => {
           <Route path=":module/delivering" element={<Delivering />} />
         </Route>
 
+        {/* Taken */}
+        <Route path="taken" element={<Taken />} />
+
         {/* Link */}
-        <Route element={<Link />} path="link/:linkId" />
+        <Route path="link/:linkId" element={<Link />} />
       </Route>
     ),
     { future: { v7_relativeSplatPath: true } }
