@@ -114,7 +114,6 @@ const FormContent = ({ linkId }) => {
         // Update test data
         setModule(test.reading?.parts, test._id, "reading");
         setModule(test.writing?.parts, test._id, "writing");
-        setModule(test.speaking?.parts, test._id, "speaking");
         setModule(test.listening?.parts, test._id, "listening");
 
         // Navigate user

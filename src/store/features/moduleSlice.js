@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-const initialState = { writing: {}, reading: {}, speaking: {}, listening: {} };
+const initialState = { writing: {}, reading: {}, listening: {} };
 
 export const moduleSlice = createSlice({
   initialState,
