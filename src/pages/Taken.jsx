@@ -22,7 +22,7 @@ const Taken = () => {
   const answers = getData();
   const allDone = answers.listening && answers.reading && answers.writing;
 
-  if (allDone) {
+  if (!allDone) {
     return (
       <ErrorContent
         link={{ url: "/", name: "Bosh sahifa" }}

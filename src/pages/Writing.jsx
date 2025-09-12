@@ -25,6 +25,7 @@ const Reading = () => {
   const { pathSegments } = usePathSegments();
   const { getProperty } = useStore("modules");
   const readingAnwers = getProperty("reading");
+  const writingAnwers = getProperty("writing");
   const { updateProperty: updateWords, getProperty: getWords } =
     useStore("answers");
 
@@ -51,6 +52,8 @@ const Reading = () => {
   const wordsCount = words?.split(" ")?.filter(Boolean)?.length || 0;
 
   useEffect(() => {
+    if (writingAnwers?.isDone) navigate("/taken");
+
     if (!readingAnwers?.isDone) {
       navigate(`/tests/test/${testId}/module/reading/1/1`);
     }
