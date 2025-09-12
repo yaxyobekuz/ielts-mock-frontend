@@ -1,5 +1,8 @@
 import { useSelector, useDispatch } from "react-redux";
-import { updatePropertyFromStore } from "../store/features/storeSlice";
+import {
+  resetDataFromStore,
+  updatePropertyFromStore,
+} from "../store/features/storeSlice";
 
 // Custom hook for accessing store and dispatch
 const useStore = (name = "test") => {
@@ -8,6 +11,11 @@ const useStore = (name = "test") => {
   // Get entire state
   const getData = () => {
     return useSelector((state) => state.store[name]);
+  };
+
+  // Get entire state
+  const resetData = () => {
+    dispatch(resetDataFromStore({ name }));
   };
 
   // Get property
@@ -23,6 +31,7 @@ const useStore = (name = "test") => {
   return {
     getData,
     dispatch,
+    resetData,
     getProperty,
     updateProperty,
   };
