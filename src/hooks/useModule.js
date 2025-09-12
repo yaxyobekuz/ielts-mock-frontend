@@ -1,5 +1,8 @@
 import { useSelector, useDispatch } from "react-redux";
-import { setModuleData } from "../store/features/moduleSlice";
+import {
+  setModuleData,
+  resetAllModuleData,
+} from "../store/features/moduleSlice";
 
 // Custom hook for accessing store and dispatch
 const useModule = (module, moduleId) => {
@@ -18,7 +21,12 @@ const useModule = (module, moduleId) => {
     dispatch(setModuleData({ type, id, data }));
   };
 
-  return { dispatch, setModule, getModuleData };
+  // Add module part
+  const resetAllModule = () => {
+    dispatch(resetAllModuleData());
+  };
+
+  return { dispatch, setModule, getModuleData, resetAllModule };
 };
 
 export default useModule;
