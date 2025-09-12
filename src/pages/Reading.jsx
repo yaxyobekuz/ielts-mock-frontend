@@ -1,6 +1,3 @@
-import { useMemo, useState, useRef, useEffect } from "react";
-import { useParams } from "react-router-dom";
-
 // Icons
 import { MoveHorizontal } from "lucide-react";
 
@@ -8,16 +5,27 @@ import { MoveHorizontal } from "lucide-react";
 import questionsType from "../data/questionsType";
 
 // Hooks
+import useStore from "@/hooks/useStore";
 import useModule from "../hooks/useModule";
 import usePathSegments from "../hooks/usePathSegments";
+
+// Router
+import { useNavigate, useParams } from "react-router-dom";
+
+// React
+import { useMemo, useState, useRef, useEffect } from "react";
 
 const questionsMap = {};
 questionsType.forEach((q) => (questionsMap[q.value] = q.component));
 const TextComponent = questionsMap["text"];
 
 const Reading = () => {
+  const navigate = useNavigate();
   const { partNumber, testId } = useParams();
   const { pathSegments } = usePathSegments();
+  const { getProperty } = useStore("modules");
+  const readingAnwers = getProperty("reading");
+  const listeningAnwers = getProperty("listening");
   const module = pathSegments[4];
 
   const { getModuleData } = useModule(module, testId);
@@ -45,6 +53,14 @@ const Reading = () => {
   const [leftWidth, setLeftWidth] = useState(50);
 
   useEffect(() => {
+    if (readingAnwers?.isDone) {
+      navigate(`/tests/test/${testId}/module/writing/1/1`);
+    }
+
+    if (!listeningAnwers?.isDone) {
+      navigate(`/tests/test/${testId}/module/listening/1/1`);
+    }
+
     const updateSelectStyle = (select = "auto") => {
       document.body.style.userSelect = select;
     };
@@ -94,11 +110,13 @@ const Reading = () => {
   }`;
 
   return (
-    <div className="container h-full pt-4">
+    <div className="container h-full pt-4 !pr-0">
       {/* Part header */}
-      <div className="w-full bg-[#f1f2ec] py-2.5 px-4 mb-4 rounded-md border border-gray-300">
-        <h1 className="mb-1 font-bold">Part {partNumber}</h1>
-        <p>Read the text and answer questions {questionRange}.</p>
+      <div className="w-full pr-4">
+        <div className="w-full bg-[#f1f2ec] py-2.5 px-4 mb-4 rounded-md border border-gray-300">
+          <h1 className="mb-1 font-bold">Part {partNumber}</h1>
+          <p>Read the text and answer questions {questionRange}.</p>
+        </div>
       </div>
 
       <div
@@ -107,8 +125,8 @@ const Reading = () => {
       >
         {/* Left side */}
         <div
-          className="h-full overflow-y-auto"
           style={{ width: `${leftWidth}%` }}
+          className="h-full overflow-y-auto ielts-theme-scroll"
         >
           <TextComponent
             text={text}
@@ -129,8 +147,8 @@ const Reading = () => {
 
         {/* Right side */}
         <div
-          className="h-full overflow-y-auto pl-5"
           style={{ width: `${100 - leftWidth}%` }}
+          className="h-full overflow-y-auto pl-5 ielts-theme-scroll"
         >
           {sections?.map((section, index) => {
             const prevSectionsTotalQuestions = sections
