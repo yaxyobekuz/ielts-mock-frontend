@@ -4,13 +4,14 @@ import { useEffect, useState } from "react";
 // Components
 import ErrorContent from "@/components/ErrorContent";
 
+// Data
+import ieltsLogo from "../assets/icons/ielts-logo.svg";
+
 // Hooks
 import useStore from "@/hooks/useStore";
 import useModule from "../hooks/useModule";
 import usePathSegments from "@/hooks/usePathSegments";
-
-// Data
-import ieltsLogo from "../assets/icons/ielts-logo.svg";
+import usePreventUnload from "@/hooks/usePreventUnload";
 
 // Router
 import { Link, NavLink, Outlet, useParams } from "react-router-dom";
@@ -19,6 +20,7 @@ import { Link, NavLink, Outlet, useParams } from "react-router-dom";
 import { Bell, Check, Menu, Volume2, Wifi, WifiOff } from "lucide-react";
 
 const TestLayout = () => {
+  usePreventUnload();
   const { testId } = useParams();
   const { pathSegments } = usePathSegments();
   const module = pathSegments[4];
@@ -34,19 +36,6 @@ const TestLayout = () => {
       />
     );
   }
-
-  useEffect(() => {
-    const handleBeforeUnload = (e) => {
-      e.preventDefault();
-      e.returnValue = "";
-    };
-
-    window.addEventListener("beforeunload", handleBeforeUnload);
-
-    return () => {
-      window.removeEventListener("beforeunload", handleBeforeUnload);
-    };
-  }, []);
 
   return (
     <div className="h-screen">
