@@ -15,7 +15,6 @@ const RichTextPreviewer = ({
   initialNumber,
   className = "",
   allowInput = false,
-  allowImage = false,
   allowDropzone = false,
 }) => {
   if (!text) return null;
@@ -26,7 +25,7 @@ const RichTextPreviewer = ({
       content: text,
       editable: false,
       extensions: [
-        ...(allowImage ? [Image] : []),
+        Image,
         StarterKit.configure({ heading: false }),
         ...(allowInput ? [AnswerInputNode({ initialNumber, testId, id })] : []),
         ...(allowDropzone ? [DropzoneNode({ initialNumber, testId, id })] : []),
