@@ -17,6 +17,7 @@ import Writing from "./pages/Writing";
 import Listening from "./pages/Listening";
 import TestLayout from "./layouts/TestLayout";
 import { Toaster } from "react-hot-toast";
+import Delivering from "./pages/Delivering";
 
 const App = () => {
   const router = createBrowserRouter(
@@ -39,6 +40,7 @@ const App = () => {
             element={<Listening />}
             path="listening/:partNumber/:questionNumber"
           />
+          <Route path=":module/delivering" element={<Delivering />} />
         </Route>
 
         {/* Link */}
