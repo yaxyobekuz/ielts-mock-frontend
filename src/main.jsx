@@ -2,6 +2,7 @@ import { createRoot } from "react-dom/client";
 
 // CSS (styles)
 import "./styles/loaders.css";
+import "./styles/scrolls.css";
 import "./styles/index.css";
 
 // Components
