@@ -1,6 +1,9 @@
 // React
 import { useEffect, useState } from "react";
 
+// Components
+import ErrorContent from "@/components/ErrorContent";
+
 // Hooks
 import useStore from "@/hooks/useStore";
 import useModule from "../hooks/useModule";
@@ -23,9 +26,35 @@ const TestLayout = () => {
   const { getModuleData } = useModule(module, testId);
   const parts = getModuleData();
 
+  if (!parts) {
+    return (
+      <ErrorContent
+        link={{ url: "/", name: "Bosh sahifa" }}
+        error={{ code: true, message: "Ma'lumotlar topilmadi" }}
+      />
+    );
+  }
+
+  useEffect(() => {
+    const handleBeforeUnload = (e) => {
+      e.preventDefault();
+      e.returnValue = "";
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, []);
+
   return (
     <div className="h-screen">
-      <Header isDeliveringPage={pathSegments[5] === "delivering"} />
+      <Header
+        testId={testId}
+        isListeningPage={pathSegments[4] === "listening"}
+        isDeliveringPage={pathSegments[5] === "delivering"}
+      />
 
       <main className="max-h-[calc(100%-112px)] h-full overflow-y-auto ielts-theme-scroll">
         <Outlet />
@@ -36,7 +65,7 @@ const TestLayout = () => {
   );
 };
 
-const Header = ({ isDeliveringPage }) => {
+const Header = ({ isDeliveringPage, isListeningPage, testId }) => {
   return (
     <header
       className={`${
@@ -57,16 +86,19 @@ const Header = ({ isDeliveringPage }) => {
           <div>
             {/* ID */}
             <p className="text-base leading-normal">
-              <b className="font-semibold">Test taker ID</b>
+              <b className="font-semibold">Test taker ID:</b>{" "}
+              <span className="text-sm text-gray-500">{testId}</span>
             </p>
 
             {/* Audio status */}
-            <div className="flex items-center gap-1">
-              <Volume2 size={14} />
-              <span className="text-[13px] leading-normal">
-                Audio is playing
-              </span>
-            </div>
+            {isListeningPage && (
+              <div className="flex items-center gap-1">
+                <Volume2 size={14} />
+                <span className="text-[13px] leading-normal">
+                  Audio is playing
+                </span>
+              </div>
+            )}
           </div>
         </div>
 
