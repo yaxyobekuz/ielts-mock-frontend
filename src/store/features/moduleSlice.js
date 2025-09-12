@@ -16,11 +16,17 @@ export const moduleSlice = createSlice({
         console.error(`Test ${id}: ${type} module is not defined`);
       }
     },
+
+    resetAllModuleData: (state, action) => {
+      state.reading = initialState.reading;
+      state.writing = initialState.writing;
+      state.listening = initialState.listening;
+    },
   },
 });
 
 // Export action creators
-export const { setModuleData } = moduleSlice.actions;
+export const { setModuleData, resetAllModuleData } = moduleSlice.actions;
 
 // Export reducer as default
 export default moduleSlice.reducer;

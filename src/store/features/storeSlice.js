@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 // Initial state
-const initialState = { answers: {}, modules: {} };
+const initialState = { answers: {}, modules: {}, userInfo: {} };
 
 export const storeSlice = createSlice({
   initialState,
