@@ -18,6 +18,7 @@ import Input from "@/components/form/Input";
 import Button from "@/components/form/Button";
 
 // Hooks
+import useStore from "@/hooks/useStore";
 import useModule from "@/hooks/useModule";
 import useObjectState from "@/hooks/useObjectState";
 
@@ -82,6 +83,7 @@ const LoadingContent = () => (
 const FormContent = ({ linkId }) => {
   const navigate = useNavigate();
   const { setModule } = useModule();
+  const { updateProperty } = useStore("userInfo");
   const { name, age, phone, isLoading, setField } = useObjectState({
     name: "",
     age: "",
@@ -98,6 +100,11 @@ const FormContent = ({ linkId }) => {
       .addUsage(linkId, { age, name, phone })
       .then(({ code, test }) => {
         if (code !== "usageAdded" || !test) throw new Error();
+
+        // Store user info
+        updateProperty("age", age);
+        updateProperty("name", name);
+        updateProperty("phone", phone);
 
         // Update test data
         setModule(test.reading?.parts, test._id, "reading");
