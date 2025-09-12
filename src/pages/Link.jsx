@@ -21,12 +21,14 @@ import Button from "@/components/form/Button";
 import useModule from "@/hooks/useModule";
 import useObjectState from "@/hooks/useObjectState";
 
+// Page components
+import ErrorContent from "../components/ErrorContent";
+
 // Router
 import { useNavigate, useParams } from "react-router-dom";
 
 // Animated stickers
 import hashtagOutSticker from "@/assets/animated/hashtag-out.json";
-import duckSadOutSticker from "@/assets/animated/duck-sad-out.json";
 
 const Link = () => {
   const { linkId } = useParams();
@@ -74,20 +76,6 @@ const LoadingContent = () => (
       animationData={hashtagOutSticker}
     />
     <h1 className="text-2xl font-semibold">Ma'lumotlar yuklanmoqda...</h1>
-  </div>
-);
-
-const ErrorContent = ({ error }) => (
-  <div className="flex flex-col items-center justify-center gap-8 w-full h-screen">
-    <Lottie
-      width="160"
-      height="160"
-      className="size-40"
-      animationData={duckSadOutSticker}
-    />
-    <h1 className="max-w-sm text-center text-2xl font-semibold">
-      {error.code && error.message ? error.message : "Nimadir xato ketdi"}
-    </h1>
   </div>
 );
 
