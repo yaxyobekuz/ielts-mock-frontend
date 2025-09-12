@@ -1,6 +1,3 @@
-import { useMemo, useState, useRef, useEffect } from "react";
-import { useParams } from "react-router-dom";
-
 // Icons
 import { MoveHorizontal } from "lucide-react";
 
@@ -8,18 +5,30 @@ import { MoveHorizontal } from "lucide-react";
 import questionsType from "../data/questionsType";
 
 // Hooks
+import useStore from "@/hooks/useStore";
 import useModule from "../hooks/useModule";
 import usePathSegments from "../hooks/usePathSegments";
 
-const questionsMap = {};
-questionsType.forEach((q) => (questionsMap[q.value] = q.component));
-const TextComponent = questionsMap["text"];
+// Router
+import { useNavigate, useParams } from "react-router-dom";
+
+// React
+import { useMemo, useState, useRef, useEffect } from "react";
+
+const TextComponent = questionsType.find(
+  ({ value }) => value === "text"
+).component;
 
 const Reading = () => {
+  const navigate = useNavigate();
   const { partNumber, testId } = useParams();
   const { pathSegments } = usePathSegments();
-  const module = pathSegments[4];
+  const { getProperty } = useStore("modules");
+  const readingAnwers = getProperty("reading");
+  const { updateProperty: updateWords, getProperty: getWords } =
+    useStore("answers");
 
+  const module = pathSegments[4];
   const { getModuleData } = useModule(module, testId);
   const parts = getModuleData();
 
@@ -37,8 +46,15 @@ const Reading = () => {
   const isDragging = useRef(false);
   const containerRef = useRef(null);
   const [leftWidth, setLeftWidth] = useState(50);
+  const wordsFromStore = getWords(partNumber) || "";
+  const [words, setWords] = useState(wordsFromStore);
+  const wordsCount = words?.split(" ")?.filter(Boolean)?.length || 0;
 
   useEffect(() => {
+    if (!readingAnwers?.isDone) {
+      navigate(`/tests/test/${testId}/module/reading/1/1`);
+    }
+
     const updateSelectStyle = (select = "auto") => {
       document.body.style.userSelect = select;
     };
@@ -71,6 +87,10 @@ const Reading = () => {
     };
   }, []);
 
+  useEffect(() => {
+    setWords(wordsFromStore);
+  }, [partNumber]);
+
   if (!currentPart) {
     return (
       <div className="container">
@@ -89,19 +109,19 @@ const Reading = () => {
       <div className="w-full bg-[#f1f2ec] py-2.5 px-4 mb-4 rounded-md border border-gray-300">
         <h1 className="mb-1 font-bold">Part {partNumber}</h1>
         <p>
-          You should spend about 20 minutes on this task. Write at least 150
+          You should spend about 40 minutes on this task. Write at least 250
           words.
         </p>
       </div>
 
       <div
-        className="flex w-full h-[calc(100%-108px)] relative"
         ref={containerRef}
+        className="flex w-full h-[calc(100%-108px)] relative"
       >
         {/* Left side */}
         <div
-          className="h-full overflow-y-auto"
           style={{ width: `${leftWidth}%` }}
+          className="h-full overflow-y-auto ielts-theme-scroll"
         >
           <TextComponent
             text={text}
@@ -122,17 +142,22 @@ const Reading = () => {
 
         {/* Right side */}
         <div
-          className="flex flex-col gap-1.5 h-full overflow-y-auto pl-5"
           style={{ width: `${100 - leftWidth}%` }}
+          className="flex flex-col gap-1.5 h-full overflow-y-auto pl-5"
         >
           <textarea
+            value={words}
             id="writing-response"
             name="writing-response"
-            className="grow rounded border border-gray-400 focus:outline-blue-500"
+            className="grow resize-none rounded border border-gray-400 outline-0 focus:border-blue-500"
+            onChange={(e) => {
+              setWords(e.target.value);
+              updateWords(partNumber, e.target.value);
+            }}
           />
 
           {/* Words count */}
-          <p className="text-sm">Word count: 0 / 150</p>
+          <p className="text-right">Words: {wordsCount}</p>
         </div>
       </div>
     </div>
