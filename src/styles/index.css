@@ -127,7 +127,7 @@
     }
 
     img {
-      @apply bg-gray-200 border-2 border-transparent transition-colors duration-200;
+      @apply bg-gray-200 max-w-xl w-full;
     }
   }
 
@@ -141,6 +141,10 @@
     position: absolute;
     top: -999%;
     left: -999%;
+  }
+
+  .delivering-link.active {
+    @apply !bg-black !text-white;
   }
 }
 
