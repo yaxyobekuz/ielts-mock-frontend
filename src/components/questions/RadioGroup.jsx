@@ -2,13 +2,14 @@
 import useStore from "@/hooks/useStore";
 
 const RadioGroup = ({ initialNumber, groups }) => {
-  const { getProperty, updateProperty } = useStore("answers");
+  const { updateProperty, getData } = useStore("answers");
+  const initialValues = getData();
 
   return (
     <ul className="space-y-6">
       {groups.map(({ question, answers }, index) => {
         const groupNumber = initialNumber + index;
-        const initialValue = getProperty(groupNumber);
+        const initialValue = initialValues[groupNumber];
 
         return (
           <li key={index}>
