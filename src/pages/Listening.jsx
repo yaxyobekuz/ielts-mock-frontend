@@ -1,19 +1,26 @@
-import { useMemo } from "react";
-import { useParams } from "react-router-dom";
-
-// Hooks
-import useModule from "../hooks/useModule";
+// React
+import { useEffect, useMemo } from "react";
 
 // Data
-import questionsType from "../data/questionsType";
-import usePathSegments from "../hooks/usePathSegments";
+import questionsType from "@/data/questionsType";
+
+// Hooks
+import useStore from "@/hooks/useStore";
+import useModule from "@/hooks/useModule";
+import usePathSegments from "@/hooks/usePathSegments";
+
+// Router
+import { useNavigate, useParams } from "react-router-dom";
 
 const questionsMap = {};
 questionsType.forEach((q) => (questionsMap[q.value] = q.component));
 
 const Listening = () => {
+  const navigate = useNavigate();
   const { partNumber, testId } = useParams();
+  const { getProperty } = useStore("modules");
   const { pathSegments, location } = usePathSegments();
+  const listeningAnwers = getProperty("listening");
   const module = pathSegments[4];
 
   const { getModuleData } = useModule(module, testId);
@@ -34,6 +41,12 @@ const Listening = () => {
   }, [location.pathname, parts, partNumber]);
 
   const { sections } = currentPart || {};
+
+  useEffect(() => {
+    if (listeningAnwers?.isDone) {
+      navigate(`/tests/test/${testId}/module/reading/1/1` );
+    }
+  }, [listeningAnwers]);
 
   // Return error if part not found
   if (!currentPart) {
