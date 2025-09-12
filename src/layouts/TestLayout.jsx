@@ -1,5 +1,5 @@
+// React
 import { useEffect, useState } from "react";
-import { Link, Outlet, useParams } from "react-router-dom";
 
 // Hooks
 import useStore from "@/hooks/useStore";
@@ -8,6 +8,9 @@ import usePathSegments from "@/hooks/usePathSegments";
 
 // Data
 import ieltsLogo from "../assets/icons/ielts-logo.svg";
+
+// Router
+import { Link, NavLink, Outlet, useParams } from "react-router-dom";
 
 // Icons
 import { Bell, Check, Menu, Volume2, Wifi, WifiOff } from "lucide-react";
@@ -22,9 +25,9 @@ const TestLayout = () => {
 
   return (
     <div className="h-screen">
-      <Header testId={testId} module={module} />
+      <Header isDeliveringPage={pathSegments[5] === "delivering"} />
 
-      <main className="max-h-[calc(100%-112px)] h-full overflow-y-auto">
+      <main className="max-h-[calc(100%-112px)] h-full overflow-y-auto ielts-theme-scroll">
         <Outlet />
       </main>
 
@@ -33,9 +36,13 @@ const TestLayout = () => {
   );
 };
 
-const Header = () => {
+const Header = ({ isDeliveringPage }) => {
   return (
-    <header className="flex items-center h-14 border-b border-gray-300">
+    <header
+      className={`${
+        isDeliveringPage ? "" : "border-b border-gray-300"
+      } flex items-center h-14`}
+    >
       <div className="flex items-center justify-between container">
         {/* Left side */}
         <div className="flex items-center gap-8">
@@ -93,8 +100,11 @@ const Header = () => {
 const Footer = ({ parts = [] }) => {
   const { getData } = useStore("answers");
   const { pathSegments } = usePathSegments();
+  const isWritingPage = pathSegments[4] === "writing";
+  const { getData: getAllWords } = useStore("answers");
   const { partNumber, questionNumber, testId } = useParams();
   const answersData = getData();
+  const allWords = getAllWords();
 
   // Pre-calculate offsets for all parts to avoid repeated slicing
   const questionOffsets = parts.reduce((acc, part, idx) => {
@@ -107,6 +117,7 @@ const Footer = ({ parts = [] }) => {
   return (
     <footer className="flex h-14">
       {parts.map(({ number, totalQuestions }) => {
+        const words = allWords[number];
         const isActivePart = number === Number(partNumber);
         const Navigation = isActivePart ? "div" : Link;
         const prevQuestionsCount = questionOffsets[number];
@@ -123,7 +134,10 @@ const Footer = ({ parts = [] }) => {
         );
 
         // Check if all questions in the part are answered
-        const isActivePartNumLine = partAnswers.every(Boolean);
+        const isActivePartNumLine = (() => {
+          if (isWritingPage) return words;
+          return partAnswers.every(Boolean);
+        })();
         const answeredCount = partAnswers.filter(Boolean).length;
 
         return (
@@ -131,18 +145,23 @@ const Footer = ({ parts = [] }) => {
             key={number}
             to={isActivePart ? undefined : partUrl}
             className={`
-            ${isActivePart ? "min-w-max px-1.5" : "grow hover:bg-gray-100"} 
-
+            ${isWritingPage ? "w-full" : ""}
+            ${isActivePart ? "min-w-max px-1.5" : "grow hover:bg-gray-100"}
+            
             ${
               isActivePartNumLine && !isActivePart
                 ? "border-t-green-700"
                 : "border-t-transparent"
-            } 
-
+            }
+            
             flex items-center justify-center gap-4 border-t-[3px] transition-colors duration-300`}
           >
             {/* Part number display */}
-            <div className="flex items-center relative">
+            <div
+              className={`flex items-center justify-center relative ${
+                isWritingPage ? "w-full" : ""
+              }`}
+            >
               {isActivePartNumLine && (
                 <Check
                   size={16}
@@ -170,7 +189,7 @@ const Footer = ({ parts = [] }) => {
             </div>
 
             {/* Progress indicator for inactive parts */}
-            {!isActivePart && !isActivePartNumLine && (
+            {!isActivePart && !isActivePartNumLine && !isWritingPage && (
               <span className="text-gray-500">
                 {answeredCount} of {totalQuestions}
               </span>
@@ -208,6 +227,19 @@ const Footer = ({ parts = [] }) => {
           </Navigation>
         );
       })}
+
+      {/* Delivering */}
+      <NavLink
+        to={`/tests/test/${testId}/module/${pathSegments[4]}/delivering`}
+        className="delivering-link flex items-center justify-center shrink-0 w-20 h-full bg-gray-100 ml-auto transition-colors duration-200 hover:text-white hover:bg-black"
+      >
+        <Check
+          size={18}
+          strokeWidth={6}
+          strokeLinecap="square"
+          className="transition-colors duration-200"
+        />
+      </NavLink>
     </footer>
   );
 };
