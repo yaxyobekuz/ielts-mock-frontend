@@ -105,6 +105,7 @@ const FormContent = ({ linkId }) => {
         updateProperty("age", age);
         updateProperty("name", name);
         updateProperty("phone", phone);
+        updateProperty("linkId", linkId);
 
         // Update test data
         setModule(test.reading?.parts, test._id, "reading");
