@@ -26,7 +26,7 @@ const Delivering = () => {
     resetAnswers();
 
     // Navigate user
-    if (module === "writing") return navigate(`/submittion`);
+    if (module === "writing") return navigate(`/submission`);
     navigate(`/tests/test/${testId}/module/${nextModule}/1/1`);
   };
 

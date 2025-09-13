@@ -15,7 +15,7 @@ import Link from "./pages/Link";
 import Reading from "./pages/Reading";
 import Writing from "./pages/Writing";
 import Listening from "./pages/Listening";
-import Submittion from "./pages/Submittion";
+import Submission from "./pages/Submission";
 import Delivering from "./pages/Delivering";
 
 // Layouts
@@ -49,8 +49,8 @@ const App = () => {
         {/* Link */}
         <Route path="link/:linkId" element={<Link />} />
 
-        {/* Submittion */}
-        <Route path="submittion" element={<Submittion />} />
+        {/* Submission */}
+        <Route path="submission" element={<Submission />} />
       </Route>
     ),
     { future: { v7_relativeSplatPath: true } }
