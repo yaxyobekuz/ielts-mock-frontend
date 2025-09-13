@@ -1,6 +1,12 @@
 // Lottie
 import Lottie from "lottie-react";
 
+// Toast
+import { toast } from "@/notification/toast";
+
+// Api
+import { submissionApi } from "@/api/submission";
+
 // Router
 import { Link, useNavigate } from "react-router-dom";
 
@@ -34,6 +40,21 @@ const Submittion = () => {
   return <Main answers={answers} resetAnswers={resetData} />;
 };
 
+const transformAnswers = (data) => {
+  const result = {};
+
+  Object.keys(data).forEach((section) => {
+    const answers = data[section].answers;
+    result[section] = {};
+
+    Object.keys(answers).forEach((key) => {
+      result[section][key] = answers[key].text;
+    });
+  });
+
+  return result;
+};
+
 const Main = ({ answers, resetAnswers }) => {
   usePreventUnload();
   const navigate = useNavigate();
@@ -49,6 +70,21 @@ const Main = ({ answers, resetAnswers }) => {
   const hanldeSubmit = () => {
     if (isLoading) return;
     setField("isLoading", true);
+
+    submissionApi
+      .create({
+        userInfo,
+        linkId: userInfo.linkId,
+        answers: transformAnswers(answers),
+      })
+      .then(({ code }) => {
+        if (code !== "submissionCreated") throw new Error();
+        setField("isSent", true);
+        resetAnswers(); // Clear test answers
+        resetAllModule(); // Clear test modules data
+      })
+      .catch(({ message }) => toast.error(message || "Nimadir xato ketdi"))
+      .finally(() => setField("isLoading"));
   };
 
   const hanldeCancel = () => {

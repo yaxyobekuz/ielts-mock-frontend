@@ -47,7 +47,7 @@ const Reading = () => {
   const isDragging = useRef(false);
   const containerRef = useRef(null);
   const [leftWidth, setLeftWidth] = useState(50);
-  const wordsFromStore = getWords(partNumber) || "";
+  const wordsFromStore = getWords(partNumber)?.text || "";
   const [words, setWords] = useState(wordsFromStore);
   const wordsCount = words?.split(" ")?.filter(Boolean)?.length || 0;
 
@@ -155,7 +155,7 @@ const Reading = () => {
             className="grow resize-none rounded border border-gray-400 outline-0 focus:border-blue-500"
             onChange={(e) => {
               setWords(e.target.value);
-              updateWords(partNumber, e.target.value);
+              updateWords(partNumber, { text: e.target.value });
             }}
           />
 
