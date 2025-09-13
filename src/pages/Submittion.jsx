@@ -17,7 +17,7 @@ import usePreventUnload from "@/hooks/usePreventUnload";
 import likeOutSticker from "@/assets/animated/like-out.json";
 import channelsOutSticker from "@/assets/animated/channels-out.json";
 
-const Taken = () => {
+const Submittion = () => {
   const { getData, resetData } = useStore("modules");
   const answers = getData();
   const allDone = answers.listening && answers.reading && answers.writing;
@@ -122,4 +122,4 @@ const Main = ({ answers, resetAnswers }) => {
   );
 };
 
-export default Taken;
+export default Submittion;

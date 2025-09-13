@@ -12,10 +12,10 @@ import { Toaster } from "react-hot-toast";
 // Pages
 import Home from "./pages/Home";
 import Link from "./pages/Link";
-import Taken from "./pages/Taken";
 import Reading from "./pages/Reading";
 import Writing from "./pages/Writing";
 import Listening from "./pages/Listening";
+import Submittion from "./pages/Submittion";
 import Delivering from "./pages/Delivering";
 
 // Layouts
@@ -46,11 +46,11 @@ const App = () => {
           <Route path=":module/delivering" element={<Delivering />} />
         </Route>
 
-        {/* Taken */}
-        <Route path="taken" element={<Taken />} />
-
         {/* Link */}
         <Route path="link/:linkId" element={<Link />} />
+
+        {/* Submittion */}
+        <Route path="submittion" element={<Submittion />} />
       </Route>
     ),
     { future: { v7_relativeSplatPath: true } }

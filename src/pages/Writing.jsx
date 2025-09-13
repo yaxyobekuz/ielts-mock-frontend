@@ -52,7 +52,7 @@ const Reading = () => {
   const wordsCount = words?.split(" ")?.filter(Boolean)?.length || 0;
 
   useEffect(() => {
-    if (writingAnwers?.isDone) navigate("/taken");
+    if (writingAnwers?.isDone) navigate("/submittion");
 
     if (!readingAnwers?.isDone) {
       navigate(`/tests/test/${testId}/module/reading/1/1`);
