@@ -56,6 +56,9 @@ export default {
       maxWidth: {
         base: "1920px",
       },
+      fontFamily: {
+        Inter: ["Inter", "sans-serif"],
+      },
     },
 
     screens: {
