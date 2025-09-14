@@ -44,7 +44,7 @@ const Listening = () => {
 
   useEffect(() => {
     if (listeningAnwers?.isDone) {
-      navigate(`/tests/test/${testId}/module/reading/1/1` );
+      navigate(`/tests/test/${testId}/module/reading/1/1`);
     }
   }, [listeningAnwers]);
 
@@ -84,12 +84,9 @@ const Listening = () => {
             return (
               <Section
                 index={index}
-                module={module}
-                testId={testId}
                 section={section}
-                partNumber={partNumber}
                 questionRange={questionRange}
-                key={`${section.questionType}-${index}`}
+                key={`${partNumber}-${section.questionType}-${index}`}
                 initialQuestionNumber={
                   prevSectionsTotalQuestions + cumulativeQuestions + 1
                 }

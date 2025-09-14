@@ -160,7 +160,7 @@ const Reading = () => {
                 index={index}
                 section={section}
                 questionRange={questionRange}
-                key={`${section.questionType}-${index}`}
+                key={`${partNumber}-${section.questionType}-${index}`}
                 initialQuestionNumber={
                   prevSectionsTotalQuestions + cumulativeQuestions + 1
                 }
