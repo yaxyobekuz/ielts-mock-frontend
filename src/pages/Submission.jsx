@@ -80,8 +80,6 @@ const Main = ({ answers, resetAnswers }) => {
       .then(({ code }) => {
         if (code !== "submissionCreated") throw new Error();
         setField("isSent", true);
-        resetAnswers(); // Clear test answers
-        resetAllModule(); // Clear test modules data
       })
       .catch(({ message }) => toast.error(message || "Nimadir xato ketdi"))
       .finally(() => setField("isLoading"));
