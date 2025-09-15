@@ -85,8 +85,9 @@ const Listening = () => {
               <Section
                 index={index}
                 section={section}
+                key={section._id}
+                rawKey={section._id}
                 questionRange={questionRange}
-                key={`${partNumber}-${section.questionType}-${index}`}
                 initialQuestionNumber={
                   prevSectionsTotalQuestions + cumulativeQuestions + 1
                 }
@@ -100,7 +101,13 @@ const Listening = () => {
 };
 
 // Individual section component
-const Section = ({ index, section, initialQuestionNumber, questionRange }) => {
+const Section = ({
+  index,
+  rawKey,
+  section,
+  questionRange,
+  initialQuestionNumber,
+}) => {
   const { description, type } = section;
   const QuestionComponent = questionsMap[type];
 
@@ -117,7 +124,11 @@ const Section = ({ index, section, initialQuestionNumber, questionRange }) => {
 
       {/* Main */}
       {QuestionComponent ? (
-        <QuestionComponent {...section} initialNumber={initialQuestionNumber} />
+        <QuestionComponent
+          {...section}
+          rawKey={rawKey}
+          initialNumber={initialQuestionNumber}
+        />
       ) : (
         <div className="bg-gray-50 border rounded p-4 text-yellow-800">
           Unknown question type: {type}

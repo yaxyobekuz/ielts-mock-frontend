@@ -117,10 +117,7 @@ const Reading = () => {
         </p>
       </div>
 
-      <div
-        ref={containerRef}
-        className="flex w-full h-[calc(100%-108px)] relative"
-      >
+      <div ref={containerRef} className="flex w-full h-[calc(100%-108px)]">
         {/* Left side */}
         <div
           style={{ width: `${leftWidth}%` }}
@@ -129,6 +126,8 @@ const Reading = () => {
           <TextComponent
             text={text}
             initialNumber={0}
+            key={"writing" + partNumber}
+            rawKey={"writing" + partNumber}
             className="size-full max-h-full"
           />
         </div>
