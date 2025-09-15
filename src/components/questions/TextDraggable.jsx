@@ -9,7 +9,13 @@ import useStore from "@/hooks/useStore";
 // Components
 import RichTextPreviewer from "../RichTextPreviewer";
 
-const TextDraggable = ({ text, initialNumber, options, questionsCount }) => {
+const TextDraggable = ({
+  text,
+  rawKey,
+  options,
+  initialNumber,
+  questionsCount,
+}) => {
   const [id] = useState(uuidv4());
   const { getData } = useStore("answers");
   const [optionsState, setOptionsState] = useState(options?.data || []);
@@ -51,6 +57,7 @@ const TextDraggable = ({ text, initialNumber, options, questionsCount }) => {
         id={id}
         text={text}
         allowDropzone
+        rawKey={rawKey}
         initialNumber={initialNumber}
       />
 

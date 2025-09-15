@@ -18,7 +18,13 @@ import arrowDownIcon from "@/assets/icons/arrow-down.svg";
 
 const target = '<span data-name="dropzone"></span>';
 
-const Flowchart = ({ items, initialNumber, options, questionsCount }) => {
+const Flowchart = ({
+  items,
+  rawKey,
+  options,
+  initialNumber,
+  questionsCount,
+}) => {
   const [id] = useState(uuidv4());
   const { getData } = useStore("answers");
   const [optionsState, setOptionsState] = useState(options?.data || []);
@@ -72,14 +78,12 @@ const Flowchart = ({ items, initialNumber, options, questionsCount }) => {
               countExactMatches(prevContents, target) + initialNumber;
 
             return (
-              <div
-                key={index}
-                className="flex flex-col items-center gap-2 relative z-0"
-              >
+              <div key={index} className="flex flex-col items-center gap-2">
                 <RichTextPreviewer
                   id={id}
                   text={text}
                   allowDropzone
+                  rawKey={rawKey + index}
                   initialNumber={itemInitialNumber}
                   className="w-full p-2 text-editor border-2 border-[#333]"
                 />

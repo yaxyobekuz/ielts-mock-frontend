@@ -1,10 +1,17 @@
 import RichTextPreviewer from "../RichTextPreviewer";
 
-const Text = ({ text, initialNumber, allowImage = false, className = "" }) => {
+const Text = ({
+  text,
+  rawKey,
+  initialNumber,
+  className = "",
+  allowImage = false,
+}) => {
   return (
     <RichTextPreviewer
       allowInput
       text={text}
+      rawKey={rawKey}
       className={className}
       allowImage={allowImage}
       initialNumber={initialNumber}
