@@ -39,6 +39,7 @@ const RichTextPreviewer = ({
 
   const editor = useEditor({
     content,
+    editable: false,
     extensions: [
       Image,
       StarterKit.configure({ heading: false }),
@@ -46,18 +47,6 @@ const RichTextPreviewer = ({
       ...(allowInput ? [AnswerInputNode({ initialNumber, testId, id })] : []),
       ...(allowDropzone ? [DropzoneNode({ initialNumber, testId, id })] : []),
     ],
-    editorProps: { handlePaste: () => true, handleKeyDown: () => true },
-    onTransaction({ transaction }) {
-      const isHighlight = transaction.steps.some(
-        (step) =>
-          step.toJSON().stepType === "addMark" ||
-          step.toJSON().stepType === "removeMark"
-      );
-      if (!isHighlight) {
-        transaction.setMeta("addToHistory", false);
-        transaction.setMeta("preventDispatch", true);
-      }
-    },
   });
 
   const clearSelection = () => {
