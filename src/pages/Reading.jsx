@@ -53,9 +53,7 @@ const Reading = () => {
   const [leftWidth, setLeftWidth] = useState(50);
 
   useEffect(() => {
-    if (readingAnwers?.isDone) {
-      navigate(`/tests/test/${testId}/module/writing/1/1`);
-    }
+    if (readingAnwers?.isDone) navigate(`/tutorial/${testId}`);
 
     if (!listeningAnwers?.isDone) {
       navigate(`/tests/test/${testId}/module/listening/1/1`);

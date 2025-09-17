@@ -43,10 +43,8 @@ const Listening = () => {
   const { sections } = currentPart || {};
 
   useEffect(() => {
-    if (listeningAnwers?.isDone) {
-      navigate(`/tests/test/${testId}/module/reading/1/1`);
-    }
-  }, [listeningAnwers]);
+    if (listeningAnwers?.isDone) navigate(`/tutorial/${testId}`);
+  }, [listeningAnwers?.isDone]);
 
   // Return error if part not found
   if (!currentPart) {
