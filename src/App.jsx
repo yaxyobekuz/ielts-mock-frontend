@@ -14,6 +14,7 @@ import Home from "./pages/Home";
 import Link from "./pages/Link";
 import Reading from "./pages/Reading";
 import Writing from "./pages/Writing";
+import Tutorial from "./pages/Tutorial";
 import Listening from "./pages/Listening";
 import Submission from "./pages/Submission";
 import Delivering from "./pages/Delivering";
@@ -51,6 +52,9 @@ const App = () => {
 
         {/* Submission */}
         <Route path="submission" element={<Submission />} />
+
+        {/* Tutorial */}
+        <Route path="tutorial/:testId" element={<Tutorial />} />
       </Route>
     ),
     { future: { v7_relativeSplatPath: true } }

@@ -7,6 +7,7 @@ import {
   CheckCircle,
   MessageCircle,
 } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const Home = () => {
   const features = [
@@ -98,9 +99,12 @@ const Home = () => {
               achieve your target score.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <button className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-xl text-lg font-semibold transition-all duration-300 shadow-lg hover:shadow-xl">
+              <Link
+                to={"/link/68c67a5ddec8dace8f16a84c"}
+                className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-xl text-lg font-semibold transition-all duration-300 shadow-lg hover:shadow-xl"
+              >
                 Learn More
-              </button>
+              </Link>
               <button className="bg-white hover:bg-gray-50 text-gray-900 px-8 py-4 rounded-xl text-lg font-semibold border-2 border-gray-200 transition-all duration-300 shadow-lg hover:shadow-xl">
                 View Demo
               </button>
