@@ -14,20 +14,13 @@ const Delivering = () => {
   const { getData, resetData: resetAnswers } = useStore("answers");
   const answersData = getData();
 
-  const nextModule = (() => {
-    if (module === "listening") return "reading";
-    else if (module === "reading") return "writing";
-    else return "writing";
-  })();
-
   const hanldeNext = () => {
     // Save module anwers to store
     updateModule(module, { isDone: true, answers: answersData });
     resetAnswers();
 
     // Navigate user
-    if (module === "writing") return navigate(`/submission`);
-    navigate(`/tests/test/${testId}/module/${nextModule}/1/1`);
+    navigate(`/tutorial/${testId}`);
   };
 
   return (
