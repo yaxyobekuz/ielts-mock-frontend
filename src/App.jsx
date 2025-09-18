@@ -1,6 +1,7 @@
 // Router
 import {
   Route,
+  Navigate,
   RouterProvider,
   createBrowserRouter,
   createRoutesFromElements,
@@ -12,9 +13,11 @@ import { Toaster } from "react-hot-toast";
 // Pages
 import Home from "./pages/Home";
 import Link from "./pages/Link";
+import Login from "./pages/Login";
 import Reading from "./pages/Reading";
 import Writing from "./pages/Writing";
 import Tutorial from "./pages/Tutorial";
+import Register from "./pages/Register";
 import Listening from "./pages/Listening";
 import Submission from "./pages/Submission";
 import Delivering from "./pages/Delivering";
@@ -22,6 +25,7 @@ import Delivering from "./pages/Delivering";
 // Layouts
 import MainLayout from "./layouts/MainLayout";
 import TestLayout from "./layouts/TestLayout";
+import AuthLayout from "./layouts/AuthLayout";
 
 const App = () => {
   const router = createBrowserRouter(
@@ -31,7 +35,7 @@ const App = () => {
         <Route index element={<Home />} />
 
         {/* Test */}
-        <Route element={<TestLayout />} path="tests/test/:testId/module/">
+        <Route element={<TestLayout />} path="test/:testId/module/">
           <Route
             element={<Reading />}
             path="reading/:partNumber/:questionNumber"
@@ -45,6 +49,13 @@ const App = () => {
             path="listening/:partNumber/:questionNumber"
           />
           <Route path=":module/delivering" element={<Delivering />} />
+        </Route>
+
+        {/* Auth */}
+        <Route path="/auth" element={<AuthLayout />}>
+          <Route path="login" element={<Login />} />
+          <Route path="register" element={<Register />} />
+          <Route index element={<Navigate to="login" />} />
         </Route>
 
         {/* Link */}
