@@ -112,8 +112,8 @@ const FormContent = ({ linkId }) => {
         setModule(test.writing?.parts, test._id, "writing");
         setModule(test.listening?.parts, test._id, "listening");
 
-        // Navigate user
-        navigate(`/tests/test/${test._id}/module/listening/1/1`);
+        // Navigate user tot tutorial page
+        navigate(`/tutorial/${test._id}`);
       })
       .catch(({ code, message }) => {
         toast.error(code ? message : "Nimadir xato ketdi");
