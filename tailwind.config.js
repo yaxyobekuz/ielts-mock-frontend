@@ -58,6 +58,7 @@ export default {
       },
       fontFamily: {
         Inter: ["Inter", "sans-serif"],
+        Arial: ["Arial", "sans-serif"],
       },
     },
 
