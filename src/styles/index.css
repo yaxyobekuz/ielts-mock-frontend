@@ -65,8 +65,7 @@
   }
 
   body {
-    font-family: "Arial", sans-serif;
-    @apply text-base text-gray-800 font-normal;
+    @apply font-Inter text-base text-gray-800 font-normal;
   }
 
   label {
@@ -145,6 +144,11 @@
 
   .delivering-link.active {
     @apply !bg-black !text-white;
+  }
+
+  /* Button */
+  .btn {
+    @apply flex items-center justify-center h-9 px-4 rounded-lg transition-colors duration-200;
   }
 }
 
