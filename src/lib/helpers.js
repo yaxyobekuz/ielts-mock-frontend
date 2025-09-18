@@ -21,3 +21,13 @@ export const countExactMatches = (text, target) => {
     ) || []
   ).length;
 };
+
+export const extractNumbers = (text = "") => {
+  return text?.replace(/\D/g, "");
+};
+
+export const formatUzPhone = (input) => {
+  const d = String(input).replace(/\D/g, "");
+  const m = d.match(/^998(\d{2})(\d{3})(\d{2})(\d{2})$/);
+  return m ? `+998 (${m[1]}) ${m[2]}-${m[3]}-${m[4]}` : null;
+};
