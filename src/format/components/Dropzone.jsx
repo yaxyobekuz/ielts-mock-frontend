@@ -23,7 +23,7 @@ const Dropzone = ({ id, testId, editor, getPos, initialNumber = 1 }) => {
 
   const setActiveDropzone = () => {
     navigate(
-      `/tests/test/${pathSegments[2]}/module/${pathSegments[4]}/${pathSegments[5]}/${dropzoneIndex}`
+      `/test/${pathSegments[1]}/${pathSegments[2]}/${pathSegments[3]}/${dropzoneIndex}`
     );
   };
 

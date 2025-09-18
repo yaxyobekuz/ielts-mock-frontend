@@ -35,7 +35,7 @@ const App = () => {
         <Route index element={<Home />} />
 
         {/* Test */}
-        <Route element={<TestLayout />} path="test/:testId/module/">
+        <Route element={<TestLayout />} path="test/:testId/">
           <Route
             element={<Reading />}
             path="reading/:partNumber/:questionNumber"

@@ -18,7 +18,7 @@ const TestLayout = () => {
   usePreventUnload();
   const { testId } = useParams();
   const { pathSegments } = usePathSegments();
-  const module = pathSegments[4];
+  const module = pathSegments[2];
 
   const { getModuleData } = useModule(module, testId);
   const parts = getModuleData();
@@ -33,11 +33,11 @@ const TestLayout = () => {
   }
 
   return (
-    <div className="h-screen">
+    <div className="h-screen font-Inter">
       <TestHeader
         testId={testId}
-        isListeningPage={pathSegments[4] === "listening"}
-        isDeliveringPage={pathSegments[5] === "delivering"}
+        isListeningPage={pathSegments[2] === "listening"}
+        isDeliveringPage={pathSegments[3] === "delivering"}
       />
 
       <main className="max-h-[calc(100%-112px)] h-full overflow-y-auto ielts-theme-scroll">
@@ -52,7 +52,7 @@ const TestLayout = () => {
 const Footer = ({ parts = [] }) => {
   const { getData } = useStore("answers");
   const { pathSegments } = usePathSegments();
-  const isWritingPage = pathSegments[4] === "writing";
+  const isWritingPage = pathSegments[2] === "writing";
   const { getData: getAllWords } = useStore("answers");
   const { partNumber, questionNumber, testId } = useParams();
   const answersData = getData();
@@ -73,8 +73,8 @@ const Footer = ({ parts = [] }) => {
         const isActivePart = number === Number(partNumber);
         const Navigation = isActivePart ? "div" : Link;
         const prevQuestionsCount = questionOffsets[number];
-        const partUrl = `/tests/test/${testId}/module/${
-          pathSegments[4]
+        const partUrl = `/test/${testId}/${
+          pathSegments[2]
         }/${number}/${prevQuestionsCount + 1}`;
 
         const partAnswers = Array.from(
@@ -158,7 +158,7 @@ const Footer = ({ parts = [] }) => {
                   return (
                     <Link
                       key={qNum}
-                      to={`/tests/test/${testId}/module/${pathSegments[4]}/${number}/${qNum}`}
+                      to={`/test/${testId}/${pathSegments[2]}/${number}/${qNum}`}
                       className={`inline-block relative px-1 border-2 rounded transition-colors duration-300 hover:border-blue-500 hover:font-bold ${
                         isCurrentQ
                           ? "font-bold border-blue-500"
@@ -182,7 +182,7 @@ const Footer = ({ parts = [] }) => {
 
       {/* Delivering */}
       <NavLink
-        to={`/tests/test/${testId}/module/${pathSegments[4]}/delivering`}
+        to={`/test/${testId}/${pathSegments[2]}/delivering`}
         className="delivering-link flex items-center justify-center shrink-0 w-20 h-full bg-gray-100 ml-auto transition-colors duration-200 hover:text-white hover:bg-black"
       >
         <Check

@@ -42,7 +42,7 @@ const AnswerInput = ({ editor, getPos, initialNumber = 1 }) => {
     if (isActiveInput) return;
 
     navigate(
-      `/tests/test/${pathSegments[2]}/module/${pathSegments[4]}/${pathSegments[5]}/${inputIndex}`
+      `/test/${pathSegments[1]}/${pathSegments[2]}/${pathSegments[3]}/${inputIndex}`
     );
   }, [isActiveInput, navigate, pathSegments, inputIndex]);
 

@@ -1,17 +1,20 @@
+// React
 import { useEffect, useRef } from "react";
-import { Link, Navigate, Outlet } from "react-router-dom";
 
 // Toast
 import { toast } from "@/notification/toast";
 
-// Images
-import ieltsLogo from "@/assets/icons/ielts-logo.svg";
-
 // Backgrounds
 import ieltsBg from "@/assets/backgrounds/ielts.jpg";
 
+// Images
+import ieltsLogo from "@/assets/icons/ielts-logo.svg";
+
 // Hooks
 import usePathSegments from "@/hooks/usePathSegments";
+
+// Router
+import { Link, Navigate, Outlet } from "react-router-dom";
 
 const AuthLayout = () => {
   const auth = localStorage.getItem("auth");

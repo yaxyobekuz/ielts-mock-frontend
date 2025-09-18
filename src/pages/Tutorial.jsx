@@ -129,7 +129,7 @@ const Tutorial = () => {
 
                     {/* Link */}
                     <Link
-                      to={`/tests/test/${testId}/module/${name.toLowerCase()}/1/1`}
+                      to={`/test/${testId}/${name.toLowerCase()}/1/1`}
                       className="flex items-center justify-center gap-3.5 w-max bg-black py-2 pl-4 pr-6 text-white rounded-md transition-opacity duration-200 hover:opacity-70"
                     >
                       <ArrowRight strokeWidth={3} size={20} />

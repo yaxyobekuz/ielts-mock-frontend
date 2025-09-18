@@ -26,7 +26,7 @@ const Reading = () => {
   const { getProperty } = useStore("modules");
   const readingAnwers = getProperty("reading");
   const listeningAnwers = getProperty("listening");
-  const module = pathSegments[4];
+  const module = pathSegments[2];
 
   const { getModuleData } = useModule(module, testId);
   const parts = getModuleData();
@@ -56,7 +56,7 @@ const Reading = () => {
     if (readingAnwers?.isDone) navigate(`/tutorial/${testId}`);
 
     if (!listeningAnwers?.isDone) {
-      navigate(`/tests/test/${testId}/module/listening/1/1`);
+      navigate(`/test/${testId}/listening/1/1`);
     }
 
     const updateSelectStyle = (select = "auto") => {

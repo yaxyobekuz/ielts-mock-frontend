@@ -21,7 +21,7 @@ const Listening = () => {
   const { getProperty } = useStore("modules");
   const { pathSegments, location } = usePathSegments();
   const listeningAnwers = getProperty("listening");
-  const module = pathSegments[4];
+  const module = pathSegments[2];
 
   const { getModuleData } = useModule(module, testId);
   const parts = getModuleData();

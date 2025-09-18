@@ -35,7 +35,7 @@ const RichTextPreviewer = ({
   const { pathSegments } = usePathSegments();
   const [menuPos, setMenuPos] = useState(null);
   const { getProperty, updateProperty } = useStore("contents");
-  const isAllowedHighlight = ["listening", "reading"].includes(pathSegments[4]);
+  const isAllowedHighlight = ["listening", "reading"].includes(pathSegments[2]);
 
   const contentFromStore = getProperty(rawKey);
   const content = contentFromStore || text;

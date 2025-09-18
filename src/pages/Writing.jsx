@@ -29,7 +29,7 @@ const Reading = () => {
   const { updateProperty: updateWords, getProperty: getWords } =
     useStore("answers");
 
-  const module = pathSegments[4];
+  const module = pathSegments[2];
   const { getModuleData } = useModule(module, testId);
   const parts = getModuleData();
 
@@ -55,7 +55,7 @@ const Reading = () => {
     if (writingAnwers?.isDone) navigate(`/tutorial/${testId}`);
 
     if (!readingAnwers?.isDone) {
-      navigate(`/tests/test/${testId}/module/reading/1/1`);
+      navigate(`/test/${testId}/reading/1/1`);
     }
 
     const updateSelectStyle = (select = "auto") => {
