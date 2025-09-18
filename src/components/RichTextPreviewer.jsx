@@ -19,6 +19,7 @@ import { useEditor, EditorContent } from "@tiptap/react";
 // Nodes
 import DropzoneNode from "../format/nodes/DropzoneNode";
 import AnswerInputNode from "../format/nodes/AnswerInputNode";
+import usePathSegments from "@/hooks/usePathSegments";
 
 const RichTextPreviewer = ({
   id,
@@ -31,8 +32,10 @@ const RichTextPreviewer = ({
 }) => {
   if (!text) return null;
   const { testId } = useParams();
+  const { pathSegments } = usePathSegments();
   const [menuPos, setMenuPos] = useState(null);
   const { getProperty, updateProperty } = useStore("contents");
+  const isAllowedHighlight = ["listening", "reading"].includes(pathSegments[4]);
 
   const contentFromStore = getProperty(rawKey);
   const content = contentFromStore || text;
@@ -73,7 +76,7 @@ const RichTextPreviewer = ({
   };
 
   useEffect(() => {
-    if (!editor) return;
+    if (!editor || !isAllowedHighlight) return;
 
     const update = () => {
       const { from, to } = editor.state.selection;
@@ -98,6 +101,8 @@ const RichTextPreviewer = ({
   }, [editor]);
 
   useEffect(() => {
+    if (!editor || !isAllowedHighlight) return;
+
     const handleClick = (e) => {
       if (e.target.closest(".text-editor-menu")) return;
 
