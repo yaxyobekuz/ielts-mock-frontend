@@ -2,9 +2,9 @@ import { createSlice } from "@reduxjs/toolkit";
 
 // Initial state
 const initialState = {
+  start: {},
   answers: {},
   modules: {},
-  userInfo: {},
   contents: {},
   user: { data: {}, isLoading: true, error: null },
 };
