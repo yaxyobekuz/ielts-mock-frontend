@@ -4,6 +4,9 @@ import { useEffect, useRef } from "react";
 // Toast
 import { toast } from "@/notification/toast";
 
+// Icons
+import { ArrowLeft, Bot } from "lucide-react";
+
 // Backgrounds
 import ieltsBg from "@/assets/backgrounds/ielts.jpg";
 
@@ -46,18 +49,42 @@ const UnauthenticatedContent = () => {
         height={945}
         src={ieltsBg}
         alt="IELTS with whiteblue background"
-        className="w-full h-screen bg-[#daeef9] object-cover brightness-90"
+        className="w-full h-screen bg-gray-100 object-cover brightness-90"
       />
 
       <div className="flex flex-col items-center justify-between gap-8 w-full p-8 max-h-full overflow-y-auto">
-        {/* Logo */}
-        <img
-          height={40}
-          width={122.5}
-          src={ieltsLogo}
-          alt="IELTS logo svg"
-          className="w-[122.5px] h-9"
-        />
+        {/* Top */}
+        <div className="flex items-center justify-between w-full">
+          {/* Back */}
+          <Link
+            to="/"
+            title="Bosh sahifaga qaytish"
+            aria-label="Bosh sahifaga qaytish"
+            className="btn size-11 bg-gray-50 p-0 rounded-full text-gray-700 hover:bg-gray-100"
+          >
+            <ArrowLeft size={20} />
+          </Link>
+
+          {/* Logo */}
+          <img
+            height={40}
+            width={122.5}
+            src={ieltsLogo}
+            alt="IELTS logo svg"
+            className="w-[122.5px] h-9"
+          />
+
+          {/* Contact */}
+          <a
+            target="_blank"
+            title="Yordam olish"
+            aria-label="Yordam olish"
+            href="https://t.me/IeltsTestRobot"
+            className="btn size-11 bg-gray-50 p-0 rounded-full text-gray-700 hover:bg-gray-100"
+          >
+            <Bot size={20} />
+          </a>
+        </div>
 
         {/* Main */}
         <div className="text-center">
