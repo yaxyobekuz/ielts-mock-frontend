@@ -59,8 +59,8 @@ const Main = ({ answers, resetAnswers }) => {
   usePreventUnload();
   const navigate = useNavigate();
   const { resetAllModule } = useModule();
-  const { getData } = useStore("userInfo");
-  const userInfo = getData();
+  const { getProperty } = useStore("start");
+  const linkId = getProperty("linkId");
 
   const { setField, isSent, isLoading } = useObjectState({
     isSent: false,
@@ -72,11 +72,7 @@ const Main = ({ answers, resetAnswers }) => {
     setField("isLoading", true);
 
     submissionApi
-      .create({
-        userInfo,
-        linkId: userInfo.linkId,
-        answers: transformAnswers(answers),
-      })
+      .create({ linkId, answers: transformAnswers(answers) })
       .then(({ code }) => {
         if (code !== "submissionCreated") throw new Error();
         setField("isSent", true);
