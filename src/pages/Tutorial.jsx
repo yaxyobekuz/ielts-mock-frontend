@@ -1,7 +1,14 @@
-import useStore from "@/hooks/useStore";
+// Components
 import TestHeader from "@/components/TestHeader";
-import { Link, useParams } from "react-router-dom";
+
+// Hooks
+import useStore from "@/hooks/useStore";
 import usePreventUnload from "@/hooks/usePreventUnload";
+
+// Router
+import { Link, Navigate, useParams } from "react-router-dom";
+
+// Icons
 import { ArrowRight, Check, ChevronDown } from "lucide-react";
 
 const moduleNames = [
@@ -23,6 +30,8 @@ const Tutorial = () => {
   usePreventUnload();
   const { testId } = useParams();
   const { getData } = useStore("modules");
+  const { getProperty } = useStore("start");
+  const isStarted = getProperty("isStarted");
   const modules = getData();
   const allDone =
     modules.listening?.isDone &&
@@ -46,6 +55,8 @@ const Tutorial = () => {
 
     return { isDone, isCurrent };
   };
+
+  if (!isStarted) return <Navigate to="/" />;
 
   return (
     <>
