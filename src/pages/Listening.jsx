@@ -1,5 +1,5 @@
 // React
-import { useEffect, useMemo } from "react";
+import { useMemo } from "react";
 
 // Data
 import questionsType from "@/data/questionsType";
@@ -10,13 +10,12 @@ import useModule from "@/hooks/useModule";
 import usePathSegments from "@/hooks/usePathSegments";
 
 // Router
-import { useNavigate, useParams } from "react-router-dom";
+import { Navigate, useParams } from "react-router-dom";
 
 const questionsMap = {};
 questionsType.forEach((q) => (questionsMap[q.value] = q.component));
 
 const Listening = () => {
-  const navigate = useNavigate();
   const { partNumber, testId } = useParams();
   const { getProperty } = useStore("modules");
   const { pathSegments, location } = usePathSegments();
@@ -25,6 +24,11 @@ const Listening = () => {
 
   const { getModuleData } = useModule(module, testId);
   const parts = getModuleData();
+
+  // Navigate
+  if (listeningAnwers?.isDone) {
+    return <Navigate to={`/tutorial/${testId}`} />;
+  }
 
   // Calculate current part and cumulative question count
   const { currentPart, cumulativeQuestions } = useMemo(() => {
@@ -41,10 +45,6 @@ const Listening = () => {
   }, [location.pathname, parts, partNumber]);
 
   const { sections } = currentPart || {};
-
-  useEffect(() => {
-    if (listeningAnwers?.isDone) navigate(`/tutorial/${testId}`);
-  }, [listeningAnwers?.isDone]);
 
   // Return error if part not found
   if (!currentPart) {

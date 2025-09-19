@@ -10,7 +10,7 @@ import useModule from "../hooks/useModule";
 import usePathSegments from "../hooks/usePathSegments";
 
 // Router
-import { useNavigate, useParams } from "react-router-dom";
+import { Navigate, useParams } from "react-router-dom";
 
 // React
 import { useMemo, useState, useRef, useEffect } from "react";
@@ -20,7 +20,6 @@ const TextComponent = questionsType.find(
 ).component;
 
 const Reading = () => {
-  const navigate = useNavigate();
   const { partNumber, testId } = useParams();
   const { pathSegments } = usePathSegments();
   const { getProperty } = useStore("modules");
@@ -32,6 +31,15 @@ const Reading = () => {
   const module = pathSegments[2];
   const { getModuleData } = useModule(module, testId);
   const parts = getModuleData();
+
+  // Navigate
+  if (writingAnwers?.isDone) {
+    return <Navigate to={`/tutorial/${testId}`} />;
+  }
+
+  if (!readingAnwers?.isDone) {
+    return <Navigate to={`/test/${testId}/reading/1/1`} />;
+  }
 
   // Calculate current part and cumulative question count
   const { currentPart } = useMemo(() => {
@@ -52,12 +60,6 @@ const Reading = () => {
   const wordsCount = words?.split(" ")?.filter(Boolean)?.length || 0;
 
   useEffect(() => {
-    if (writingAnwers?.isDone) navigate(`/tutorial/${testId}`);
-
-    if (!readingAnwers?.isDone) {
-      navigate(`/test/${testId}/reading/1/1`);
-    }
-
     const updateSelectStyle = (select = "auto") => {
       document.body.style.userSelect = select;
     };

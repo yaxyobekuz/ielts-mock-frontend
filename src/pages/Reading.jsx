@@ -10,7 +10,7 @@ import useModule from "../hooks/useModule";
 import usePathSegments from "../hooks/usePathSegments";
 
 // Router
-import { useNavigate, useParams } from "react-router-dom";
+import { Navigate, useParams } from "react-router-dom";
 
 // React
 import { useMemo, useState, useRef, useEffect } from "react";
@@ -20,7 +20,6 @@ questionsType.forEach((q) => (questionsMap[q.value] = q.component));
 const TextComponent = questionsMap["text"];
 
 const Reading = () => {
-  const navigate = useNavigate();
   const { partNumber, testId } = useParams();
   const { pathSegments } = usePathSegments();
   const { getProperty } = useStore("modules");
@@ -30,6 +29,15 @@ const Reading = () => {
 
   const { getModuleData } = useModule(module, testId);
   const parts = getModuleData();
+
+  // Navigate
+  if (readingAnwers?.isDone) {
+    return <Navigate to={`/tutorial/${testId}`} />;
+  }
+
+  if (!listeningAnwers?.isDone) {
+    return <Navigate to={`/test/${testId}/listening/1/1`} />;
+  }
 
   // Calculate current part and cumulative question count
   const { currentPart, cumulativeQuestions } = useMemo(() => {
@@ -53,12 +61,6 @@ const Reading = () => {
   const [leftWidth, setLeftWidth] = useState(50);
 
   useEffect(() => {
-    if (readingAnwers?.isDone) navigate(`/tutorial/${testId}`);
-
-    if (!listeningAnwers?.isDone) {
-      navigate(`/test/${testId}/listening/1/1`);
-    }
-
     const updateSelectStyle = (select = "auto") => {
       document.body.style.userSelect = select;
     };
