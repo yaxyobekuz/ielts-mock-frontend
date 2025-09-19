@@ -30,25 +30,36 @@ import AuthLayout from "./layouts/AuthLayout";
 const App = () => {
   const router = createBrowserRouter(
     createRoutesFromElements(
-      <Route path="/" element={<MainLayout />}>
-        {/* Home */}
-        <Route index element={<Home />} />
+      <>
+        <Route path="/" element={<MainLayout />}>
+          {/* Home */}
+          <Route index element={<Home />} />
 
-        {/* Test */}
-        <Route element={<TestLayout />} path="test/:testId/">
-          <Route
-            element={<Reading />}
-            path="reading/:partNumber/:questionNumber"
-          />
-          <Route
-            element={<Writing />}
-            path="writing/:partNumber/:questionNumber"
-          />
-          <Route
-            element={<Listening />}
-            path="listening/:partNumber/:questionNumber"
-          />
-          <Route path=":module/delivering" element={<Delivering />} />
+          {/* Test */}
+          <Route element={<TestLayout />} path="test/:testId/">
+            <Route
+              element={<Reading />}
+              path="reading/:partNumber/:questionNumber"
+            />
+            <Route
+              element={<Writing />}
+              path="writing/:partNumber/:questionNumber"
+            />
+            <Route
+              element={<Listening />}
+              path="listening/:partNumber/:questionNumber"
+            />
+            <Route path=":module/delivering" element={<Delivering />} />
+          </Route>
+
+          {/* Link */}
+          <Route path="link/:linkId" element={<Link />} />
+
+          {/* Submission */}
+          <Route path="submission" element={<Submission />} />
+
+          {/* Tutorial */}
+          <Route path="tutorial/:testId" element={<Tutorial />} />
         </Route>
 
         {/* Auth */}
@@ -57,16 +68,7 @@ const App = () => {
           <Route path="register" element={<Register />} />
           <Route index element={<Navigate to="login" />} />
         </Route>
-
-        {/* Link */}
-        <Route path="link/:linkId" element={<Link />} />
-
-        {/* Submission */}
-        <Route path="submission" element={<Submission />} />
-
-        {/* Tutorial */}
-        <Route path="tutorial/:testId" element={<Tutorial />} />
-      </Route>
+      </>
     ),
     { future: { v7_relativeSplatPath: true } }
   );
