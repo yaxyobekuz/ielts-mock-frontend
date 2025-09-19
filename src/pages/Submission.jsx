@@ -1,3 +1,6 @@
+// React
+import { useState } from "react";
+
 // Lottie
 import Lottie from "lottie-react";
 
@@ -26,7 +29,9 @@ import channelsOutSticker from "@/assets/animated/channels-out.json";
 const Submission = () => {
   const { getData, resetData } = useStore("modules");
   const answers = getData();
-  const allDone = answers.listening && answers.reading && answers.writing;
+  const [allDone] = useState(
+    answers.listening && answers.reading && answers.writing
+  );
 
   if (!allDone) {
     return (
@@ -59,7 +64,7 @@ const Main = ({ answers, resetAnswers }) => {
   usePreventUnload();
   const navigate = useNavigate();
   const { resetAllModule } = useModule();
-  const { getProperty } = useStore("start");
+  const { getProperty, updateProperty } = useStore("start");
   const linkId = getProperty("linkId");
 
   const { setField, isSent, isLoading } = useObjectState({
@@ -75,7 +80,10 @@ const Main = ({ answers, resetAnswers }) => {
       .create({ linkId, answers: transformAnswers(answers) })
       .then(({ code }) => {
         if (code !== "submissionCreated") throw new Error();
+
+        resetAnswers();
         setField("isSent", true);
+        updateProperty("isStarted", false);
       })
       .catch(({ message }) => toast.error(message || "Nimadir xato ketdi"))
       .finally(() => setField("isLoading"));
