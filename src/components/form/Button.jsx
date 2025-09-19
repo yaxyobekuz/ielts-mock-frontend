@@ -15,7 +15,7 @@ const Button = ({
   const sizeClasses = {
     sm: "h-8 px-4 rounded-md",
     md: "h-9 px-5 rounded-lg",
-    lg: "h-10 px-5 rounded-lg",
+    lg: "h-10 px-5 rounded-xl",
     xl: "h-11 px-5 rounded-xl",
   };
 
