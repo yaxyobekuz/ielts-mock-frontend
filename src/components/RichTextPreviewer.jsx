@@ -10,7 +10,16 @@ import { useParams } from "react-router-dom";
 // Icons
 import { Eraser, PaintBucket } from "lucide-react";
 
+// Hooks
+import usePathSegments from "@/hooks/usePathSegments";
+
 // TipTap
+import {
+  Table,
+  TableRow,
+  TableCell,
+  TableHeader,
+} from "@tiptap/extension-table";
 import Image from "@tiptap/extension-image";
 import StarterKit from "@tiptap/starter-kit";
 import Highlight from "@tiptap/extension-highlight";
@@ -19,7 +28,6 @@ import { useEditor, EditorContent } from "@tiptap/react";
 // Nodes
 import DropzoneNode from "../format/nodes/DropzoneNode";
 import AnswerInputNode from "../format/nodes/AnswerInputNode";
-import usePathSegments from "@/hooks/usePathSegments";
 
 const RichTextPreviewer = ({
   id,
@@ -45,6 +53,10 @@ const RichTextPreviewer = ({
     editable: false,
     extensions: [
       Image,
+      Table,
+      TableRow,
+      TableCell,
+      TableHeader,
       StarterKit.configure({ heading: false }),
       Highlight.configure({ multicolor: false }),
       ...(allowInput ? [AnswerInputNode({ initialNumber, testId, id })] : []),
