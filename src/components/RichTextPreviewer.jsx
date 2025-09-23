@@ -29,6 +29,26 @@ import { useEditor, EditorContent } from "@tiptap/react";
 import DropzoneNode from "../format/nodes/DropzoneNode";
 import AnswerInputNode from "../format/nodes/AnswerInputNode";
 
+const CustomImage = Image.extend({
+  addAttributes() {
+    return {
+      ...this.parent?.(),
+      width: {
+        default: 200,
+        renderHTML: (attributes) => ({
+          style: `width: ${attributes.width}px;`,
+        }),
+      },
+      height: {
+        default: null,
+        renderHTML: (attributes) => ({
+          style: attributes.height ? `height: ${attributes.height}px;` : "",
+        }),
+      },
+    };
+  },
+});
+
 const RichTextPreviewer = ({
   id,
   text,
@@ -52,11 +72,11 @@ const RichTextPreviewer = ({
     content,
     editable: false,
     extensions: [
-      Image,
       Table,
       TableRow,
       TableCell,
       TableHeader,
+      CustomImage,
       StarterKit.configure({ heading: false }),
       Highlight.configure({ multicolor: false }),
       ...(allowInput ? [AnswerInputNode({ initialNumber, testId, id })] : []),
