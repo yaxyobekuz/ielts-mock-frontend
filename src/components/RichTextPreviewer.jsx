@@ -53,6 +53,7 @@ const RichTextPreviewer = ({
   id,
   text,
   rawKey,
+  coords,
   initialNumber,
   className = "",
   allowInput = false,
@@ -79,8 +80,12 @@ const RichTextPreviewer = ({
       CustomImage,
       StarterKit.configure({ heading: false }),
       Highlight.configure({ multicolor: false }),
-      ...(allowInput ? [AnswerInputNode({ initialNumber, testId, id })] : []),
-      ...(allowDropzone ? [DropzoneNode({ initialNumber, testId, id })] : []),
+      ...(allowDropzone
+        ? [DropzoneNode({ initialNumber, testId, id, coords })]
+        : []),
+      ...(allowInput
+        ? [AnswerInputNode({ initialNumber, testId, id, coords })]
+        : []),
     ],
   });
 

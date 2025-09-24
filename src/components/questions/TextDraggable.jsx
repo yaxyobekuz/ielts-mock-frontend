@@ -12,6 +12,7 @@ import RichTextPreviewer from "../RichTextPreviewer";
 const TextDraggable = ({
   text,
   rawKey,
+  coords,
   options,
   initialNumber,
   questionsCount,
@@ -57,6 +58,7 @@ const TextDraggable = ({
         id={id}
         text={text}
         allowDropzone
+        coords={coords}
         rawKey={rawKey}
         initialNumber={initialNumber}
       />
