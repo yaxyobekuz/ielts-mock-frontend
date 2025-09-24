@@ -5,7 +5,7 @@ import AnswerInput from "../components/AnswerInput";
 import { Node, mergeAttributes } from "@tiptap/core";
 import { ReactNodeViewRenderer } from "@tiptap/react";
 
-const AnswerInputNode = ({ initialNumber = 1, testId, id }) => {
+const AnswerInputNode = ({ initialNumber = 1, testId, id, coords }) => {
   return Node.create({
     inline: true,
     group: "inline",
@@ -31,6 +31,7 @@ const AnswerInputNode = ({ initialNumber = 1, testId, id }) => {
           id={id}
           {...props}
           testId={testId}
+          initialCoords={coords}
           initialNumber={initialNumber}
         />
       ));

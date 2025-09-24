@@ -1,6 +1,3 @@
-import { useCallback, useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-
 // Lodash
 import { debounce } from "lodash";
 
@@ -11,15 +8,29 @@ import { NodeViewWrapper } from "@tiptap/react";
 import useStore from "@/hooks/useStore";
 import usePathSegments from "@/hooks/usePathSegments";
 
-const Dropzone = ({ id, testId, editor, getPos, initialNumber = 1 }) => {
+// React
+import { useCallback, useEffect, useState } from "react";
+
+// Router
+import { useNavigate, useParams } from "react-router-dom";
+
+const Dropzone = ({
+  id,
+  editor,
+  getPos,
+  initialNumber = 1,
+  initialCoords = {},
+}) => {
   const navigate = useNavigate();
   const { questionNumber } = useParams();
+  const allCoords = initialCoords || {};
   const { pathSegments } = usePathSegments();
   const [dropzoneIndex, setDropzoneIndex] = useState(initialNumber);
   const { updateProperty, getData, getProperty } = useStore("answers");
 
   const text = getProperty(dropzoneIndex)?.text || "";
   const isActive = Number(questionNumber) === dropzoneIndex;
+  const coords = allCoords[dropzoneIndex - initialNumber + 1];
 
   const setActiveDropzone = () => {
     navigate(
@@ -52,12 +63,18 @@ const Dropzone = ({ id, testId, editor, getPos, initialNumber = 1 }) => {
   }, [calculateIndex, editor]);
 
   return (
-    <NodeViewWrapper className="inline-block px-1 py-px">
+    <NodeViewWrapper
+      style={coords ? { top: coords.y, left: coords.x } : {}}
+      className={`${
+        coords ? "absolute z-10 max-w-32 !min-w-0 w-full" : "max-w-full"
+      } inline-block px-1 py-px select-none`}
+    >
       {text ? (
         <DragAndDropComponent
           id={id}
           text={text}
           getData={getData}
+          coords={!!coords}
           dropzoneIndex={dropzoneIndex}
           updateProperty={updateProperty}
           setActiveDropzone={setActiveDropzone}
@@ -65,6 +82,7 @@ const Dropzone = ({ id, testId, editor, getPos, initialNumber = 1 }) => {
       ) : (
         <DropzoneComponent
           id={id}
+          coords={!!coords}
           isActive={isActive}
           dropzoneIndex={dropzoneIndex}
           updateProperty={updateProperty}
@@ -77,6 +95,7 @@ const Dropzone = ({ id, testId, editor, getPos, initialNumber = 1 }) => {
 
 const DropzoneComponent = ({
   id,
+  coords,
   isActive,
   dropzoneIndex,
   updateProperty,
@@ -109,7 +128,9 @@ const DropzoneComponent = ({
         isActive
           ? "border-transparent outline-2 outline-blue-500 outline-dashed -outline-offset-1"
           : "border-gray-500"
-      } w-40 bg-white font-bold border border-dashed text-center rounded`}
+      } ${
+        coords ? "w-full" : "w-40"
+      } bg-white font-bold border border-dashed text-center rounded`}
     />
   );
 };
@@ -117,6 +138,7 @@ const DropzoneComponent = ({
 const DragAndDropComponent = ({
   id,
   text,
+  coords,
   getData,
   dropzoneIndex,
   updateProperty,
@@ -179,7 +201,9 @@ const DragAndDropComponent = ({
       onClick={setActiveDropzone}
       onDragStart={handleDragStart}
       onDragOver={(e) => e.preventDefault()}
-      className="min-w-40 max-w-max bg-white px-1.5 text-sm leading-6 border border-blue-500 text-center rounded cursor-move"
+      className={`${
+        coords ? "min-w-32" : "min-w-40"
+      } max-w-max bg-white px-1.5 text-sm leading-6 border border-blue-500 rounded cursor-move`}
     />
   );
 };

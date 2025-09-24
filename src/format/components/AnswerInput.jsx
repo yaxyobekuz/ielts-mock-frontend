@@ -1,6 +1,3 @@
-import { useCallback, useEffect, useRef, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-
 // Lodash
 import { debounce } from "lodash";
 
@@ -11,7 +8,18 @@ import { NodeViewWrapper } from "@tiptap/react";
 import useStore from "@/hooks/useStore";
 import usePathSegments from "@/hooks/usePathSegments";
 
-const AnswerInput = ({ editor, getPos, initialNumber = 1 }) => {
+// Router
+import { useNavigate, useParams } from "react-router-dom";
+
+// React
+import { useCallback, useEffect, useRef, useState } from "react";
+
+const AnswerInput = ({
+  editor,
+  getPos,
+  initialNumber = 1,
+  initialCoords = {},
+}) => {
   // Calculate the index of current input
   const calculateIndex = useCallback(() => {
     let index = initialNumber;
@@ -29,6 +37,7 @@ const AnswerInput = ({ editor, getPos, initialNumber = 1 }) => {
   const inputRef = useRef(null);
   const navigate = useNavigate();
   const hiddenTextRef = useRef(null);
+  const allCoords = initialCoords || {};
   const { questionNumber } = useParams();
   const { pathSegments } = usePathSegments();
   const [inputWidth, setInputWidth] = useState("max");
@@ -36,6 +45,7 @@ const AnswerInput = ({ editor, getPos, initialNumber = 1 }) => {
   const [inputIndex, setInputIndex] = useState(calculateIndex());
   const [text, setText] = useState(getProperty(inputIndex)?.text || "");
   const isActiveInput = inputIndex === Number(questionNumber);
+  const coords = allCoords[inputIndex - initialNumber + 1];
 
   // Navigate to this input if not active
   const setActiveInput = useCallback(() => {
@@ -76,7 +86,7 @@ const AnswerInput = ({ editor, getPos, initialNumber = 1 }) => {
 
   // Adjust width based on text
   useEffect(() => {
-    if (hiddenTextRef.current) {
+    if (hiddenTextRef.current || !coords) {
       setInputWidth(hiddenTextRef.current.offsetWidth + 20);
     }
   }, [text]);
@@ -89,7 +99,12 @@ const AnswerInput = ({ editor, getPos, initialNumber = 1 }) => {
   }, [isActiveInput]);
 
   return (
-    <NodeViewWrapper className="inline-block px-1 py-px max-w-full">
+    <NodeViewWrapper
+      style={coords ? { top: coords.y, left: coords.x } : {}}
+      className={`${
+        coords ? "absolute z-10 max-w-32 !min-w-0" : "max-w-full"
+      } inline-block px-1 py-px select-none`}
+    >
       {/* Hidden span to calculate width */}
       <span ref={hiddenTextRef} className="hidden-text">
         {text}
