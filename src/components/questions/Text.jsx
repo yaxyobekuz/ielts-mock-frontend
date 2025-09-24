@@ -2,6 +2,7 @@ import RichTextPreviewer from "../RichTextPreviewer";
 
 const Text = ({
   text,
+  coords,
   rawKey,
   initialNumber,
   className = "",
@@ -11,6 +12,7 @@ const Text = ({
     <RichTextPreviewer
       allowInput
       text={text}
+      coords={coords}
       rawKey={rawKey}
       className={className}
       allowImage={allowImage}
