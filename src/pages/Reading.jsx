@@ -154,8 +154,6 @@ const Reading = () => {
               .slice(0, index)
               .reduce((acc, sec) => acc + sec.questionsCount, 0);
 
-            console.log(section.text);
-
             return (
               <Section
                 index={index}

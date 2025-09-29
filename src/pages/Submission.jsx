@@ -49,11 +49,12 @@ const transformAnswers = (data) => {
   const result = {};
 
   Object.keys(data).forEach((section) => {
-    const answers = data[section].answers;
     result[section] = {};
+    const answers = data[section].answers;
 
     Object.keys(answers).forEach((key) => {
-      result[section][key] = answers[key].text;
+      const text = answers[key].text;
+      result[section][key] = text ? text : answers[key];
     });
   });
 
