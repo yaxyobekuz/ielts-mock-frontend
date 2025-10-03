@@ -2,6 +2,7 @@
 import Text from "@/components/questions/Text";
 import Flowchart from "@/components/questions/Flowchart";
 import RadioGroup from "@/components/questions/RadioGroup";
+import GridMatching from "@/components/questions/GridMatching";
 import CheckboxGroup from "@/components/questions/CheckboxGroup";
 import TextDraggable from "@/components/questions/TextDraggable";
 
@@ -30,6 +31,11 @@ const questionsType = [
     label: "Checkbox group",
     value: "checkbox-group",
     component: CheckboxGroup,
+  },
+  {
+    label: "Grid matching",
+    value: "grid-matching",
+    component: GridMatching,
   },
 ];
 
