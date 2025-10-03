@@ -15,6 +15,9 @@ import { Navigate, useParams } from "react-router-dom";
 // React
 import { useMemo, useState, useRef, useEffect } from "react";
 
+// Components
+import RichTextPreviewer from "@/components/RichTextPreviewer";
+
 const questionsMap = {};
 questionsType.forEach((q) => (questionsMap[q.value] = q.component));
 const TextComponent = questionsMap["text"];
@@ -147,7 +150,7 @@ const Reading = () => {
         {/* Right side */}
         <div
           style={{ width: `${100 - leftWidth}%` }}
-          className="h-full overflow-y-auto pl-5 ielts-theme-scroll"
+          className="h-full overflow-y-auto pl-5 pr-12 ielts-theme-scroll"
         >
           {sections?.map((section, index) => {
             const prevSectionsTotalQuestions = sections
@@ -173,7 +176,6 @@ const Reading = () => {
   );
 };
 
-// Individual section component
 const Section = ({
   index,
   rawKey,
@@ -190,7 +192,7 @@ const Section = ({
       <div className="flex items-start justify-between gap-5">
         <div className="mb-4 space-y-2">
           <h2 className="font-bold">Questions {questionRange}</h2>
-          <p>{description}</p>
+          <RichTextPreviewer text={description} />
         </div>
       </div>
 

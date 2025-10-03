@@ -12,6 +12,9 @@ import usePathSegments from "@/hooks/usePathSegments";
 // Router
 import { Navigate, useParams } from "react-router-dom";
 
+// Components
+import RichTextPreviewer from "@/components/RichTextPreviewer";
+
 const questionsMap = {};
 questionsType.forEach((q) => (questionsMap[q.value] = q.component));
 
@@ -116,7 +119,7 @@ const Section = ({
         {/* Section details */}
         <div className="mb-4 space-y-2">
           <h2 className="font-bold">Questions {questionRange}</h2>
-          <p>{description}</p>
+          <RichTextPreviewer text={description} />
         </div>
       </div>
 
