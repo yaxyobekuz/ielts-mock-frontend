@@ -9,9 +9,9 @@ const useModule = (module, moduleId) => {
   const dispatch = useDispatch();
 
   // Get entire state
-  const getModuleData = () => {
+  const getModuleData = (type = module) => {
     return useSelector((state) => {
-      const data = state.module[module];
+      const data = state.module[type];
       return data ? data[moduleId] : null;
     });
   };
