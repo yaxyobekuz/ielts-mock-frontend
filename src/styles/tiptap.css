@@ -29,12 +29,7 @@
     }
 
     .selectedCell:after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      z-index: 2;
-      pointer-events: none;
-      background: rgba(209, 213, 219, 0.5);
+      display: none;
     }
 
     .column-resize-handle {
