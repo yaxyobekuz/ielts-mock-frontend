@@ -1,8 +1,12 @@
+// Helpers
+import { formatMinutes } from "@/lib/helpers";
+
 // Components
 import TestHeader from "@/components/TestHeader";
 
 // Hooks
 import useStore from "@/hooks/useStore";
+import useModule from "@/hooks/useModule";
 import usePreventUnload from "@/hooks/usePreventUnload";
 
 // Router
@@ -32,6 +36,7 @@ const Tutorial = () => {
   const { getData } = useStore("modules");
   const { getProperty } = useStore("start");
   const isStarted = getProperty("isStarted");
+  if (!isStarted) return <Navigate to="/" />;
   const modules = getData();
   const allDone =
     modules.listening?.isDone &&
@@ -56,7 +61,11 @@ const Tutorial = () => {
     return { isDone, isCurrent };
   };
 
-  if (!isStarted) return <Navigate to="/" />;
+  const durations = {};
+  const { getModuleData } = useModule("", testId);
+  durations["reading"] = getModuleData("reading")?.duration || 0;
+  durations["writing"] = getModuleData("writing")?.duration || 0;
+  durations["listening"] = getModuleData("listening")?.duration || 0;
 
   return (
     <>
@@ -77,7 +86,7 @@ const Tutorial = () => {
         {/* Modules */}
         <ul className="space-y-6">
           {moduleNames.map(({ name, tutorial }) => {
-            const { isDone, isCurrent, nextModule } = getCurrent(name);
+            const { isDone, isCurrent } = getCurrent(name);
 
             return (
               <li
@@ -101,7 +110,9 @@ const Tutorial = () => {
                     </strong>
 
                     {/* Timing */}
-                    <p>Timing: 1 hour</p>
+                    <p>
+                      Timing: {formatMinutes(durations[name.toLowerCase()])}
+                    </p>
                   </div>
 
                   {/* Done button */}
