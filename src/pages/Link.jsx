@@ -103,9 +103,9 @@ const StartContent = ({ linkId, updateStart }) => {
         updateStart("testId", test._id);
 
         // Update test data
-        setModule(test.reading?.parts, test._id, "reading");
-        setModule(test.writing?.parts, test._id, "writing");
-        setModule(test.listening?.parts, test._id, "listening");
+        setModule(test.reading, test._id, "reading");
+        setModule(test.writing, test._id, "writing");
+        setModule(test.listening, test._id, "listening");
 
         // Navigate user tot tutorial page
         navigate(`/tutorial/${test._id}`);

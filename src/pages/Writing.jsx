@@ -30,7 +30,7 @@ const Reading = () => {
 
   const module = pathSegments[2];
   const { getModuleData } = useModule(module, testId);
-  const parts = getModuleData();
+  const { parts } = getModuleData() || {};
 
   // Navigate
   if (writingAnwers?.isDone) {

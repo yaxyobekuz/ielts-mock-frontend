@@ -26,7 +26,7 @@ const Listening = () => {
   const module = pathSegments[2];
 
   const { getModuleData } = useModule(module, testId);
-  const parts = getModuleData();
+  const { parts } = getModuleData() || {};
 
   // Navigate
   if (listeningAnwers?.isDone) {

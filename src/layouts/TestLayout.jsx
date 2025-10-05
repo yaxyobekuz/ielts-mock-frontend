@@ -21,7 +21,7 @@ const TestLayout = () => {
   const module = pathSegments[2];
 
   const { getModuleData } = useModule(module, testId);
-  const parts = getModuleData();
+  const { parts } = getModuleData() || {};
 
   if (!parts) {
     return (
@@ -73,9 +73,9 @@ const Footer = ({ parts = [] }) => {
         const isActivePart = number === Number(partNumber);
         const Navigation = isActivePart ? "div" : Link;
         const prevQuestionsCount = questionOffsets[number];
-        const partUrl = `/test/${testId}/${
-          pathSegments[2]
-        }/${number}/${prevQuestionsCount + 1}`;
+        const partUrl = `/test/${testId}/${pathSegments[2]}/${number}/${
+          prevQuestionsCount + 1
+        }`;
 
         const partAnswers = Array.from(
           { length: totalQuestions },
