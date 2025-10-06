@@ -27,7 +27,12 @@ import MainLayout from "./layouts/MainLayout";
 import TestLayout from "./layouts/TestLayout";
 import AuthLayout from "./layouts/AuthLayout";
 
+// Hoooks
+import useAudioList from "./hooks/useAudioList";
+
 const App = () => {
+  const { setAudioList, stopAudio, isLoading, isPlaying } = useAudioList();
+
   const router = createBrowserRouter(
     createRoutesFromElements(
       <>
@@ -36,7 +41,12 @@ const App = () => {
           <Route index element={<Home />} />
 
           {/* Test */}
-          <Route element={<TestLayout />} path="test/:testId/">
+          <Route
+            path="test/:testId/"
+            element={
+              <TestLayout audioPlaying={isPlaying} audioLoading={isLoading} />
+            }
+          >
             <Route
               element={<Reading />}
               path="reading/:partNumber/:questionNumber"
@@ -46,10 +56,13 @@ const App = () => {
               path="writing/:partNumber/:questionNumber"
             />
             <Route
-              element={<Listening />}
               path="listening/:partNumber/:questionNumber"
+              element={<Listening setAudioList={setAudioList} />}
             />
-            <Route path=":module/delivering" element={<Delivering />} />
+            <Route
+              path=":module/delivering"
+              element={<Delivering onStopAudio={stopAudio} />}
+            />
           </Route>
 
           {/* Link */}
