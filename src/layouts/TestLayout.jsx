@@ -14,7 +14,7 @@ import usePreventUnload from "@/hooks/usePreventUnload";
 // Router
 import { Link, NavLink, Outlet, useParams } from "react-router-dom";
 
-const TestLayout = () => {
+const TestLayout = ({ audioLoading, audioPlaying }) => {
   usePreventUnload();
   const { testId } = useParams();
   const { pathSegments } = usePathSegments();
@@ -36,6 +36,8 @@ const TestLayout = () => {
     <div className="h-screen font-Inter">
       <TestHeader
         testId={testId}
+        audioLoading={audioLoading}
+        audioPlaying={audioPlaying}
         isListeningPage={pathSegments[2] === "listening"}
         isDeliveringPage={pathSegments[3] === "delivering"}
       />

@@ -1,13 +1,54 @@
+// Icons
+import {
+  Bell,
+  Menu,
+  Wifi,
+  WifiOff,
+  Volume2,
+  VolumeOff,
+  LoaderCircle,
+} from "lucide-react";
+
+// Hooks
+import useStore from "@/hooks/useStore";
+
 // React
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 // Data
 import ieltsLogo from "@/assets/icons/ielts-logo.svg";
 
-// Icons
-import { Bell, Menu, Volume2, Wifi, WifiOff } from "lucide-react";
+const TestHeader = ({
+  testId,
+  audioLoading,
+  audioPlaying,
+  isListeningPage,
+  isDeliveringPage,
+}) => {
+  const { getProperty } = useStore("user");
+  const { _id: userId } = getProperty("data") || {};
 
-const TestHeader = ({ isDeliveringPage, isListeningPage, testId }) => {
+  const audioStatus = useMemo(() => {
+    if (audioLoading) {
+      return {
+        text: "Audio is loading",
+        icon: <LoaderCircle size={14} className="animate-spin" />,
+      };
+    }
+
+    if (audioPlaying) {
+      return {
+        text: "Audio is playing",
+        icon: <Volume2 size={14} />,
+      };
+    }
+
+    return {
+      text: "Audio is finished",
+      icon: <VolumeOff size={14} />,
+    };
+  }, [audioLoading, audioPlaying, isListeningPage]);
+
   return (
     <header
       className={`${
@@ -29,15 +70,15 @@ const TestHeader = ({ isDeliveringPage, isListeningPage, testId }) => {
             {/* ID */}
             <p className="text-base leading-normal">
               <b className="font-semibold">Test taker ID:</b>{" "}
-              <span className="text-sm text-gray-500">{testId}</span>
+              <span className="text-sm text-gray-500">{userId}</span>
             </p>
 
             {/* Audio status */}
             {isListeningPage && (
               <div className="flex items-center gap-1">
-                <Volume2 size={14} />
+                {audioStatus.icon}
                 <span className="text-[13px] leading-normal">
-                  Audio is playing
+                  {audioStatus.text}
                 </span>
               </div>
             )}
