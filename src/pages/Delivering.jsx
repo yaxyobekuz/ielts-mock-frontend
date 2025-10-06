@@ -7,7 +7,7 @@ import useStore from "@/hooks/useStore";
 // Router
 import { useNavigate, useParams } from "react-router-dom";
 
-const Delivering = () => {
+const Delivering = ({ onStopAudio }) => {
   const navigate = useNavigate();
   const { module, testId } = useParams();
   const { updateProperty: updateModule } = useStore("modules");
@@ -18,6 +18,9 @@ const Delivering = () => {
     // Save module anwers to store
     updateModule(module, { isDone: true, answers: answersData });
     resetAnswers();
+
+    // Stop listening audio
+    if (module === "listening") onStopAudio();
 
     // Navigate user
     navigate(`/tutorial/${testId}`);

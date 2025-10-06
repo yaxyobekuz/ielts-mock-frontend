@@ -1,5 +1,5 @@
 // React
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 
 // Data
 import questionsType from "@/data/questionsType";
@@ -18,7 +18,7 @@ import RichTextPreviewer from "@/components/RichTextPreviewer";
 const questionsMap = {};
 questionsType.forEach((q) => (questionsMap[q.value] = q.component));
 
-const Listening = () => {
+const Listening = ({ setAudioList }) => {
   const { partNumber, testId } = useParams();
   const { getProperty } = useStore("modules");
   const { pathSegments, location } = usePathSegments();
@@ -26,12 +26,16 @@ const Listening = () => {
   const module = pathSegments[2];
 
   const { getModuleData } = useModule(module, testId);
-  const { parts } = getModuleData() || {};
+  const { parts, audios } = getModuleData() || {};
 
   // Navigate
   if (listeningAnwers?.isDone) {
     return <Navigate to={`/tutorial/${testId}`} />;
   }
+
+  useEffect(() => {
+    setAudioList(audios?.map(({ url }) => url));
+  }, []);
 
   // Calculate current part and cumulative question count
   const { currentPart, cumulativeQuestions } = useMemo(() => {
