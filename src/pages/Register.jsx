@@ -1,5 +1,3 @@
-import { useNavigate } from "react-router-dom";
-
 // Api
 import { authApi } from "@/api/auth.api";
 
@@ -12,6 +10,9 @@ import Button from "@/components/form/Button";
 
 // Helpers
 import { extractNumbers } from "@/lib/helpers";
+
+// Router
+import { useNavigate } from "react-router-dom";
 
 // Hooks
 import useObjectState from "@/hooks/useObjectState";
@@ -61,27 +62,32 @@ const RegisterContent = ({ next }) => {
     e.preventDefault();
     if (isLoading) return;
     const formattedPhone = extractNumbers(phone);
+    const formattedPassword = password?.trim() || "";
 
     if (firstName.trim().length === 0) {
       return toast.error("Ismingizni kiriting");
     }
 
-    if (formattedPhone.trim().length !== 12) {
+    if (formattedPhone.length !== 12) {
       return toast.error("Telefon raqam noto'g'ri");
     }
 
-    if (password.trim().length < 6) {
+    if (formattedPassword.length < 6) {
       return toast.error("Parol juda ham qisqa");
     }
 
     setField("isLoading", true);
 
     authApi
-      .register({ phone: formattedPhone, firstName, password })
+      .register({
+        firstName,
+        phone: formattedPhone,
+        password: formattedPassword,
+      })
       .then(({ code, message }) => {
         if (["codeSent", "codeAlreadySent"].includes(code)) {
           toast.success(message);
-          return next({ phone: formattedPhone, firstName, password });
+          return next({ phone: formattedPhone, password: formattedPassword });
         }
 
         throw new Error();
@@ -92,7 +98,7 @@ const RegisterContent = ({ next }) => {
         if (code === "phoneAlreadyUsed") {
           navigate(
             `/auth/login?phone=${phone}&password=${encodeURIComponent(
-              password
+              formattedPassword
             )}`
           );
         }
@@ -145,7 +151,7 @@ const RegisterContent = ({ next }) => {
   );
 };
 
-const VerifyCodeContent = ({ phone, firstName, password }) => {
+const VerifyCodeContent = ({ phone, password }) => {
   const navigate = useNavigate();
   const { state, setField } = useObjectState({ code: "", isLoading: false });
   const { code, isLoading } = state;
@@ -161,8 +167,8 @@ const VerifyCodeContent = ({ phone, firstName, password }) => {
     setField("isLoading", true);
 
     authApi
-      .verify({ phone, code, password, firstName })
-      .then(({ token, user, message }) => {
+      .verify({ phone, code, password })
+      .then(({ token, message }) => {
         // Save token to localstorage
         const auth = JSON.stringify({ token, createdAt: Date.now });
         localStorage.setItem("auth", auth);
@@ -195,8 +201,8 @@ const VerifyCodeContent = ({ phone, firstName, password }) => {
       />
 
       {/* Submit btn */}
-      <Button size="xl" className="w-full">
-        Tasdiqlash
+      <Button disabled={isLoading} size="xl" className="w-full">
+        Tasdiqlash{isLoading && "..."}
       </Button>
 
       <p className="text-gray-500">
