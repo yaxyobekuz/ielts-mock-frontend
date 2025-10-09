@@ -32,10 +32,13 @@ export const formatUzPhone = (input) => {
   return m ? `+998 (${m[1]}) ${m[2]}-${m[3]}-${m[4]}` : null;
 };
 
-export const formatMinutes = (mins = 0) => {
+export const formatMinutes = (mins = 0, math = "floor") => {
   if (!mins) return "0 minutes";
-  const hours = Math.floor(mins / 60);
-  const minutes = mins % 60;
+
+  const formattedMins = Math[math](mins.toFixed(1));
+  const hours = Math.floor(formattedMins / 60);
+  const minutes = formattedMins % 60;
+
   if (hours && minutes) return `${hours} hour ${minutes} minutes`;
   if (hours) return `${hours} hour`;
   return `${minutes} minutes`;
