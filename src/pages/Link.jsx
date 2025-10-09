@@ -107,6 +107,11 @@ const StartContent = ({ linkId, updateStart }) => {
         setModule(test.writing, test._id, "writing");
         setModule(test.listening, test._id, "listening");
 
+        // Remove modules timer from local storage
+        localStorage.removeItem(`timer-${test._id}-reading`);
+        localStorage.removeItem(`timer-${test._id}-writing`);
+        localStorage.removeItem(`timer-${test._id}-listening`);
+
         // Navigate user tot tutorial page
         navigate(`/tutorial/${test._id}`);
       })
