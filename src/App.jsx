@@ -44,7 +44,11 @@ const App = () => {
           <Route
             path="test/:testId/"
             element={
-              <TestLayout audioPlaying={isPlaying} audioLoading={isLoading} />
+              <TestLayout
+                onStopAudio={stopAudio}
+                audioPlaying={isPlaying}
+                audioLoading={isLoading}
+              />
             }
           >
             <Route
