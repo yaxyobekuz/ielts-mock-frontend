@@ -12,6 +12,9 @@ import {
 // Hooks
 import useStore from "@/hooks/useStore";
 
+// Helpers
+import { formatMinutes } from "@/lib/helpers";
+
 // React
 import { useEffect, useMemo, useState } from "react";
 
@@ -19,11 +22,10 @@ import { useEffect, useMemo, useState } from "react";
 import ieltsLogo from "@/assets/icons/ielts-logo.svg";
 
 const TestHeader = ({
-  testId,
+  timeLeft,
   audioLoading,
   audioPlaying,
   isListeningPage,
-  isDeliveringPage,
 }) => {
   const { getProperty } = useStore("user");
   const { _id: userId } = getProperty("data") || {};
@@ -51,7 +53,7 @@ const TestHeader = ({
 
   return (
     <header
-      className={`${
+      className={`$
         isDeliveringPage ? "" : "border-b border-gray-300"
       } flex items-center h-14`}
     >
@@ -73,15 +75,24 @@ const TestHeader = ({
               <span className="text-sm text-gray-500">{userId}</span>
             </p>
 
-            {/* Audio status */}
-            {isListeningPage && (
-              <div className="flex items-center gap-1">
-                {audioStatus.icon}
-                <span className="text-[13px] leading-normal">
+            <div className="flex items-center gap-3.5 text-[13px] leading-normal">
+              {/* Audio status */}
+              {isListeningPage && (
+                <div className="flex items-center gap-1">
+                  {audioStatus.icon}
                   {audioStatus.text}
+                </div>
+              )}
+
+              {/* Timeleft */}
+              {typeof timeLeft === "number" ? (
+                <span
+                  className={timeLeft <= 2 ? "text-red-600" : "text-gray-500"}
+                >
+                  {formatMinutes(timeLeft, "ceil")} left
                 </span>
-              </div>
-            )}
+              ) : null}
+            </div>
           </div>
         </div>
 
