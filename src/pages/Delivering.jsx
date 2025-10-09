@@ -14,16 +14,19 @@ const Delivering = ({ onStopAudio }) => {
   const { getData, resetData: resetAnswers } = useStore("answers");
   const answersData = getData();
 
-  const hanldeNext = () => {
-    // Save module anwers to store
-    updateModule(module, { isDone: true, answers: answersData });
-    resetAnswers();
+  const handleNext = () => {
+    // Navigate user
+    navigate(`/tutorial/${testId}`);
 
     // Stop listening audio
     if (module === "listening") onStopAudio();
 
-    // Navigate user
-    navigate(`/tutorial/${testId}`);
+    // Remove module timer
+    localStorage.removeItem(`timer-${testId}-${module}`);
+
+    // Save module answers to store
+    updateModule(module, { isDone: true, answers: answersData });
+    resetAnswers();
   };
 
   return (
@@ -32,7 +35,7 @@ const Delivering = ({ onStopAudio }) => {
         <div className="flex items-center justify-between">
           <p>Click next to continue</p>
           <button
-            onClick={hanldeNext}
+            onClick={handleNext}
             className="flex items-center justify-center gap-3.5 bg-black px-6 py-2 rounded-sm text-white transition-opacity duration-200 hover:opacity-70"
           >
             <Send size={20} />
