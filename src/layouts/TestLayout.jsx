@@ -1,5 +1,17 @@
+// Router
+import {
+  Link,
+  Outlet,
+  NavLink,
+  useParams,
+  useNavigate,
+} from "react-router-dom";
+
 // Icons
 import { Check } from "lucide-react";
+
+// React
+import { useEffect, useRef, useState } from "react";
 
 // Components
 import TestHeader from "@/components/TestHeader";
@@ -11,17 +23,79 @@ import useModule from "@/hooks/useModule";
 import usePathSegments from "@/hooks/usePathSegments";
 import usePreventUnload from "@/hooks/usePreventUnload";
 
-// Router
-import { Link, NavLink, Outlet, useParams } from "react-router-dom";
-
-const TestLayout = ({ audioLoading, audioPlaying }) => {
+const TestLayout = ({ audioLoading, audioPlaying, onStopAudio }) => {
   usePreventUnload();
   const { testId } = useParams();
+  const navigate = useNavigate();
   const { pathSegments } = usePathSegments();
   const module = pathSegments[2];
 
   const { getModuleData } = useModule(module, testId);
   const { parts } = getModuleData() || {};
+
+  const durations = {};
+  durations["reading"] = getModuleData("reading")?.duration || 0;
+  durations["writing"] = getModuleData("writing")?.duration || 0;
+  durations["listening"] = getModuleData("listening")?.duration || 0;
+
+  // For timer logic
+  const timerRef = useRef();
+  const [timeLeft, setTimeLeft] = useState(null);
+  const { updateProperty: updateModule } = useStore("modules");
+  const { getData, resetData: resetAnswers } = useStore("answers");
+  const answersData = getData();
+
+  // Next module navigation
+  const goToNextModule = () => {
+    clearInterval(timerRef.current);
+
+    // Navigate to tutorial
+    navigate(`/tutorial/${testId}`);
+
+    // Remove timer from localStorage
+    const key = `timer-${testId}-${module}`;
+    localStorage.removeItem(key);
+
+    // Save module answers to store
+    updateModule(module, { isDone: true, answers: answersData });
+    resetAnswers();
+
+    // Stop listening audio
+    if (module === "listening") onStopAudio?.();
+  };
+
+  useEffect(() => {
+    if (!module || !durations[module]) return;
+
+    // Get start time from localStorage or set new
+    const key = `timer-${testId}-${module}`;
+    let startTime = localStorage.getItem(key);
+
+    if (!startTime) {
+      startTime = Date.now();
+      localStorage.setItem(key, startTime);
+    } else {
+      startTime = Number(startTime);
+    }
+
+    const durationMs = durations[module] * 60 * 1000;
+
+    const updateTimer = () => {
+      const now = Date.now();
+      const elapsed = now - startTime;
+      const left = Math.max(0, Math.floor((durationMs - elapsed) / 1000));
+      setTimeLeft(left);
+
+      // Timer finished, go to next module
+      if (left <= 0) goToNextModule();
+    };
+
+    timerRef.current = setInterval(updateTimer, 1000);
+    updateTimer();
+    return () => {
+      clearInterval(timerRef.current);
+    };
+  }, [module, testId]);
 
   if (!parts) {
     return (
@@ -36,6 +110,7 @@ const TestLayout = ({ audioLoading, audioPlaying }) => {
     <div className="h-screen font-Inter">
       <TestHeader
         testId={testId}
+        timeLeft={timeLeft / 60}
         audioLoading={audioLoading}
         audioPlaying={audioPlaying}
         isListeningPage={pathSegments[2] === "listening"}
