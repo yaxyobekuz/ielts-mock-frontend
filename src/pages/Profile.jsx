@@ -15,6 +15,7 @@ import { formatUzPhone } from "@/lib/helpers";
 
 // Hooks
 import useStore from "@/hooks/useStore";
+import useModal from "@/hooks/useModal";
 import useObjectState from "@/hooks/useObjectState";
 
 // Components
@@ -23,7 +24,9 @@ import Button from "@/components/form/Button";
 import ProfilePhoto from "@/components/ProfilePhoto";
 
 const Profile = () => {
+  const { openModal } = useModal("updateAvatar");
   const { getProperty, updateProperty } = useStore("user");
+
   const {
     phone,
     lastName: initialLastName,
@@ -80,7 +83,10 @@ const Profile = () => {
         </div>
 
         {/* Upload Photo Btn */}
-        <button className="btn size-12 bg-white rounded-full p-0 hover:text-blue-500">
+        <button
+          onClick={() => openModal()}
+          className="btn size-12 bg-white rounded-full p-0 hover:text-blue-500"
+        >
           <Camera size={22} strokeWidth={1.5} />
         </button>
       </div>
