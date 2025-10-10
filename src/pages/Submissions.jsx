@@ -58,7 +58,7 @@ const Submissions = () => {
 
 const Content = ({ isLoading, hasError, submissions = [] }) => {
   if (isLoading) {
-    return Array.from({ length: 8 }, (_, index) => (
+    return Array.from({ length: 4 }, (_, index) => (
       <div
         key={index}
         className="w-full min-h-40 bg-gray-100 rounded-4xl p-5 space-y-5 animate-pulse"

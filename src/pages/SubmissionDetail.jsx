@@ -266,10 +266,12 @@ const LoadingContent = () => {
   const { module = "listening" } = useParams();
 
   return (
-    <div className="container py-8 space-y-6">
+    <div className="mt-5 pb-8">
       {/* Top */}
-      <div className="flex items-center justify-between">
-        <h1>Foydalanuvchining javoblari</h1>
+      <div className="flex items-center justify-between mb-5">
+        <h1 className="font-medium text-[23px] leading-7">
+          Javoblar yuklanmoqda...
+        </h1>
 
         <div className="flex items-center gap-5 animate-pulse">
           <div className="btn w-36 h-6 bg-gray-100 py-0 rounded-full" />
@@ -280,31 +282,26 @@ const LoadingContent = () => {
       {/* Action buttons */}
       <div className="flex items-center justify-between gap-5 animate-pulse">
         <div className="btn w-72 h-11 bg-gray-100 py-0 rounded-full" />
-
-        <div className="flex items-center gap-5">
-          <div className="btn w-24 h-11 bg-gray-100 py-0 rounded-full" />
-          <div className="btn w-40 h-11 bg-gray-100 py-0 rounded-full" />
-        </div>
       </div>
 
       {/* Answers */}
       {module === "writing" ? (
-        <div className="space-y-6 animate-pulse">
+        <div className="space-y-6 animate-pulse mt-5">
           {/* Parts */}
           <div className="btn w-full h-96 bg-gray-100 py-0 rounded-4xl" />
           <div className="btn w-full h-96 bg-gray-100 py-0 rounded-4xl" />
         </div>
       ) : (
-        <div className="space-y-6 animate-pulse">
+        <div className="space-y-7 animate-pulse -mt-8">
           {/* Info */}
-          <div className="flex items-center justify-center gap-5">
+          <div className="flex items-center justify-end gap-5">
             <div className="btn w-20 h-6 bg-gray-100 py-0 rounded-4xl" />
             <div className="btn w-20 h-6 bg-gray-100 py-0 rounded-4xl" />
             <div className="btn w-20 h-6 bg-gray-100 py-0 rounded-4xl" />
           </div>
 
           {/* Table */}
-          <div className="btn w-full h-[768px] bg-gray-100 py-0 rounded-4xl" />
+          <div className="btn w-full h-96 bg-gray-100 py-0 rounded-4xl" />
         </div>
       )}
     </div>
