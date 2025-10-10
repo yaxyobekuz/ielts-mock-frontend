@@ -39,18 +39,6 @@ const Home = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
-      {/* Custom Container Styles */}
-      <style jsx>{`
-        .container {
-          max-width: 1920px;
-          width: 100%;
-          padding-left: 1.25rem;
-          padding-right: 1.25rem;
-          margin-left: auto;
-          margin-right: auto;
-        }
-      `}</style>
-
       {/* Header */}
       <header className="bg-white shadow-sm sticky top-0 z-50">
         <div className="container">
@@ -75,10 +63,10 @@ const Home = () => {
                 Features
               </a>
               <a
-                href="#contact"
+                href="profile"
                 className="text-gray-600 hover:text-blue-600 transition-colors"
               >
-                Contact
+                Profile
               </a>
             </div>
           </nav>
@@ -100,7 +88,7 @@ const Home = () => {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link
-                to={"/link/68c67a5ddec8dace8f16a84c"}
+                to={"/link/68dfb123c684e66e19f1473d"}
                 className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-xl text-lg font-semibold transition-all duration-300 shadow-lg hover:shadow-xl"
               >
                 Learn More
