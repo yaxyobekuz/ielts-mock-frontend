@@ -14,6 +14,7 @@ import { Toaster } from "react-hot-toast";
 import Home from "./pages/Home";
 import Link from "./pages/Link";
 import Login from "./pages/Login";
+import Profile from "./pages/Profile";
 import Reading from "./pages/Reading";
 import Writing from "./pages/Writing";
 import Tutorial from "./pages/Tutorial";
@@ -22,13 +23,14 @@ import Listening from "./pages/Listening";
 import Submission from "./pages/Submission";
 import Delivering from "./pages/Delivering";
 
+// Hoooks
+import useAudioList from "./hooks/useAudioList";
+
 // Layouts
 import MainLayout from "./layouts/MainLayout";
 import TestLayout from "./layouts/TestLayout";
 import AuthLayout from "./layouts/AuthLayout";
-
-// Hoooks
-import useAudioList from "./hooks/useAudioList";
+import ProfileLayout from "./layouts/ProfileLayout";
 
 const App = () => {
   const { setAudioList, stopAudio, isLoading, isPlaying } = useAudioList();
@@ -77,6 +79,12 @@ const App = () => {
 
           {/* Tutorial */}
           <Route path="tutorial/:testId" element={<Tutorial />} />
+
+          {/* Profile */}
+          <Route path="profile" element={<ProfileLayout />}>
+            <Route index element={<Navigate to="me" />} />
+            <Route path="me" element={<Profile />} />
+          </Route>
         </Route>
 
         {/* Auth */}
