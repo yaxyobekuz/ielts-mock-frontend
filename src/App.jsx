@@ -34,6 +34,8 @@ import Submission from "./pages/Submission";
 import Delivering from "./pages/Delivering";
 import Submissions from "./pages/Submissions";
 import SubmissionDetail from "./pages/SubmissionDetail";
+import Result from "./pages/Result";
+import Results from "./pages/Results";
 
 const App = () => {
   const { setAudioList, stopAudio, isLoading, isPlaying } = useAudioList();
@@ -87,6 +89,10 @@ const App = () => {
           <Route path="profile" element={<ProfileLayout />}>
             <Route index element={<Navigate to="me" />} />
             <Route path="me" element={<Profile />} />
+            <Route path="results" element={<Outlet />}>
+              <Route index element={<Results />} />
+              <Route path=":resultId" element={<Result />} />
+            </Route>
             <Route path="submissions" element={<Outlet />}>
               <Route index element={<Submissions />} />
               <Route
