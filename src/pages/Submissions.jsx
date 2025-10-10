@@ -80,7 +80,7 @@ const SubmissionItem = ({ test, _id: id, isScored, startedAt, finishedAt }) => {
     <div className="flex flex-col gap-3.5 justify-between relative w-full min-h-40 bg-gray-50 rounded-4xl p-5 transition-all duration-200 hover:bg-gray-100">
       {/* Title */}
       <h3 className="text-xl font-medium line-clamp-1">
-        {test?.title || "Test nomi"}{" "}
+        {test?.title || "Test nomi"}
       </h3>
 
       {/* Bottom */}
