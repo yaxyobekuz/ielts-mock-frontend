@@ -1,6 +1,7 @@
 // Router
 import {
   Route,
+  Outlet,
   Navigate,
   RouterProvider,
   createBrowserRouter,
@@ -9,6 +10,15 @@ import {
 
 // Toaster
 import { Toaster } from "react-hot-toast";
+
+// Hoooks
+import useAudioList from "./hooks/useAudioList";
+
+// Layouts
+import MainLayout from "./layouts/MainLayout";
+import TestLayout from "./layouts/TestLayout";
+import AuthLayout from "./layouts/AuthLayout";
+import ProfileLayout from "./layouts/ProfileLayout";
 
 // Pages
 import Home from "./pages/Home";
@@ -22,15 +32,8 @@ import Register from "./pages/Register";
 import Listening from "./pages/Listening";
 import Submission from "./pages/Submission";
 import Delivering from "./pages/Delivering";
-
-// Hoooks
-import useAudioList from "./hooks/useAudioList";
-
-// Layouts
-import MainLayout from "./layouts/MainLayout";
-import TestLayout from "./layouts/TestLayout";
-import AuthLayout from "./layouts/AuthLayout";
-import ProfileLayout from "./layouts/ProfileLayout";
+import Submissions from "./pages/Submissions";
+import SubmissionDetail from "./pages/SubmissionDetail";
 
 const App = () => {
   const { setAudioList, stopAudio, isLoading, isPlaying } = useAudioList();
@@ -84,6 +87,13 @@ const App = () => {
           <Route path="profile" element={<ProfileLayout />}>
             <Route index element={<Navigate to="me" />} />
             <Route path="me" element={<Profile />} />
+            <Route path="submissions" element={<Outlet />}>
+              <Route index element={<Submissions />} />
+              <Route
+                path=":submissionId/:module?"
+                element={<SubmissionDetail />}
+              />
+            </Route>
           </Route>
         </Route>
 
