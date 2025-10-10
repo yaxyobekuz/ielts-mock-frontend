@@ -176,3 +176,7 @@ export const getIeltsScore = (correctAnswers = 0, module = "listening") => {
   // If exact match not found, return 0 for very low scores
   return 0;
 };
+
+export const appendDotZero = (value) => {
+  return String(value)?.padEnd(3, ".0");
+};
