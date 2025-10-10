@@ -178,5 +178,9 @@ img.ProseMirror-selectednode {
 }
 
 a.active {
-  @apply !bg-gray-100 text-blue-500;
+  @apply !bg-blue-50 text-blue-500;
+}
+
+a.active .btn {
+  @apply bg-white;
 }
