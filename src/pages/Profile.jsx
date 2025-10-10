@@ -64,7 +64,7 @@ const Profile = () => {
       <h1 className="font-medium text-[23px] leading-7">Profil</h1>
 
       {/* Profile */}
-      <div className="flex items-center justify-between gap-3.5 w-full bg-gray-50 p-4 rounded-3xl">
+      <div className="flex items-center justify-between gap-3.5 w-full bg-gray-50 p-5 rounded-4xl">
         <div className="flex items-center gap-3.5">
           <ProfilePhoto size={64} className="size-16 rounded-full text-2xl" />
 
@@ -86,7 +86,7 @@ const Profile = () => {
       </div>
 
       {/* Edit profile */}
-      <section className="bg-gray-50 p-4 space-y-3.5 rounded-3xl">
+      <section className="bg-gray-50 p-5 space-y-3.5 rounded-4xl">
         <h2 className="font-medium text-xl">Ma'lumotlarni yangilash</h2>
 
         {/* Form */}
