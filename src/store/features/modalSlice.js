@@ -4,7 +4,7 @@ const initialModal = { isOpen: false, data: {}, isLoading: false };
 
 // Initial state
 const initialState = {
-  uploadImage: initialModal,
+  updateAvatar: initialModal,
 };
 
 export const modalSlice = createSlice({

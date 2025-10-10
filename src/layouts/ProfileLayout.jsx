@@ -1,11 +1,12 @@
-// Components
-import ProfilePhoto from "@/components/ProfilePhoto";
-
 // Data
 import ieltsLogo from "@/assets/icons/ielts-logo.svg";
 
 // Router
 import { Link, NavLink, Outlet } from "react-router-dom";
+
+// Components
+import ProfilePhoto from "@/components/ProfilePhoto";
+import UpdateAvatarModal from "@/components/modal/UpdateAvatarModal";
 
 // Icons
 import { ArrowLeft, Book, FileCheck, LogOut, Settings } from "lucide-react";
@@ -107,6 +108,9 @@ const ProfileLayout = () => {
           <Outlet />
         </main>
       </div>
+
+      {/* Modals */}
+      <UpdateAvatarModal />
     </div>
   );
 };
