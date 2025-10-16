@@ -245,7 +245,7 @@ const Body = ({ close, isUploading, setIsUploading }) => {
       <div className="flex flex-col-reverse justify-end gap-5 w-full xs:flex-row">
         <Button
           type="button"
-          onClick={close}
+          onClick={()=> close()}
           variant="neutral"
           className="w-full xs:w-32"
         >
