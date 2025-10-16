@@ -89,11 +89,6 @@ const LoginContent = ({ next }) => {
       .then(({ code, message, token, user }) => {
         if (code !== "loginSuccess") throw new Error();
 
-        if (!["supervisor", "teacher"].includes(user.role)) {
-          navigate("/auth/login");
-          return toast.error("Kirish uchun huquqlaringiz yetarli emas");
-        }
-
         // Navigate user
         navigate("/");
 
@@ -209,11 +204,6 @@ const VerifyCodeContent = ({ phone, password, createdAt, onBack }) => {
     authApi
       .verify({ phone: formattedPhone, code: formattedCode, password })
       .then(({ token, user, message }) => {
-        if (!["supervisor", "teacher"].includes(user.role)) {
-          navigate("/auth/login");
-          return toast.error("Kirish uchun huquqlaringiz yetarli emas");
-        }
-
         // Navigate user
         navigate("/");
 
@@ -395,11 +385,6 @@ const LoginWithCode = ({ onBack }) => {
     authApi
       .loginWithCode({ phone: formattedPhone, code: formattedCode })
       .then(({ token, user, message }) => {
-        if (!["supervisor", "teacher"].includes(user.role)) {
-          navigate("/auth/login");
-          return toast.error("Kirish uchun huquqlaringiz yetarli emas");
-        }
-
         // Navigate user
         navigate("/");
 
