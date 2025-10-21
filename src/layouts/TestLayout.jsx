@@ -43,7 +43,7 @@ const TestLayout = ({ audioLoading, audioPlaying, onStopAudio }) => {
   const [timeLeft, setTimeLeft] = useState(null);
   const { updateProperty: updateModule } = useStore("modules");
   const { getData, resetData: resetAnswers } = useStore("answers");
-  const answersData = getData();
+  const userAnswers = getData();
 
   // Next module navigation
   const goToNextModule = () => {
@@ -57,7 +57,7 @@ const TestLayout = ({ audioLoading, audioPlaying, onStopAudio }) => {
     localStorage.removeItem(key);
 
     // Save module answers to store
-    updateModule(module, { isDone: true, answers: answersData });
+    updateModule(module, { isDone: true, answers: userAnswers });
     resetAnswers();
 
     // Stop listening audio
@@ -130,10 +130,8 @@ const Footer = ({ parts = [] }) => {
   const { getData } = useStore("answers");
   const { pathSegments } = usePathSegments();
   const isWritingPage = pathSegments[2] === "writing";
-  const { getData: getAllWords } = useStore("answers");
   const { partNumber, questionNumber, testId } = useParams();
-  const answersData = getData();
-  const allWords = getAllWords();
+  const userAnswers = getData();
 
   // Pre-calculate offsets for all parts to avoid repeated slicing
   const questionOffsets = parts.reduce((acc, part, idx) => {
@@ -145,29 +143,59 @@ const Footer = ({ parts = [] }) => {
 
   return (
     <footer className="flex h-14">
-      {parts.map(({ number, totalQuestions }) => {
-        const words = allWords[number];
+      {parts.map(({ number, totalQuestions, sections }) => {
+        const answer = userAnswers[number];
         const isActivePart = number === Number(partNumber);
         const Navigation = isActivePart ? "div" : Link;
-        const prevQuestionsCount = questionOffsets[number];
+        const prevPartQuestionsCount = questionOffsets[number];
         const partUrl = `/test/${testId}/${pathSegments[2]}/${number}/${
-          prevQuestionsCount + 1
+          prevPartQuestionsCount + 1
         }`;
 
-        const partAnswers = Array.from(
-          { length: totalQuestions },
-          (_, index) => {
-            const qNum = prevQuestionsCount + index + 1;
-            return answersData[qNum]?.text;
+        const answers = sections.map(
+          ({ questionsCount, type, groups = [] }, index) => {
+            const qNumbersMap = [];
+            const isCheckBoxGroup = type === "checkbox-group";
+
+            const prevSectionQuestionsCount = sections
+              .slice(0, index)
+              .reduce((sum, sec) => sum + sec.questionsCount, 0);
+            const initialQestionNumber =
+              prevPartQuestionsCount + prevSectionQuestionsCount + 1;
+
+            if (isCheckBoxGroup) {
+              let idx = 0;
+              groups.forEach(({ maxSelected }) => {
+                const start = initialQestionNumber + idx;
+                const end = initialQestionNumber + idx - 1 + maxSelected;
+
+                qNumbersMap.push(`${start}-${end}`);
+                idx += maxSelected;
+              });
+            } else {
+              for (let i = 0; i < questionsCount; i++) {
+                qNumbersMap.push(initialQestionNumber + i);
+              }
+            }
+
+            return qNumbersMap.every((qNum) => {
+              const isAnswered = (() => {
+                if (isNaN(Number(qNum))) {
+                  const [start, end] = qNum?.split("-");
+                  const totalAnswers = end - start + 1;
+                  return userAnswers[qNum]?.length === totalAnswers;
+                }
+
+                return !!userAnswers[qNum]?.text;
+              })();
+
+              return isAnswered;
+            });
           }
         );
 
-        // Check if all questions in the part are answered
-        const isActivePartNumLine = (() => {
-          if (isWritingPage) return words;
-          return partAnswers.every(Boolean);
-        })();
-        const answeredCount = partAnswers.filter(Boolean).length;
+        const isActivePartNumLine = answers.every(Boolean);
+        const answeredCount = answers.filter(Boolean).length;
 
         return (
           <Navigation
@@ -227,30 +255,66 @@ const Footer = ({ parts = [] }) => {
             {/* Question navigation for active part */}
             {isActivePart && (
               <div className="flex">
-                {Array.from({ length: totalQuestions }, (_, idx) => {
-                  const qNum = prevQuestionsCount + idx + 1;
-                  const isCurrentQ = Number(questionNumber) === qNum;
-                  const isAnswered = Boolean(answersData[qNum]?.text);
+                {sections.map(
+                  ({ questionsCount, type, groups = [] }, index) => {
+                    const qNumbersMap = [];
+                    const isCheckBoxGroup = type === "checkbox-group";
 
-                  return (
-                    <Link
-                      key={qNum}
-                      to={`/test/${testId}/${pathSegments[2]}/${number}/${qNum}`}
-                      className={`inline-block relative px-1 border-2 rounded transition-colors duration-300 hover:border-blue-500 hover:font-bold ${
-                        isCurrentQ
-                          ? "font-bold border-blue-500"
-                          : "border-transparent"
-                      }`}
-                    >
-                      <div
-                        className={`${
-                          isAnswered ? "bg-green-700" : "bg-gray-300"
-                        } absolute w-[calc(100%+2px)] inset-x-0 -top-[17px] h-[2.5px]`}
-                      />
-                      <span>{qNum}</span>
-                    </Link>
-                  );
-                })}
+                    const prevSectionQuestionsCount = sections
+                      .slice(0, index)
+                      .reduce((sum, sec) => sum + sec.questionsCount, 0);
+                    const initialQestionNumber =
+                      prevPartQuestionsCount + prevSectionQuestionsCount + 1;
+
+                    if (isCheckBoxGroup) {
+                      let idx = 0;
+                      groups.forEach(({ maxSelected }) => {
+                        const start = initialQestionNumber + idx;
+                        const end =
+                          initialQestionNumber + idx - 1 + maxSelected;
+
+                        qNumbersMap.push(`${start}-${end}`);
+                        idx += maxSelected;
+                      });
+                    } else {
+                      for (let i = 0; i < questionsCount; i++) {
+                        qNumbersMap.push(initialQestionNumber + i);
+                      }
+                    }
+
+                    return qNumbersMap.map((qNum) => {
+                      const isCurrentQ = questionNumber == qNum;
+                      const isAnswered = (() => {
+                        if (isNaN(Number(qNum))) {
+                          const [start, end] = qNum?.split("-");
+                          const totalAnswers = end - start + 1;
+                          return userAnswers[qNum]?.length === totalAnswers;
+                        }
+
+                        return !!userAnswers[qNum]?.text;
+                      })();
+
+                      return (
+                        <Link
+                          key={qNum}
+                          to={`/test/${testId}/${pathSegments[2]}/${number}/${qNum}`}
+                          className={`inline-block relative px-1 border-2 rounded transition-colors duration-300 hover:border-blue-500 hover:font-bold ${
+                            isCurrentQ
+                              ? "font-bold border-blue-500"
+                              : "border-transparent"
+                          }`}
+                        >
+                          <div
+                            className={`${
+                              isAnswered ? "bg-green-700" : "bg-gray-300"
+                            } absolute w-[calc(100%+2px)] inset-x-0 -top-[17px] h-[2.5px]`}
+                          />
+                          <span>{qNum}</span>
+                        </Link>
+                      );
+                    });
+                  }
+                )}
               </div>
             )}
           </Navigation>

@@ -34,9 +34,9 @@ const CheckboxGroup = ({ initialNumber, groups }) => {
     <ul className="space-y-6">
       {groups.map(({ question, answers, maxSelected }, index) => {
         const groupNumberRef = useRef(null);
-        const { start, end, groupKey } = groupNumbers[index];
+        const { start, groupKey } = groupNumbers[index];
         const initialValue = initialValues[groupKey];
-        const isActive = questionNumber >= start && questionNumber <= end;
+        const isActive = questionNumber === groupKey;
 
         useEffect(() => {
           if (!groupNumberRef) return;
@@ -54,12 +54,12 @@ const CheckboxGroup = ({ initialNumber, groups }) => {
               <b
                 tabIndex={0}
                 ref={groupNumberRef}
-                onFocus={() => handleNavigate(start)}
+                onFocus={() => handleNavigate(groupKey)}
                 className={`inline-block py-0.5 px-1.5 rounded mr-2 border-2 outline-none transition-colors duration-300 ${
                   isActive ? "border-blue-400" : "border-gray-200"
                 }`}
               >
-                {start}–{end}
+                {groupKey}
               </b>
 
               <span>{question}</span>
@@ -72,7 +72,7 @@ const CheckboxGroup = ({ initialNumber, groups }) => {
               maxSelected={maxSelected}
               initialValue={initialValue}
               onChange={(value) => {
-                handleNavigate(start);
+                handleNavigate(groupKey);
                 updateProperty(groupKey, value);
               }}
             />
