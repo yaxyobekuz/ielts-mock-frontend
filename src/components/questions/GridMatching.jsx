@@ -1,15 +1,30 @@
-// Hooks
-import useStore from "@/hooks/useStore";
+// React
+import { useEffect, useRef } from "react";
 
 // Helpers
 import { getLetterByIndex } from "@/lib/helpers";
 
+// Hooks
+import useStore from "@/hooks/useStore";
+import usePathSegments from "@/hooks/usePathSegments";
+
+// Router
+import { useNavigate, useParams } from "react-router-dom";
+
 const GridMatching = ({ initialNumber, grid, _id: sectionId }) => {
+  const navigate = useNavigate();
+  const { questionNumber } = useParams();
+  const { pathSegments: path } = usePathSegments();
   const { updateProperty, getData } = useStore("answers");
   const answers = getData();
 
   const handleInputSelect = (questionNumber, index) => {
     updateProperty(questionNumber, { text: getLetterByIndex(index) });
+  };
+
+  const handleNavigate = (newQuestionNumber) => {
+    if (newQuestionNumber == questionNumber) return;
+    navigate(`/test/${path[1]}/${path[2]}/${path[3]}/${newQuestionNumber}`);
   };
 
   return (
@@ -29,12 +44,29 @@ const GridMatching = ({ initialNumber, grid, _id: sectionId }) => {
 
       {/* Body */}
       {grid.questions.map((question, qIndex) => {
+        const groupNumberRef = useRef(null);
         const qNumber = qIndex + initialNumber;
+        const isActive = questionNumber == qNumber;
+
+        useEffect(() => {
+          if (!groupNumberRef) return;
+          if (isActive) groupNumberRef.current?.focus();
+        }, [qIndex, qNumber, questionNumber]);
+
         return (
           <div key={qIndex} className="flex min-h-12">
             {/* Question */}
             <div className="flex items-start gap-3 min-w-48 max-w-md w-full h-auto p-1.5 rounded-none border-t border-r border-black">
-              <b>{qNumber}</b>
+              <b
+                tabIndex={0}
+                ref={groupNumberRef}
+                onFocus={() => handleNavigate(qNumber)}
+                className={`inline-block py-0.5 px-1.5 rounded mr-2 border-2 outline-none transition-colors duration-300 ${
+                  isActive ? "border-blue-400" : "border-transparent"
+                }`}
+              >
+                {qNumber}
+              </b>
               <p>{question.text}</p>
             </div>
 
@@ -53,6 +85,7 @@ const GridMatching = ({ initialNumber, grid, _id: sectionId }) => {
                     defaultChecked={defaultChecked}
                     name={`section-${sectionId}-question-${qIndex}`}
                     onChange={() => {
+                      handleNavigate(qNumber);
                       handleInputSelect(qNumber, aIndex);
                     }}
                   />

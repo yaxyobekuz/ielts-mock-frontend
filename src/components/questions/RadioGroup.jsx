@@ -30,12 +30,7 @@ const RadioGroup = ({ initialNumber, groups }) => {
 
         useEffect(() => {
           if (!groupNumberRef) return;
-          if (isActive) {
-            groupNumberRef.current.scrollIntoView({
-              block: "center",
-              behavior: "smooth",
-            });
-          }
+          if (isActive) groupNumberRef.current?.focus();
         }, [index, questionNumber]);
 
         return (
