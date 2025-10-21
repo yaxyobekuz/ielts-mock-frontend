@@ -1,10 +1,17 @@
 // Hooks
 import useStore from "@/hooks/useStore";
+import usePathSegments from "@/hooks/usePathSegments";
+
+// Router
+import { useNavigate, useParams } from "react-router-dom";
 
 // React
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 const CheckboxGroup = ({ initialNumber, groups }) => {
+  const navigate = useNavigate();
+  const { questionNumber } = useParams();
+  const { pathSegments: path } = usePathSegments();
   const { updateProperty, getData } = useStore("answers");
   const initialValues = getData();
 
@@ -18,16 +25,40 @@ const CheckboxGroup = ({ initialNumber, groups }) => {
     });
   }, [groups, initialNumber]);
 
+  const handleNavigate = (newQuestionNumber) => {
+    if (newQuestionNumber === questionNumber) return;
+    navigate(`/test/${path[1]}/${path[2]}/${path[3]}/${newQuestionNumber}`);
+  };
+
   return (
     <ul className="space-y-6">
       {groups.map(({ question, answers, maxSelected }, index) => {
+        const groupNumberRef = useRef(null);
         const { start, end, groupKey } = groupNumbers[index];
         const initialValue = initialValues[groupKey];
+        const isActive = questionNumber >= start && questionNumber <= end;
+
+        useEffect(() => {
+          if (!groupNumberRef) return;
+          if (isActive) {
+            groupNumberRef.current?.scrollIntoView({
+              block: "center",
+              behavior: "smooth",
+            });
+          }
+        }, [index, questionNumber]);
 
         return (
           <li key={index}>
             <p className="mb-1">
-              <b className="inline-block py-0.5 px-1.5 rounded mr-2 border-2 border-transparent transition-colors duration-300">
+              <b
+                tabIndex={0}
+                ref={groupNumberRef}
+                onFocus={() => handleNavigate(start)}
+                className={`inline-block py-0.5 px-1.5 rounded mr-2 border-2 outline-none transition-colors duration-300 ${
+                  isActive ? "border-blue-400" : "border-gray-200"
+                }`}
+              >
                 {start}–{end}
               </b>
 
@@ -40,7 +71,10 @@ const CheckboxGroup = ({ initialNumber, groups }) => {
               groupNumber={start}
               maxSelected={maxSelected}
               initialValue={initialValue}
-              onChange={(value) => updateProperty(groupKey, value)}
+              onChange={(value) => {
+                handleNavigate(start);
+                updateProperty(groupKey, value);
+              }}
             />
           </li>
         );
