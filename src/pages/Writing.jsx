@@ -19,7 +19,7 @@ const TextComponent = questionsType.find(
   ({ value }) => value === "text"
 ).component;
 
-const Reading = () => {
+const Writing = () => {
   const { partNumber, testId } = useParams();
   const { pathSegments } = usePathSegments();
   const { getProperty } = useStore("modules");
@@ -153,7 +153,7 @@ const Reading = () => {
             value={words}
             id="writing-response"
             name="writing-response"
-            className="grow resize-none rounded border border-gray-400 outline-0 focus:border-blue-500"
+            className="h-2/3 ielts-theme-scroll resize-none rounded border border-gray-400 outline-0 focus:border-blue-500"
             onChange={(e) => {
               setWords(e.target.value);
               updateWords(partNumber, { text: e.target.value });
@@ -168,4 +168,4 @@ const Reading = () => {
   );
 };
 
-export default Reading;
+export default Writing;
