@@ -146,6 +146,7 @@ const Footer = ({ parts = [] }) => {
   return (
     <footer className="flex h-14">
       {parts.map(({ number, totalQuestions, sections }) => {
+        let answeredCount = 0;
         const isActivePart = number === Number(partNumber);
         const Navigation = isActivePart ? "div" : Link;
         const prevPartQuestionsCount = questionOffsets[number];
@@ -175,34 +176,39 @@ const Footer = ({ parts = [] }) => {
                   const start = initialQestionNumber + idx;
                   const end = initialQestionNumber + idx - 1 + maxSelected;
 
-                  qNumbersMap.push(`${start}-${end}`);
+                  qNumbersMap.push({
+                    count: maxSelected,
+                    key: `${start}-${end}`,
+                  });
                   idx += maxSelected;
                 });
               } else {
                 for (let i = 0; i < questionsCount; i++) {
-                  qNumbersMap.push(initialQestionNumber + i);
+                  qNumbersMap.push({ key: initialQestionNumber + i, count: 1 });
                 }
               }
 
-              return qNumbersMap.every((qNum) => {
+              const arr = qNumbersMap.map(({ key, count }) => {
                 const isAnswered = (() => {
-                  if (isNaN(Number(qNum))) {
-                    const [start, end] = qNum?.split("-");
+                  if (isNaN(Number(key))) {
+                    const [start, end] = key?.split("-");
                     const totalAnswers = end - start + 1;
-                    return userAnswers[qNum]?.length === totalAnswers;
+                    return userAnswers[key]?.length === totalAnswers;
                   }
 
-                  return !!userAnswers[qNum]?.text;
+                  return !!userAnswers[key]?.text;
                 })();
 
+                if (isAnswered) answeredCount += count;
                 return isAnswered;
               });
+
+              return arr.every(Boolean);
             }
           );
         })();
 
         const isActivePartNumLine = answers.every(Boolean);
-        const answeredCount = answers.filter(Boolean).length;
 
         return (
           <Navigation

@@ -34,9 +34,11 @@ const CheckboxGroup = ({ initialNumber, groups }) => {
     <ul className="space-y-6">
       {groups.map(({ question, answers, maxSelected }, index) => {
         const groupNumberRef = useRef(null);
-        const { start, groupKey } = groupNumbers[index];
+        const { start, end, groupKey } = groupNumbers[index];
         const initialValue = initialValues[groupKey];
-        const isActive = questionNumber === groupKey;
+        const isActive =
+          questionNumber === groupKey ||
+          (questionNumber >= start && questionNumber <= end);
 
         useEffect(() => {
           if (!groupNumberRef) return;

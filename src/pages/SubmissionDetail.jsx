@@ -181,10 +181,10 @@ const processAnswersData = (module, answers, correctAnswers) => {
     const isCorrect = (() => {
       if (userAnswer === "-" && correctAnswer === "-") return false;
 
-      if (typeof correctAnswers[module][key] === "object") {
+      if (typeof correctAnswers?.[module]?.[key] === "object") {
         return isEqualStringArray(
-          answers[module][key],
-          correctAnswers[module][key]
+          answers?.[module]?.[key],
+          correctAnswers?.[module]?.[key]
         );
       }
 
