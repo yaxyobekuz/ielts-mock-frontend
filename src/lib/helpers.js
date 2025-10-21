@@ -188,3 +188,17 @@ export const getRemainingSeconds = (createdAt, duration = 60) => {
   const remainingSeconds = Math.max(0, duration - elapsedSeconds);
   return remainingSeconds;
 };
+
+export const isEqualStringArray = (arr1, arr2) => {
+  if (arr1?.length !== arr2?.length) return false;
+
+  const normalize = (str) =>
+    str
+      .trim()
+      .toLowerCase()
+      .replace(/[.,!?;:]$/g, "");
+  const sorted1 = arr1.map(normalize).sort();
+  const sorted2 = arr2.map(normalize).sort();
+
+  return sorted1.every((val, idx) => val === sorted2[idx]);
+};
