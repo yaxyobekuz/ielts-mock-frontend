@@ -7,9 +7,6 @@ import {
   useNavigate,
 } from "react-router-dom";
 
-// Icons
-import { Check } from "lucide-react";
-
 // React
 import { useEffect, useRef, useState } from "react";
 
@@ -22,6 +19,9 @@ import useStore from "@/hooks/useStore";
 import useModule from "@/hooks/useModule";
 import usePathSegments from "@/hooks/usePathSegments";
 import usePreventUnload from "@/hooks/usePreventUnload";
+
+// Icons
+import { ArrowLeft, ArrowRight, Check } from "lucide-react";
 
 const TestLayout = ({ audioLoading, audioPlaying, onStopAudio }) => {
   usePreventUnload();
@@ -121,7 +121,9 @@ const TestLayout = ({ audioLoading, audioPlaying, onStopAudio }) => {
         <Outlet />
       </main>
 
-      <Footer parts={parts} testId={testId} module={module} />
+      <Footer parts={parts} />
+
+      <NavigationButtons parts={parts} />
     </div>
   );
 };
@@ -144,7 +146,6 @@ const Footer = ({ parts = [] }) => {
   return (
     <footer className="flex h-14">
       {parts.map(({ number, totalQuestions, sections }) => {
-        const answer = userAnswers[number];
         const isActivePart = number === Number(partNumber);
         const Navigation = isActivePart ? "div" : Link;
         const prevPartQuestionsCount = questionOffsets[number];
@@ -152,47 +153,53 @@ const Footer = ({ parts = [] }) => {
           prevPartQuestionsCount + 1
         }`;
 
-        const answers = sections.map(
-          ({ questionsCount, type, groups = [] }, index) => {
-            const qNumbersMap = [];
-            const isCheckBoxGroup = type === "checkbox-group";
-
-            const prevSectionQuestionsCount = sections
-              .slice(0, index)
-              .reduce((sum, sec) => sum + sec.questionsCount, 0);
-            const initialQestionNumber =
-              prevPartQuestionsCount + prevSectionQuestionsCount + 1;
-
-            if (isCheckBoxGroup) {
-              let idx = 0;
-              groups.forEach(({ maxSelected }) => {
-                const start = initialQestionNumber + idx;
-                const end = initialQestionNumber + idx - 1 + maxSelected;
-
-                qNumbersMap.push(`${start}-${end}`);
-                idx += maxSelected;
-              });
-            } else {
-              for (let i = 0; i < questionsCount; i++) {
-                qNumbersMap.push(initialQestionNumber + i);
-              }
-            }
-
-            return qNumbersMap.every((qNum) => {
-              const isAnswered = (() => {
-                if (isNaN(Number(qNum))) {
-                  const [start, end] = qNum?.split("-");
-                  const totalAnswers = end - start + 1;
-                  return userAnswers[qNum]?.length === totalAnswers;
-                }
-
-                return !!userAnswers[qNum]?.text;
-              })();
-
-              return isAnswered;
-            });
+        const answers = (() => {
+          if (isWritingPage) {
+            return [!!userAnswers[number]?.text?.trim()?.length];
           }
-        );
+
+          return sections.map(
+            ({ questionsCount, type, groups = [] }, index) => {
+              const qNumbersMap = [];
+              const isCheckBoxGroup = type === "checkbox-group";
+
+              const prevSectionQuestionsCount = sections
+                .slice(0, index)
+                .reduce((sum, sec) => sum + sec.questionsCount, 0);
+              const initialQestionNumber =
+                prevPartQuestionsCount + prevSectionQuestionsCount + 1;
+
+              if (isCheckBoxGroup) {
+                let idx = 0;
+                groups.forEach(({ maxSelected }) => {
+                  const start = initialQestionNumber + idx;
+                  const end = initialQestionNumber + idx - 1 + maxSelected;
+
+                  qNumbersMap.push(`${start}-${end}`);
+                  idx += maxSelected;
+                });
+              } else {
+                for (let i = 0; i < questionsCount; i++) {
+                  qNumbersMap.push(initialQestionNumber + i);
+                }
+              }
+
+              return qNumbersMap.every((qNum) => {
+                const isAnswered = (() => {
+                  if (isNaN(Number(qNum))) {
+                    const [start, end] = qNum?.split("-");
+                    const totalAnswers = end - start + 1;
+                    return userAnswers[qNum]?.length === totalAnswers;
+                  }
+
+                  return !!userAnswers[qNum]?.text;
+                })();
+
+                return isAnswered;
+              });
+            }
+          );
+        })();
 
         const isActivePartNumLine = answers.every(Boolean);
         const answeredCount = answers.filter(Boolean).length;
@@ -334,6 +341,140 @@ const Footer = ({ parts = [] }) => {
         />
       </NavLink>
     </footer>
+  );
+};
+
+const NavigationButtons = ({ parts }) => {
+  const navigate = useNavigate();
+  const { pathSegments } = usePathSegments();
+  const isWritingPage = pathSegments[2] === "writing";
+  const isDeliveringPage = pathSegments[3] === "delivering";
+  const { partNumber, questionNumber } = useParams();
+
+  // Pre-calculate offsets for all parts to avoid repeated slicing
+  const questionOffsets = parts.reduce((acc, part, idx) => {
+    acc[part.number] = parts
+      .slice(0, idx)
+      .reduce((sum, p) => sum + p.totalQuestions, 0);
+    return acc;
+  }, {});
+
+  const qKeys = parts.flatMap(({ number, sections }) => {
+    const prevPartQuestionsCount = questionOffsets[number];
+    return sections.flatMap(({ questionsCount, type, groups = [] }, index) => {
+      const qNumbersMap = [];
+      const isCheckBoxGroup = type === "checkbox-group";
+
+      const prevSectionQuestionsCount = sections
+        .slice(0, index)
+        .reduce((sum, sec) => sum + sec.questionsCount, 0);
+      const initialQestionNumber =
+        prevPartQuestionsCount + prevSectionQuestionsCount + 1;
+
+      if (isCheckBoxGroup) {
+        let idx = 0;
+        groups.forEach(({ maxSelected }) => {
+          const start = initialQestionNumber + idx;
+          const end = initialQestionNumber + idx - 1 + maxSelected;
+
+          qNumbersMap.push({ part: number, key: `${start}-${end}` });
+          idx += maxSelected;
+        });
+      } else {
+        for (let i = 0; i < questionsCount; i++) {
+          qNumbersMap.push({
+            part: number,
+            key: String(initialQestionNumber + i),
+          });
+        }
+      }
+
+      return qNumbersMap;
+    });
+  });
+
+  const currentQIndex = qKeys.findIndex(({ key }) => key === questionNumber);
+
+  const lastQ = (() => {
+    if (isWritingPage) return partNumber >= parts.length;
+    return qKeys[currentQIndex + 1] == undefined;
+  })();
+
+  const hasPrev = (() => {
+    if (isWritingPage) return partNumber != 1;
+    if (isDeliveringPage) return true;
+
+    return qKeys[currentQIndex - 1] !== undefined;
+  })();
+
+  const handlePrev = () => {
+    if (!hasPrev) return;
+
+    if (isWritingPage && partNumber != 1) {
+      if (isDeliveringPage) {
+        return navigate(`/test/${pathSegments[1]}/${pathSegments[2]}/2/1`);
+      }
+
+      return navigate(
+        `/test/${pathSegments[1]}/${pathSegments[2]}/${partNumber - 1}/1`
+      );
+    }
+
+    if (isDeliveringPage) {
+      const prevQ = qKeys[qKeys.length - 1];
+      return navigate(
+        `/test/${pathSegments[1]}/${pathSegments[2]}/${prevQ?.part}/${prevQ?.key}`
+      );
+    }
+
+    const prevQ = qKeys[currentQIndex - 1];
+    navigate(
+      `/test/${pathSegments[1]}/${pathSegments[2]}/${prevQ?.part}/${prevQ?.key}`
+    );
+  };
+
+  const handleNext = () => {
+    if (isDeliveringPage) return;
+
+    if (lastQ) {
+      return navigate(`/test/${pathSegments[1]}/${pathSegments[2]}/delivering`);
+    }
+
+    if (isWritingPage) {
+      return navigate(
+        `/test/${pathSegments[1]}/${pathSegments[2]}/${
+          Number(partNumber) + 1
+        }/1`
+      );
+    }
+
+    const nextQ = qKeys[currentQIndex + 1];
+
+    navigate(
+      `/test/${pathSegments[1]}/${pathSegments[2]}/${nextQ?.part}/${nextQ?.key}`
+    );
+  };
+
+  return (
+    <div className="flex gap-0.5 fixed bottom-24 right-8">
+      {/* Prev */}
+      <button
+        disabled={!hasPrev}
+        onClick={handlePrev}
+        className="btn size-14 p-0 bg-black rounded-sm text-white disabled:bg-[#4c4c4c]"
+      >
+        <ArrowLeft strokeWidth={4.5} className="size-8" />
+      </button>
+
+      {/* Next */}
+      <button
+        onClick={handleNext}
+        disabled={isDeliveringPage}
+        className="btn size-14 p-0 bg-black rounded-sm text-white disabled:bg-[#4c4c4c]"
+      >
+        <ArrowRight strokeWidth={4.5} className="size-8" />
+      </button>
+    </div>
   );
 };
 
