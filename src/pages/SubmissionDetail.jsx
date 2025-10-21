@@ -1,3 +1,11 @@
+// Helpers
+import {
+  formatDate,
+  formatTime,
+  getIeltsScore,
+  isEqualStringArray,
+} from "@/lib/helpers";
+
 // React
 import { useEffect } from "react";
 
@@ -19,9 +27,6 @@ import { submissionsApi } from "@/api/submissions.api";
 
 // Icons
 import { X, Dot, Check, Clock, Trophy, Activity } from "lucide-react";
-
-// Helpers
-import { formatDate, formatTime, getIeltsScore } from "@/lib/helpers";
 
 const SubmissionDetail = () => {
   const { submissionId } = useParams();
@@ -71,7 +76,7 @@ const Main = ({
 }) => {
   const { module = "listening" } = useParams();
   return (
-    <div className="mt-5">
+    <div className="mt-5 pb-12">
       <div className="flex items-center justify-between mb-5">
         {/* Title */}
         <h1 className="font-medium text-[23px] leading-7">
@@ -136,10 +141,19 @@ const Main = ({
   );
 };
 
-const TableContent = ({ module, answers = {}, correctAnswers }) => {
-  const correctAnswersMap = Object.keys(correctAnswers[module] || {});
+// Table content
+const sortArray = (arr) => {
+  return arr.sort((a, b) => {
+    const getFirstNum = (str) => Number(str.split("-")[0]);
+    return getFirstNum(a) - getFirstNum(b);
+  });
+};
 
-  // Count correct and wrong answers
+const processAnswersData = (module, answers, correctAnswers) => {
+  const correctAnswersMap = sortArray(
+    Object.keys(correctAnswers[module] || {})
+  );
+
   let trueAnswers = 0;
   let wrongAnswers = 0;
 
@@ -166,10 +180,25 @@ const TableContent = ({ module, answers = {}, correctAnswers }) => {
 
     const isCorrect = (() => {
       if (userAnswer === "-" && correctAnswer === "-") return false;
+
+      if (typeof correctAnswers[module][key] === "object") {
+        return isEqualStringArray(
+          answers[module][key],
+          correctAnswers[module][key]
+        );
+      }
+
       return userAnswer === correctAnswer;
     })();
 
-    isCorrect ? trueAnswers++ : wrongAnswers++;
+    if (typeof correctAnswers[module][key] === "object") {
+      const totalAnswers = correctAnswers[module][key]?.length || 1;
+      isCorrect
+        ? (trueAnswers = totalAnswers + trueAnswers)
+        : (wrongAnswers = totalAnswers + wrongAnswers);
+    } else {
+      isCorrect ? trueAnswers++ : wrongAnswers++;
+    }
 
     return {
       key,
@@ -178,6 +207,16 @@ const TableContent = ({ module, answers = {}, correctAnswers }) => {
       correctAnswer,
     };
   });
+
+  return { rows, trueAnswers, wrongAnswers };
+};
+
+const TableContent = ({ module, answers = {}, correctAnswers }) => {
+  const { rows, trueAnswers, wrongAnswers } = processAnswersData(
+    module,
+    answers,
+    correctAnswers
+  );
 
   return (
     <>
@@ -240,11 +279,18 @@ const WritingContent = ({ answers }) => {
   return (
     <ul className="space-y-5 mt-5">
       {answersMap.map((_, index) => {
-        const words = answers.writing[index + 1]?.trim() || "";
+        const words = (() => {
+          if (typeof answers?.writing?.[index + 1] === "object") {
+            return answers?.writing?.[index + 1]?.text?.trim() || "";
+          }
+
+          return answers?.writing?.[index + 1]?.trim() || "";
+        })();
+
         const wordsCount = words.split(" ").length;
 
         return (
-          <li className="bg-gray-50 rounded-4xl p-2.5">
+          <li key={index} className="bg-gray-50 rounded-4xl p-2.5">
             {/* Top */}
             <div className="flex items-center justify-between py-1.5 px-2">
               <h3 className="font-semibold">Part {index + 1}</h3>

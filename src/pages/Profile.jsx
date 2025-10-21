@@ -29,20 +29,26 @@ const Profile = () => {
 
   const {
     phone,
+    bio: initialBio,
     lastName: initialLastName,
     firstName: initialFirstName,
   } = getProperty("data");
 
-  const { setField, lastName, firstName, isLoading } = useObjectState({
+  const { setField, lastName, firstName, isLoading, bio } = useObjectState({
     phone,
+    bio: initialBio,
     isLoading: false,
     lastName: initialLastName,
     firstName: initialFirstName,
   });
 
   const isChanged = useMemo(() => {
-    return initialFirstName !== firstName || initialLastName !== lastName;
-  }, [lastName, firstName, initialLastName, initialFirstName]);
+    return (
+      initialBio !== bio ||
+      initialLastName !== lastName ||
+      initialFirstName !== firstName
+    );
+  }, [lastName, firstName, initialLastName, initialFirstName, bio]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -50,7 +56,11 @@ const Profile = () => {
     setField("isLoading", true);
 
     usersApi
-      .update({ firstName, lastName })
+      .update({
+        bio: bio?.trim(),
+        lastName: lastName?.trim(),
+        firstName: firstName?.trim(),
+      })
       .then(({ code, user }) => {
         if (code !== "userUpdated") throw new Error();
 
@@ -123,6 +133,20 @@ const Profile = () => {
             label="Familiya"
             placeholder="Familiyangizni kiriting"
             onChange={(val) => setField("lastName", val)}
+          />
+
+          {/* Bio */}
+          <Input
+            border
+            size="xl"
+            name="bio"
+            value={bio}
+            label="Bio"
+            type="textarea"
+            maxLength={244}
+            className="col-span-2"
+            placeholder="O'zingiz haqingizda"
+            onChange={(val) => setField("bio", val)}
           />
 
           {/* Submit button */}

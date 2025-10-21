@@ -40,7 +40,7 @@ const Submissions = () => {
   }, []);
 
   return (
-    <div className="mt-5 space-y-5">
+    <div className="mt-5 space-y-5 pb-12">
       {/* Title */}
       <h1 className="font-medium text-[23px] leading-7">Javoblar</h1>
 

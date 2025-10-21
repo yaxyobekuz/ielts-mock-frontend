@@ -45,7 +45,7 @@ const Results = () => {
       <h1 className="font-medium text-[23px] leading-7">Natijalar</h1>
 
       {/* Main */}
-      <main className="grid grid-cols-2 gap-5">
+      <main className="grid grid-cols-2 gap-5 pb-12">
         <Content hasError={hasError} isLoading={isLoading} results={results} />
       </main>
     </div>
