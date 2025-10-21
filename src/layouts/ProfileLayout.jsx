@@ -66,7 +66,7 @@ const ProfileLayout = () => {
       {/* Main */}
       <div className="flex gap-5 container !max-w-7xl">
         {/* Left side */}
-        <aside className="shrink-0 min-w-72 mt-5 space-y-5">
+        <aside className="sticky top-5 inset-x-0 shrink-0 min-w-72 max-h-max mt-5 space-y-5">
           {/* Back to home */}
           <Link
             to="/"

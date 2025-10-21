@@ -49,7 +49,7 @@ const Input = ({
           disabled={disabled}
           onChange={handleChange}
           placeholder={placeholder}
-          className={`${variantClasses[variant]} ${defaultClasses}`}
+          className={`min-h-20 ${variantClasses[variant]} ${sizeClasses[size]} ${defaultClasses}`}
         />
       );
     }
