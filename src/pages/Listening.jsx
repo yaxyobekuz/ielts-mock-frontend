@@ -51,7 +51,7 @@ const Listening = ({ setAudioList }) => {
     };
   }, [location.pathname, parts, partNumber]);
 
-  const { sections } = currentPart || {};
+  const { sections, description, title } = currentPart || {};
 
   // Return error if part not found
   if (!currentPart) {
@@ -66,17 +66,13 @@ const Listening = ({ setAudioList }) => {
     );
   }
 
-  const questionRange = `${cumulativeQuestions + 1}–${
-    currentPart?.totalQuestions + cumulativeQuestions
-  }`;
-
   return (
     <div className="container">
       <div className="pt-8 pb-16">
         {/* Part header */}
-        <div className="w-full bg-[#f1f2ec] py-2.5 px-4 mb-5 rounded-md border border-gray-300">
-          <h1 className="mb-1 font-bold">Part {partNumber}</h1>
-          <p>Listen and answer questions {questionRange}.</p>
+        <div className="w-full bg-[#f1f2ec] py-2.5 px-4 mb-4 rounded-md border border-gray-300">
+          <h1 className="mb-1 font-bold">{title || `Part ${partNumber}`}</h1>
+          <p>{description || "Listen and answer questions."}</p>
         </div>
 
         {/* Sections content */}
@@ -85,6 +81,14 @@ const Listening = ({ setAudioList }) => {
             const prevSectionsTotalQuestions = sections
               .slice(0, index)
               .reduce((acc, sec) => acc + sec.questionsCount, 0);
+
+            const questionRange = `${
+              prevSectionsTotalQuestions + cumulativeQuestions + 1
+            }-${
+              prevSectionsTotalQuestions +
+              section.questionsCount +
+              cumulativeQuestions
+            }`;
 
             return (
               <Section

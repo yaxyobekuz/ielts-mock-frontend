@@ -17,6 +17,7 @@ import { useMemo, useState, useRef, useEffect } from "react";
 
 // Components
 import RichTextPreviewer from "@/components/RichTextPreviewer";
+import TextDraggable from "@/components/questions/TextDraggable";
 
 const questionsMap = {};
 questionsType.forEach((q) => (questionsMap[q.value] = q.component));
@@ -56,7 +57,7 @@ const Reading = () => {
     };
   }, [parts, partNumber, module]);
 
-  const { sections, text } = currentPart || {};
+  const { sections, text, title, description } = currentPart || {};
 
   // Left panel width state
   const isDragging = useRef(false);
@@ -108,17 +109,13 @@ const Reading = () => {
     );
   }
 
-  const questionRange = `${cumulativeQuestions + 1}–${
-    currentPart?.totalQuestions + cumulativeQuestions
-  }`;
-
   return (
     <div className="container h-full pt-4 !pr-0">
       {/* Part header */}
       <div className="w-full pr-4">
         <div className="w-full bg-[#f1f2ec] py-2.5 px-4 mb-4 rounded-md border border-gray-300">
-          <h1 className="mb-1 font-bold">Part {partNumber}</h1>
-          <p>Read the text and answer questions {questionRange}.</p>
+          <h1 className="mb-1 font-bold">{title || `Part ${partNumber}`}</h1>
+          <p>{description || "Read the text and answer questions."}</p>
         </div>
       </div>
 
@@ -128,6 +125,26 @@ const Reading = () => {
           style={{ width: `${leftWidth}%` }}
           className="h-full overflow-y-auto ielts-theme-scroll"
         >
+          {/* For splitted answers section */}
+          {sections.map(({ type, splitAnswers, text, _id }, index) => {
+            if (type !== "text-draggable" || !splitAnswers) return;
+            const prevSectionsTotalQuestions = sections
+              .slice(0, index)
+              .reduce((acc, sec) => acc + sec.questionsCount, 0);
+
+            return (
+              <TextDraggable
+                text={text}
+                rawKey={_id}
+                onlyShowText
+                initialId={_id}
+                key={"reading" + partNumber}
+                className="size-full max-h-full"
+                initialNumber={prevSectionsTotalQuestions + 1}
+              />
+            );
+          })}
+
           <TextComponent
             text={text}
             initialNumber={0}
@@ -150,12 +167,20 @@ const Reading = () => {
         {/* Right side */}
         <div
           style={{ width: `${100 - leftWidth}%` }}
-          className="h-full overflow-y-auto pl-5 pr-12 ielts-theme-scroll"
+          className="h-full overflow-y-auto pl-5 pr-12 pb-12 ielts-theme-scroll"
         >
           {sections?.map((section, index) => {
             const prevSectionsTotalQuestions = sections
               .slice(0, index)
               .reduce((acc, sec) => acc + sec.questionsCount, 0);
+
+            const questionRange = `${
+              prevSectionsTotalQuestions + cumulativeQuestions + 1
+            }-${
+              prevSectionsTotalQuestions +
+              section.questionsCount +
+              cumulativeQuestions
+            }`;
 
             return (
               <Section
@@ -202,6 +227,11 @@ const Section = ({
           {...section}
           rawKey={rawKey}
           initialNumber={initialQuestionNumber}
+          initialId={
+            section.type === "text-draggable" && section.splitAnswers
+              ? rawKey
+              : undefined
+          }
         />
       ) : (
         <div className="bg-gray-50 border rounded p-4 text-yellow-800">

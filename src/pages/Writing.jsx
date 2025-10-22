@@ -49,7 +49,7 @@ const Writing = () => {
     return { currentPart: part };
   }, [parts, partNumber, module]);
 
-  const { text } = currentPart || {};
+  const { text, title, description } = currentPart || {};
 
   // Left panel width state
   const isDragging = useRef(false);
@@ -112,11 +112,8 @@ const Writing = () => {
     <div className="container h-full pt-4">
       {/* Part header */}
       <div className="w-full bg-[#f1f2ec] py-2.5 px-4 mb-4 rounded-md border border-gray-300">
-        <h1 className="mb-1 font-bold">Part {partNumber}</h1>
-        <p>
-          You should spend about 40 minutes on this task. Write at least 250
-          words.
-        </p>
+        <h1 className="mb-1 font-bold">{title || `Part ${partNumber}`}</h1>
+        <p>{description || "Write words."}</p>
       </div>
 
       <div ref={containerRef} className="flex w-full h-[calc(100%-108px)]">
