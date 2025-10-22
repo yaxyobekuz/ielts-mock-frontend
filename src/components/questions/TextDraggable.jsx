@@ -14,11 +14,14 @@ const TextDraggable = ({
   rawKey,
   coords,
   options,
+  initialId,
+  splitAnswers,
   initialNumber,
   questionsCount,
+  onlyShowText = false,
 }) => {
-  const [id] = useState(uuidv4());
   const { getData } = useStore("answers");
+  const [id] = useState(initialId || uuidv4());
   const [optionsState, setOptionsState] = useState(options?.data || []);
   const answersData = getData();
 
@@ -54,25 +57,29 @@ const TextDraggable = ({
 
   return (
     <div className="flex gap-5 w-full">
-      <RichTextPreviewer
-        id={id}
-        text={text}
-        allowDropzone
-        coords={coords}
-        rawKey={rawKey}
-        initialNumber={initialNumber}
-      />
+      {!splitAnswers && (
+        <RichTextPreviewer
+          id={id}
+          text={text}
+          allowDropzone
+          coords={coords}
+          rawKey={rawKey}
+          initialNumber={initialNumber}
+        />
+      )}
 
-      <div className="min-w-max space-y-2 pr-5">
-        <b className="inline-block">{options.title}</b>
+      {!onlyShowText && (
+        <div className="min-w-max space-y-2 pr-5">
+          <b className="inline-block">{options?.title}</b>
 
-        {/* Answer options */}
-        <ul className="max-w-max rounded-md space-y-2">
-          {optionsState.map((option, index) => (
-            <Option key={index} {...option} id={id} />
-          ))}
-        </ul>
-      </div>
+          {/* Answer options */}
+          <ul className="max-w-max rounded-md space-y-2">
+            {optionsState.map((option, index) => (
+              <Option key={index} {...option} id={id} />
+            ))}
+          </ul>
+        </div>
+      )}
     </div>
   );
 };
@@ -96,7 +103,7 @@ const Option = ({ option, id, isUsed }) => {
       onDragEnd={handleDragEnd}
       onDragStart={handleDragStart}
       className={`${
-        isUsed ? "opacity-15 cursor-default select-none" : "cursor-move"
+        isUsed ? "opacity-5 cursor-default select-none" : "cursor-move"
       } max-w-max bg-white px-2 rounded border border-gray-400 transition-opacity duration-200`}
     >
       {option}
