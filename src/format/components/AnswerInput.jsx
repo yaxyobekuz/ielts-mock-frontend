@@ -121,7 +121,9 @@ const AnswerInput = ({
         onChange={handleInputChange}
         style={{ width: inputWidth }}
         id={`answer-input-${inputIndex}`}
-        className={`answer-input ${isActiveInput ? "active" : ""}`}
+        className={`${
+          coords ? "!w-full min-w-0 text-sm px-0.5" : ""
+        } answer-input ${isActiveInput ? "active" : ""}`}
       />
     </NodeViewWrapper>
   );
