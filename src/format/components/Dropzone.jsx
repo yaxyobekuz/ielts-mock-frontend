@@ -1,6 +1,3 @@
-// Lodash
-import { debounce } from "lodash";
-
 // Tip Tap
 import { NodeViewWrapper } from "@tiptap/react";
 
@@ -53,12 +50,10 @@ const Dropzone = ({
 
   useEffect(() => {
     calculateIndex();
-    const debouncedCalc = debounce(calculateIndex, 50);
-    editor.on("update", debouncedCalc);
+    editor.on("update", calculateIndex);
 
     return () => {
-      editor.off("update", debouncedCalc);
-      debouncedCalc.cancel();
+      editor.off("update", calculateIndex);
     };
   }, [calculateIndex, editor]);
 
@@ -203,7 +198,7 @@ const DragAndDropComponent = ({
       onDragOver={(e) => e.preventDefault()}
       className={`${
         coords ? "min-w-32" : "min-w-40"
-      } max-w-max bg-white px-1.5 text-sm leading-6 border border-blue-500 rounded cursor-move`}
+      } max-w-max bg-white px-1.5 text-sm leading-6 border border-blue-500 rounded cursor-move dropzone-content`}
     />
   );
 };

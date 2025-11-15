@@ -1,10 +1,11 @@
-import { useEffect, useState } from "react";
-
 // Random id generator
 import { v4 as uuidv4 } from "uuid";
 
 // Hooks
 import useStore from "@/hooks/useStore";
+
+// React
+import { useEffect, useState } from "react";
 
 // Components
 import RichTextPreviewer from "../RichTextPreviewer";
