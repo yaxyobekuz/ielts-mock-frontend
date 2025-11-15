@@ -123,14 +123,16 @@ const Reading = () => {
         {/* Left side */}
         <div
           style={{ width: `${leftWidth}%` }}
-          className="h-full overflow-y-auto ielts-theme-scroll"
+          className="h-full overflow-y-auto ielts-theme-scroll heading-dropzone"
         >
           {/* For splitted answers section */}
           {sections.map(({ type, splitAnswers, text, _id }, index) => {
             if (type !== "text-draggable" || !splitAnswers) return;
-            const prevSectionsTotalQuestions = sections
-              .slice(0, index)
-              .reduce((acc, sec) => acc + sec.questionsCount, 0);
+            const prevSectionsTotalQuestions =
+              sections
+                .slice(0, index)
+                .reduce((acc, sec) => acc + sec.questionsCount, 0) +
+              cumulativeQuestions;
 
             return (
               <TextDraggable

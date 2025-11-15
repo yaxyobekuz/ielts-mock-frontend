@@ -213,3 +213,7 @@ a.active {
 a.active .btn {
   @apply bg-blue-500 text-white;
 }
+
+.heading-dropzone .dropzone-content {
+  @apply text-base font-semibold;
+}
