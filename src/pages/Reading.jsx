@@ -34,15 +34,6 @@ const Reading = () => {
   const { getModuleData } = useModule(module, testId);
   const { parts } = getModuleData() || {};
 
-  // Navigate
-  if (readingAnwers?.isDone) {
-    return <Navigate to={`/tutorial/${testId}`} />;
-  }
-
-  if (!listeningAnwers?.isDone) {
-    return <Navigate to={`/test/${testId}/listening/1/1`} />;
-  }
-
   // Calculate current part and cumulative question count
   const { currentPart, cumulativeQuestions } = useMemo(() => {
     const partNum = parseInt(partNumber);
@@ -96,6 +87,15 @@ const Reading = () => {
       window.removeEventListener("mousemove", handleMouseMove);
     };
   }, []);
+
+  // Navigate
+  if (readingAnwers?.isDone) {
+    return <Navigate to={`/tutorial/${testId}`} />;
+  }
+
+  if (!listeningAnwers?.isDone) {
+    return <Navigate to={`/test/${testId}/listening/1/1`} />;
+  }
 
   if (!currentPart) {
     return (

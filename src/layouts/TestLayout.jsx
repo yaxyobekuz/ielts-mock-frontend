@@ -26,7 +26,6 @@ import { ArrowLeft, ArrowRight, Check } from "lucide-react";
 const TestLayout = ({ audioLoading, audioPlaying, onStopAudio }) => {
   usePreventUnload();
   const { testId } = useParams();
-  const navigate = useNavigate();
   const { pathSegments } = usePathSegments();
   const module = pathSegments[2];
 
@@ -48,9 +47,6 @@ const TestLayout = ({ audioLoading, audioPlaying, onStopAudio }) => {
   // Next module navigation
   const goToNextModule = () => {
     clearInterval(timerRef.current);
-
-    // Navigate to tutorial
-    navigate(`/tutorial/${testId}`);
 
     // Remove timer from localStorage
     const key = `timer-${testId}-${module}`;

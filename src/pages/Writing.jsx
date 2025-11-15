@@ -32,15 +32,6 @@ const Writing = () => {
   const { getModuleData } = useModule(module, testId);
   const { parts } = getModuleData() || {};
 
-  // Navigate
-  if (writingAnwers?.isDone) {
-    return <Navigate to={`/tutorial/${testId}`} />;
-  }
-
-  if (!readingAnwers?.isDone) {
-    return <Navigate to={`/test/${testId}/reading/1/1`} />;
-  }
-
   // Calculate current part and cumulative question count
   const { currentPart } = useMemo(() => {
     const partNum = parseInt(partNumber);
@@ -96,6 +87,15 @@ const Writing = () => {
     setWords(wordsFromStore);
   }, [partNumber]);
 
+  // Navigate
+  if (writingAnwers?.isDone) {
+    return <Navigate to={`/tutorial/${testId}`} />;
+  }
+
+  if (!readingAnwers?.isDone) {
+    return <Navigate to={`/test/${testId}/reading/1/1`} />;
+  }
+
   if (!currentPart) {
     return (
       <div className="container">
@@ -120,7 +120,7 @@ const Writing = () => {
         {/* Left side */}
         <div
           style={{ width: `${leftWidth}%` }}
-          className="h-full overflow-y-auto ielts-theme-scroll"
+          className="h-full overflow-y-auto ielts-theme-scroll pr-5"
         >
           <TextComponent
             text={text}

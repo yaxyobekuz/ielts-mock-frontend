@@ -28,11 +28,6 @@ const Listening = ({ setAudioList }) => {
   const { getModuleData } = useModule(module, testId);
   const { parts, audios } = getModuleData() || {};
 
-  // Navigate
-  if (listeningAnwers?.isDone) {
-    return <Navigate to={`/tutorial/${testId}`} />;
-  }
-
   useEffect(() => {
     setAudioList(audios?.map(({ url }) => url));
   }, []);
@@ -52,6 +47,11 @@ const Listening = ({ setAudioList }) => {
   }, [location.pathname, parts, partNumber]);
 
   const { sections, description, title } = currentPart || {};
+
+  // Navigate
+  if (listeningAnwers?.isDone) {
+    return <Navigate to={`/tutorial/${testId}`} />;
+  }
 
   // Return error if part not found
   if (!currentPart) {
