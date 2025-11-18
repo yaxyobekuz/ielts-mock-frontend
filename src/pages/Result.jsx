@@ -25,9 +25,18 @@ import useObjectState from "@/hooks/useObjectState";
 // Data
 import assessmentCriteria from "@/data/assessmentCriteria";
 import bandFeedback from "@/data/bandFeedback";
+import criteriaFeedback from "@/data/criteriaFeedback";
 
 // Icons
-import { Pen, Mic, Book, Clock, Headphones } from "lucide-react";
+import {
+  Pen,
+  Mic,
+  Book,
+  Clock,
+  Headphones,
+  CheckCircle2,
+  AlertCircle,
+} from "lucide-react";
 
 let uniquecriteriaNames = {};
 assessmentCriteria.forEach(({ criteria }) => {
@@ -221,6 +230,11 @@ const MainContent = ({
         writing={writing}
         speaking={speaking}
       />
+
+      <CriteriaFeedbackSection
+        writingCriteria={writingCriteria}
+        speakingCriteria={speakingCriteria}
+      />
     </div>
   );
 };
@@ -292,6 +306,266 @@ const FeedbackSection = ({ listening, reading, writing, speaking }) => {
           );
         })}
       </div>
+    </section>
+  );
+};
+
+const CriteriaFeedbackSection = ({ writingCriteria, speakingCriteria }) => {
+  const getBandScore = (score) => {
+    if (!score) return 0;
+    return Math.round(score * 2) / 2;
+  };
+
+  const getCriteriaFeedback = (category, criteriaKey, score) => {
+    const bandScore = getBandScore(score);
+    const feedback = criteriaFeedback[category]?.[criteriaKey]?.[bandScore];
+    return feedback || null;
+  };
+
+  // Mapping of criteria keys to user-friendly names and feedback keys
+  const criteriaMapping = {
+    speaking: {
+      pronunciation: { title: "Pronunciation", key: "pronunciation" },
+      lexicalResource: { title: "Lexical Resource", key: "lexicalResource" },
+      fluencyAndCoherence: {
+        title: "Fluency and Coherence",
+        key: "fluencyAndCoherence",
+      },
+      grammaticalRangeAndAccuracy: {
+        title: "Grammatical Range and Accuracy",
+        key: "grammaticalRangeAndAccuracy",
+      },
+    },
+    writing: {
+      taskAchievement: { title: "Task Achievement", key: "taskAchievement" },
+      taskResponse: { title: "Task Response", key: "taskResponse" },
+      coherenceAndCohesion: {
+        title: "Coherence and Cohesion",
+        key: "coherenceAndCohesion",
+      },
+      lexicalResource: { title: "Lexical Resource", key: "lexicalResource" },
+      grammaticalRangeAndAccuracy: {
+        title: "Grammatical Range and Accuracy",
+        key: "grammaticalRangeAndAccuracy",
+      },
+    },
+  };
+
+  return (
+    <section className="space-y-6">
+      <h2 className="text-xl font-medium">Detailed Feedback</h2>
+
+      {/* Speaking Criteria */}
+      {speakingCriteria && Object.keys(speakingCriteria).length > 0 && (
+        <div className="space-y-4">
+          <div className="flex items-center gap-2">
+            <Mic strokeWidth={1.5} size={22} />
+            <h3 className="text-lg font-semibold">Speaking</h3>
+          </div>
+
+          <div className="grid gap-4">
+            {Object.entries(speakingCriteria).map(([key, score]) => {
+              const mapping = criteriaMapping.speaking[key];
+              if (!mapping) return null;
+
+              const feedback = getCriteriaFeedback(
+                "speaking",
+                mapping.key,
+                score
+              );
+              if (!feedback) return null;
+
+              return (
+                <div key={key} className="bg-gray-50 rounded-4xl p-6 space-y-3">
+                  {/* Header */}
+                  <div className="flex items-center justify-between">
+                    <h4 className="font-semibold text-gray-900">
+                      {mapping.title}
+                    </h4>
+                    <span className="text-lg font-semibold text-gray-700">
+                      {appendDotZero(score)}
+                    </span>
+                  </div>
+
+                  {/* Description */}
+                  <p className="text-gray-700 text-sm leading-relaxed">
+                    {feedback.description}
+                  </p>
+
+                  {/* Strengths */}
+                  {feedback.strengths && feedback.strengths.length > 0 && (
+                    <div className="bg-green-50 rounded-2xl p-3 space-y-2">
+                      <div className="flex items-center gap-1.5">
+                        <CheckCircle2
+                          size={16}
+                          className="text-green-600"
+                          strokeWidth={2}
+                        />
+                        <span className="text-sm font-semibold text-green-900">
+                          Strengths:
+                        </span>
+                      </div>
+                      <ul className="space-y-1 ml-5">
+                        {feedback.strengths.map((strength, idx) => (
+                          <li
+                            key={idx}
+                            className="text-sm text-green-800 list-disc"
+                          >
+                            {strength}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+
+                  {/* Areas for Improvement */}
+                  {feedback.improvements &&
+                    feedback.improvements.length > 0 && (
+                      <div className="bg-blue-50 rounded-2xl p-3 space-y-2">
+                        <div className="flex items-center gap-1.5">
+                          <AlertCircle
+                            size={16}
+                            className="text-blue-600"
+                            strokeWidth={2}
+                          />
+                          <span className="text-sm font-semibold text-blue-900">
+                            How to improve:
+                          </span>
+                        </div>
+                        <ul className="space-y-1 ml-5">
+                          {feedback.improvements.map((improvement, idx) => (
+                            <li
+                              key={idx}
+                              className="text-sm text-blue-800 list-disc"
+                            >
+                              {improvement}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      {/* Writing Criteria */}
+      {writingCriteria && Object.keys(writingCriteria).length > 0 && (
+        <div className="space-y-4">
+          <div className="flex items-center gap-2">
+            <Pen strokeWidth={1.5} size={22} />
+            <h3 className="text-lg font-semibold">Writing</h3>
+          </div>
+
+          <div className="space-y-5">
+            {Object.entries(writingCriteria).map(([task, taskCriteria]) => {
+              const taskNumber = extractNumbers(task);
+
+              return (
+                <div key={task} className="space-y-3">
+                  <h4 className="font-semibold text-gray-900">
+                    Task {taskNumber}
+                  </h4>
+
+                  <div className="grid gap-4">
+                    {Object.entries(taskCriteria).map(([key, score]) => {
+                      const mapping = criteriaMapping.writing[key];
+                      if (!mapping) return null;
+
+                      const feedback = getCriteriaFeedback(
+                        "writing",
+                        mapping.key,
+                        score
+                      );
+                      if (!feedback) return null;
+
+                      return (
+                        <div
+                          key={key}
+                          className="bg-gray-50 rounded-4xl p-6 space-y-3"
+                        >
+                          {/* Header */}
+                          <div className="flex items-center justify-between">
+                            <h5 className="font-semibold text-gray-900">
+                              {mapping.title}
+                            </h5>
+                            <span className="text-lg font-semibold text-gray-700">
+                              {appendDotZero(score)}
+                            </span>
+                          </div>
+
+                          {/* Description */}
+                          <p className="text-gray-700 text-sm leading-relaxed">
+                            {feedback.description}
+                          </p>
+
+                          {/* Strengths */}
+                          {feedback.strengths &&
+                            feedback.strengths.length > 0 && (
+                              <div className="bg-green-50 rounded-2xl p-3 space-y-2">
+                                <div className="flex items-center gap-1.5">
+                                  <CheckCircle2
+                                    size={16}
+                                    className="text-green-600"
+                                    strokeWidth={2}
+                                  />
+                                  <span className="text-sm font-semibold text-green-900">
+                                    Strengths:
+                                  </span>
+                                </div>
+                                <ul className="space-y-1 ml-5">
+                                  {feedback.strengths.map((strength, idx) => (
+                                    <li
+                                      key={idx}
+                                      className="text-sm text-green-800 list-disc"
+                                    >
+                                      {strength}
+                                    </li>
+                                  ))}
+                                </ul>
+                              </div>
+                            )}
+
+                          {/* Areas for Improvement */}
+                          {feedback.improvements &&
+                            feedback.improvements.length > 0 && (
+                              <div className="bg-blue-50 rounded-2xl p-3 space-y-2">
+                                <div className="flex items-center gap-1.5">
+                                  <AlertCircle
+                                    size={16}
+                                    className="text-blue-600"
+                                    strokeWidth={2}
+                                  />
+                                  <span className="text-sm font-semibold text-blue-900">
+                                    How to improve:
+                                  </span>
+                                </div>
+                                <ul className="space-y-1 ml-5">
+                                  {feedback.improvements.map(
+                                    (improvement, idx) => (
+                                      <li
+                                        key={idx}
+                                        className="text-sm text-blue-800 list-disc"
+                                      >
+                                        {improvement}
+                                      </li>
+                                    )
+                                  )}
+                                </ul>
+                              </div>
+                            )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
     </section>
   );
 };
