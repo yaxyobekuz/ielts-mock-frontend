@@ -1,10 +1,8 @@
-import { useEffect, useState } from "react";
+// React
+import { useState } from "react";
 
 // Random id generator
 import { v4 as uuidv4 } from "uuid";
-
-// Hooks
-import useStore from "@/hooks/useStore";
 
 // Helpers
 import { countExactMatches } from "@/lib/helpers";

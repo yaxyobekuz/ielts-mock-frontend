@@ -118,7 +118,11 @@ const DropzoneComponent = ({
       onDrop={handleDrop}
       children={dropzoneIndex}
       onClick={setActiveDropzone}
-      onDragOver={(e) => e.preventDefault()}
+      onDragEnter={(e) => e.currentTarget.classList.add("!bg-gray-200")}
+      onDragLeave={(e) => e.currentTarget.classList.remove("!bg-gray-200")}
+      onDragOver={(e) => {
+        e.preventDefault();
+      }}
       className={`${
         isActive
           ? "border-transparent outline-2 outline-blue-500 outline-dashed -outline-offset-1"
@@ -144,6 +148,7 @@ const DragAndDropComponent = ({
   const handleDrop = (e) => {
     e.preventDefault();
     setActiveDropzone();
+    e.currentTarget.classList.remove("!bg-gray-200");
 
     const jsonData = e.dataTransfer.getData("application/json");
     if (!jsonData) return;
@@ -196,6 +201,8 @@ const DragAndDropComponent = ({
       onClick={setActiveDropzone}
       onDragStart={handleDragStart}
       onDragOver={(e) => e.preventDefault()}
+      onDragEnter={(e) => e.currentTarget.classList.add("!bg-gray-200")}
+      onDragLeave={(e) => e.currentTarget.classList.remove("!bg-gray-200")}
       className={`${
         coords ? "min-w-32" : "min-w-40"
       } max-w-max bg-white px-1.5 text-sm leading-6 border border-blue-500 rounded cursor-move dropzone-content`}

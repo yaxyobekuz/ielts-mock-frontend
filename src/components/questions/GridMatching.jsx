@@ -78,7 +78,7 @@ const GridMatching = ({ initialNumber, grid, _id: sectionId }) => {
               return (
                 <label
                   key={aIndex}
-                  className="shrink-0 btn w-12 h-auto p-0 rounded-none border-t border-r border-black last:border-r-0"
+                  className="shrink-0 btn w-12 h-auto p-0 rounded-none border-t border-r border-black has-[:checked]:bg-blue-100 hover:bg-blue-50 last:border-r-0"
                 >
                   <input
                     type="radio"
