@@ -24,6 +24,7 @@ import useObjectState from "@/hooks/useObjectState";
 
 // Data
 import assessmentCriteria from "@/data/assessmentCriteria";
+import bandFeedback from "@/data/bandFeedback";
 
 // Icons
 import { Pen, Mic, Book, Clock, Headphones } from "lucide-react";
@@ -71,10 +72,10 @@ const Result = () => {
   // Content
   if (isLoading) return <LoadingContent />;
   if (hasError) return <ErrorContent />;
-  return <Main {...result} />;
+  return <MainContent {...result} />;
 };
 
-const Main = ({
+const MainContent = ({
   test,
   overall,
   reading,
@@ -86,7 +87,7 @@ const Main = ({
   speakingCriteria,
 }) => {
   return (
-    <div className="mt-5 space-y-5">
+    <div className="mt-5 pb-12 space-y-5">
       <div className="flex items-center justify-between">
         {/* Title */}
         <h1 className="font-medium text-[23px] leading-7">
@@ -213,7 +214,85 @@ const Main = ({
           </div>
         </section>
       </div>
+
+      <FeedbackSection
+        listening={listening}
+        reading={reading}
+        writing={writing}
+        speaking={speaking}
+      />
     </div>
+  );
+};
+
+const FeedbackSection = ({ listening, reading, writing, speaking }) => {
+  // Get the band score (round to nearest 0.5)
+  const getBandScore = (score) => {
+    if (!score) return 0;
+    return Math.round(score * 2) / 2;
+  };
+
+  const getFeedback = (skill, score) => {
+    const bandScore = getBandScore(score);
+    const feedback = bandFeedback[skill]?.[bandScore];
+    return feedback || null;
+  };
+
+  const skills = [
+    {
+      name: "listening",
+      score: listening,
+      icon: Headphones,
+      title: "Listening",
+    },
+    { name: "reading", score: reading, icon: Book, title: "Reading" },
+    { name: "writing", score: writing, icon: Pen, title: "Writing" },
+    { name: "speaking", score: speaking, icon: Mic, title: "Speaking" },
+  ];
+
+  return (
+    <section className="space-y-5">
+      <h2 className="text-xl font-medium">Your Scores Explained</h2>
+
+      <div className="space-y-6">
+        {skills.map(({ name, score, icon: Icon, title }) => {
+          const feedback = getFeedback(name, score);
+          if (!feedback) return null;
+
+          return (
+            <div key={name} className="bg-gray-50 rounded-4xl p-6 space-y-4">
+              {/* Header */}
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2.5">
+                  <Icon strokeWidth={1.5} size={22} />
+                  <h3 className="text-lg font-semibold">{title}</h3>
+                </div>
+                <span className="text-xl font-semibold text-gray-700">
+                  {appendDotZero(score)}
+                </span>
+              </div>
+
+              {/* Description */}
+              <div className="space-y-3">
+                <p className="text-gray-700 leading-relaxed">
+                  {feedback.description}
+                </p>
+
+                {/* How to improve */}
+                <div className="bg-white rounded-2xl p-4 space-y-2">
+                  <h4 className="font-semibold text-gray-900">
+                    How to improve:
+                  </h4>
+                  <p className="text-gray-700 leading-relaxed text-[15px]">
+                    {feedback.howToImprove}
+                  </p>
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </section>
   );
 };
 
