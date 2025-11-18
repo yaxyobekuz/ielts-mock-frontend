@@ -5,6 +5,7 @@ import RadioGroup from "@/components/questions/RadioGroup";
 import GridMatching from "@/components/questions/GridMatching";
 import CheckboxGroup from "@/components/questions/CheckboxGroup";
 import TextDraggable from "@/components/questions/TextDraggable";
+import InputFlowchart from "@/components/questions/InputFlowchart";
 
 const questionsType = [
   {
@@ -21,6 +22,11 @@ const questionsType = [
     label: "Flowchart",
     value: "flowchart",
     component: Flowchart,
+  },
+  {
+    label: "Input Flowchart",
+    value: "input-flowchart",
+    component: InputFlowchart,
   },
   {
     label: "Radio group",
