@@ -54,7 +54,7 @@ const transformAnswers = (data) => {
 
     Object.keys(answers).forEach((key) => {
       const text = answers[key].text;
-      result[section][key] = text ? text : answers[key];
+      result[section][key] = typeof text === "string" ? text : answers[key];
     });
   });
 
