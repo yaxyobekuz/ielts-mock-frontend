@@ -25,11 +25,15 @@ const Listening = ({ setAudioList }) => {
   const listeningAnwers = getProperty("listening");
   const module = pathSegments[2];
 
+  const { getProperty: getStart, updateProperty: setStart } = useStore("start");
+  const startDate = getStart("date");
+
   const { getModuleData } = useModule(module, testId);
   const { parts, audios } = getModuleData() || {};
 
   useEffect(() => {
     setAudioList(audios?.map(({ url }) => url));
+    if (!startDate) setStart("date", new Date().toISOString());
   }, []);
 
   // Calculate current part and cumulative question count

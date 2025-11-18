@@ -67,6 +67,7 @@ const Main = ({ answers, resetAnswers }) => {
   const { resetAllModule } = useModule();
   const { getProperty, updateProperty } = useStore("start");
   const linkId = getProperty("linkId");
+  const startDate = getProperty("date");
 
   const { setField, isSent, isLoading } = useObjectState({
     isSent: false,
@@ -78,7 +79,11 @@ const Main = ({ answers, resetAnswers }) => {
     setField("isLoading", true);
 
     submissionApi
-      .create({ linkId, answers: transformAnswers(answers) })
+      .create({
+        linkId,
+        startedAt: startDate,
+        answers: transformAnswers(answers),
+      })
       .then(({ code }) => {
         if (code !== "submissionCreated") throw new Error();
 
