@@ -153,8 +153,8 @@ const processAnswersData = (module, answers, correctAnswers) => {
   let trueAnswers = 0;
   let wrongAnswers = 0;
 
-  const moduleUserAnswers = answers[module];
-  const moduleCorrectAnswers = correctAnswers[module];
+  const moduleUserAnswers = answers[module] || {};
+  const moduleCorrectAnswers = correctAnswers[module] || {};
   const correctAnswersMap = sortArray(Object.keys(moduleCorrectAnswers || {}));
 
   const rows = correctAnswersMap.map((key) => {
