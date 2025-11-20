@@ -274,7 +274,7 @@ const FeedbackSection = ({ listening, reading, writing, speaking }) => {
           if (!feedback) return null;
 
           return (
-            <div key={name} className="bg-gray-50 rounded-4xl p-6 space-y-4">
+            <div key={name} className="bg-gray-50 rounded-4xl p-5 space-y-4">
               {/* Header */}
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2.5">
@@ -376,7 +376,7 @@ const CriteriaFeedbackSection = ({ writingCriteria, speakingCriteria }) => {
               if (!feedback) return null;
 
               return (
-                <div key={key} className="bg-gray-50 rounded-4xl p-6 space-y-3">
+                <div key={key} className="bg-gray-50 rounded-4xl p-5 space-y-3">
                   {/* Header */}
                   <div className="flex items-center justify-between">
                     <h4 className="font-semibold text-gray-900">
@@ -484,7 +484,7 @@ const CriteriaFeedbackSection = ({ writingCriteria, speakingCriteria }) => {
                       return (
                         <div
                           key={key}
-                          className="bg-gray-50 rounded-4xl p-6 space-y-3"
+                          className="bg-gray-50 rounded-4xl p-5 space-y-3"
                         >
                           {/* Header */}
                           <div className="flex items-center justify-between">

@@ -53,13 +53,15 @@ const ProfileLayout = () => {
       {/* Header */}
       <header className="bg-gray-50 py-5">
         <div className="container !max-w-7xl">
-          <img
-            width={96}
-            height={28}
-            src={ieltsLogo}
-            alt="IELTS logo svg"
-            className="w-24 h-7"
-          />
+          <Link to="/">
+            <img
+              height={32}
+              width={95.3}
+              src={ieltsLogo}
+              alt="CD IELTS logo svg"
+              className="w-28 h-[30.5px]"
+            />
+          </Link>
         </div>
       </header>
 
