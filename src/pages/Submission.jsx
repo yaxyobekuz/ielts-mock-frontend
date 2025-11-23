@@ -7,14 +7,14 @@ import Lottie from "lottie-react";
 // Toast
 import { toast } from "@/notification/toast";
 
-// Api
-import { submissionApi } from "@/api/submission";
-
 // Router
 import { Link, useNavigate } from "react-router-dom";
 
 // Componetns
 import ErrorContent from "@/components/ErrorContent";
+
+// Api
+import { submissionsApi } from "@/api/submissions.api.js";
 
 // Hooks
 import useStore from "@/hooks/useStore";
@@ -78,7 +78,7 @@ const Main = ({ answers, resetAnswers }) => {
     if (isLoading) return;
     setField("isLoading", true);
 
-    submissionApi
+    submissionsApi
       .create({
         linkId,
         startedAt: startDate,
