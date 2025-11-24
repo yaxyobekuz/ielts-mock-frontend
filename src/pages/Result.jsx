@@ -1,3 +1,14 @@
+// Icons
+import {
+  Pen,
+  Mic,
+  Book,
+  Clock,
+  Headphones,
+  AlertCircle,
+  CheckCircle2,
+} from "lucide-react";
+
 // Helpers
 import {
   formatDate,
@@ -23,20 +34,9 @@ import useStore from "@/hooks/useStore";
 import useObjectState from "@/hooks/useObjectState";
 
 // Data
-import assessmentCriteria from "@/data/assessmentCriteria";
 import bandFeedback from "@/data/bandFeedback";
 import criteriaFeedback from "@/data/criteriaFeedback";
-
-// Icons
-import {
-  Pen,
-  Mic,
-  Book,
-  Clock,
-  Headphones,
-  CheckCircle2,
-  AlertCircle,
-} from "lucide-react";
+import assessmentCriteria from "@/data/assessmentCriteria";
 
 let uniquecriteriaNames = {};
 assessmentCriteria.forEach(({ criteria }) => {
@@ -90,6 +90,7 @@ const MainContent = ({
   reading,
   writing,
   speaking,
+  feedback,
   createdAt,
   listening,
   writingCriteria,
@@ -225,10 +226,11 @@ const MainContent = ({
       </div>
 
       <FeedbackSection
-        listening={listening}
         reading={reading}
         writing={writing}
         speaking={speaking}
+        listening={listening}
+        teacherFeedback={feedback}
       />
 
       <CriteriaFeedbackSection
@@ -239,7 +241,13 @@ const MainContent = ({
   );
 };
 
-const FeedbackSection = ({ listening, reading, writing, speaking }) => {
+const FeedbackSection = ({
+  reading,
+  writing,
+  speaking,
+  listening,
+  teacherFeedback = {},
+}) => {
   // Get the band score (round to nearest 0.5)
   const getBandScore = (score) => {
     if (!score) return 0;
@@ -301,6 +309,16 @@ const FeedbackSection = ({ listening, reading, writing, speaking }) => {
                     {feedback.howToImprove}
                   </p>
                 </div>
+
+                {/* Teacher feedback */}
+                {teacherFeedback[name] && (
+                  <div className="bg-blue-50 rounded-2xl p-4 space-y-2">
+                    <h4 className="font-semibold text-blue-900">Teacher:</h4>
+                    <p className="text-blue-700 leading-relaxed text-[15px]">
+                      {teacherFeedback[name]}
+                    </p>
+                  </div>
+                )}
               </div>
             </div>
           );
