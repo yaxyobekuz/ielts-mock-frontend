@@ -40,9 +40,17 @@ const TestLayout = ({ audioLoading, audioPlaying, onStopAudio }) => {
   // For timer logic
   const timerRef = useRef();
   const [timeLeft, setTimeLeft] = useState(null);
+
+  // Store
   const { updateProperty: updateModule } = useStore("modules");
   const { getData, resetData: resetAnswers } = useStore("answers");
+
+  // To have latest answers in interval callback
   const userAnswers = getData();
+  const userAnswersRef = useRef(userAnswers);
+  useEffect(() => {
+    userAnswersRef.current = userAnswers;
+  }, [userAnswers]);
 
   // Next module navigation
   const goToNextModule = () => {
@@ -53,7 +61,7 @@ const TestLayout = ({ audioLoading, audioPlaying, onStopAudio }) => {
     localStorage.removeItem(key);
 
     // Save module answers to store
-    updateModule(module, { isDone: true, answers: userAnswers });
+    updateModule(module, { isDone: true, answers: userAnswersRef.current });
     resetAnswers();
 
     // Stop listening audio
